@@ -13,10 +13,15 @@ typedef struct {
 }Fornecedor;
 
 //Model fornecedor
+Fornecedor *migraDadosFornecedor();
 Fornecedor* getFornecedores();
 void setFornecedores(Fornecedor *fornecedores);
 int getTamanhoFornecedores();
 void setTamanhoFornecedores();
+void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores);
+Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer);
+Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer);
+void escrever_arquivo_bin_fornecedor(FILE *buffer, Fornecedor *fornecedores);
 
 //Controller fornecedores
 Fornecedor* readFornecedores();

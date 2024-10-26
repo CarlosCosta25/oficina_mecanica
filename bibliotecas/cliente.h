@@ -31,7 +31,7 @@ void *escrever_arquivo_bin_cliente(FILE *buffer, Cliente *clientes);
 //Controller cliente
 Cliente* readClientes();
 
-int createCliente(Cliente * clientes, Cliente *cliente);
+int createCliente(Cliente ** clientes, Cliente *cliente);
 
 int showCliente(Cliente * clientes, int id);
 
@@ -43,7 +43,7 @@ int deleteCliente(Cliente* clientes, int id);
 
 void menuCliente();
 
-void novoCliente();
+void novoCliente(Cliente **clientes);
 
 void mostrarCliente(Cliente *clientes);
 

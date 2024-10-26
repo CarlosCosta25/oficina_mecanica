@@ -9,24 +9,33 @@ Cliente* readClientes() {
     clientes = getClientes();
         return clientes;
     }
-int createCliente(Cliente *clientes, Cliente *cliente) {
-    if (clientes == NULL) {
-        clientes = malloc(sizeof(Cliente) * (getTamanhoClientes() + 1));
-    } else {
-        clientes = realloc(clientes, (getTamanhoClientes() + 1) * sizeof(Cliente));
+int createCliente(Cliente **clientes, Cliente *cliente) {
+    int tamanhoAtual = getTamanhoClientes();
+
+    // Realoca a memória para acomodar o novo cliente
+    Cliente *novoClientes = realloc(*clientes, (tamanhoAtual + 1) * sizeof(Cliente));
+    if (novoClientes == NULL) {
+        printf("Erro ao alocar memória para clientes.\n");
+        return 0; // Retorna 0 indicando falha
     }
 
-    int index = getTamanhoClientes();
-    clientes[index].codigo = buscaNovoIDCliente(clientes);
-    strcpy(clientes[index].nome, cliente->nome);
-    strcpy(clientes[index].cpf_cnpj, cliente->cpf_cnpj);
-    strcpy(clientes[index].endereco, cliente->endereco);
-    strcpy(clientes[index].telefone, cliente->telefone);
-    strcpy(clientes[index].email, cliente->email);
-    clientes[index].ativo = 1;  // Cliente ativo ao ser criado
+    *clientes = novoClientes; // Atualiza o ponteiro de clientes com o novo endereço
+    int index = tamanhoAtual; // Novo índice é o tamanho atual
 
-    setTamanhoClientes();
-    if (getTipoArquivo() != 3) setClientes(clientes);
+    // Preenche os dados do novo cliente no array
+    (*clientes)[index].codigo = buscaNovoIDCliente(*clientes);
+    strcpy((*clientes)[index].nome, cliente->nome);
+    strcpy((*clientes)[index].cpf_cnpj, cliente->cpf_cnpj);
+    strcpy((*clientes)[index].endereco, cliente->endereco);
+    strcpy((*clientes)[index].telefone, cliente->telefone);
+    strcpy((*clientes)[index].email, cliente->email);
+    (*clientes)[index].ativo = 1; // Cliente ativo ao ser criado
+
+    setTamanhoClientes(); // Atualiza o tamanho dos clientes
+
+    // Salva clientes se o tipo de arquivo não for memória
+    if (getTipoArquivo() != MEM) setClientes(*clientes);
+
     return TRUE;
 }
 int showCliente(Cliente *clientes, int codigo) {
@@ -61,7 +70,7 @@ int updateCliente(Cliente *clientes, Cliente *cliente) {
     strcpy(clientes[posicao].email, cliente->email);
     clientes[posicao].ativo = cliente->ativo; // Atualiza o campo ativo
 
-    if (getTipoArquivo() != 3) setClientes(clientes);
+    if (getTipoArquivo() != MEM) setClientes(clientes);
     return TRUE;
 }
 
@@ -71,7 +80,7 @@ int deleteCliente(Cliente* clientes, int codigo) {
     if (posicao == FALSE) return FALSE; // Verifica se o cliente existe e está ativo
 
     clientes[posicao].ativo = FALSE; // Marca o cliente como inativo
-    setClientes(clientes); // Atualiza a lista de clientes, se necessário
+    if (getTipoArquivo() != MEM) setClientes(clientes);
     return TRUE;
 }
 

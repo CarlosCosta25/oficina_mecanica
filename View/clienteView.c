@@ -20,8 +20,8 @@ void menuCliente() {
             "0- Sair\n");
         switch (opcao) {
             case 1:
-                novoCliente(clientes);
-                clientes = getClientes();
+                novoCliente(&clientes);
+                if( getTipoArquivo() != MEM) clientes = getClientes();
                 opcao = -1;
                 break;
 
@@ -43,7 +43,7 @@ void menuCliente() {
     clientes = NULL;
 }
 
-void novoCliente(Cliente *clientes) {
+void novoCliente(Cliente **clientes) {
     Cliente *cliente = malloc(sizeof(Cliente));
     strcpy(cliente->nome, lerString("Digite o nome do cliente: "));
     strcpy(cliente->cpf_cnpj, lerString("Digite o CPF/CNPJ do cliente: "));
@@ -51,12 +51,12 @@ void novoCliente(Cliente *clientes) {
     strcpy(cliente->telefone, lerString("Digite o telefone do cliente: "));
     strcpy(cliente->email, lerString("Digite o email do cliente: "));
     cliente->ativo = 1; // Define o cliente como ativo
-
     if (createCliente(clientes, cliente) != FALSE) {
         printf("Cliente cadastrado com sucesso!\n");
     } else {
         printf("Erro no cadastro do cliente!\n");
     }
+    printf("Tamnho do cliente %d\n",getTamanhoClientes());
 
     free(cliente); // Libera a memória do cliente após o cadastro
 }
@@ -81,8 +81,7 @@ void mostrarCliente(Cliente *clientes) {
                "Endereço: %s\n"
                "CPF/CNPJ: %s\n"
                "Telefone: %s\n"
-               "E-mail: %s\n"
-               "Ativo: %s\n",
+               "E-mail: %s\n",
                clientes[posicao].codigo,
                clientes[posicao].nome,
                clientes[posicao].endereco,

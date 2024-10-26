@@ -1,0 +1,22 @@
+<registro>
+<codigo>1</codigo>
+<nome_fantasia>Fantasia2</nome_fantasia>
+<razao_social>Razão Social Fictícia 2 LTDA</razao_social>
+<incricao_estadual>123456789</incricao_estadual>
+<cnpj>12.345.678/0001-90</cnpj>
+<endereco>Rua Exemplo 123, Cidade Av</endereco>
+<telefone>(11) 1234-5678</telefone>
+<email>contato@ficticia1.com</email>
+<ativo>1</ativo>
+</registro>
+<registro>
+<codigo>2</codigo>
+<nome_fantasia>Fantasia4</nome_fantasia>
+<razao_social>Razão Social Fictícia 2 LTDA</razao_social>
+<incricao_estadual>123456789</incricao_estadual>
+<cnpj>12.345.678/0001-90</cnpj>
+<endereco>Rua Exemplo 123, Cidade A</endereco>
+<telefone>(11) 1234-5678</telefone>
+<email>contato@ficticia1.com</email>
+<ativo>1</ativo>
+</registro>

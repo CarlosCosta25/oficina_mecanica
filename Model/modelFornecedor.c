@@ -209,18 +209,15 @@ void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
 Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer) {
     int tam = getTamanhoFornecedores();
     int isPrimeiro = TRUE;
-    Fornecedor *fornecedores = NULL; //= malloc(sizeof(Fornecedor) * (tam + 1));
+
+    Fornecedor *fornecedores = malloc(sizeof(Fornecedor) * (tam + 1));
+    if (fornecedores == NULL) printf("Erro ao alocar a memoria\n");
     int i = 0;
     while (fread(&fornecedores[i], sizeof(Fornecedor), 1, buffer)) {
-        if (isPrimeiro == TRUE) {
-            fornecedores = malloc(sizeof(Fornecedor) * (tam + 1));
-            isPrimeiro = FALSE;
-        } else if (isPrimeiro == FALSE) {
-            fornecedores = realloc(fornecedores, (tam + 1) * sizeof(Fornecedor));
-        }
+            if (fornecedores == NULL) printf("Erro ao realocar a memoria\n");
         i++;
         setTamanhoFornecedores();
-        //fornecedores = realloc(fornecedores, (tam + 1) * sizeof(Fornecedor));
+        fornecedores = realloc(fornecedores, (getTamanhoFornecedores() + 1) * sizeof(Fornecedor));
     }
     return fornecedores;
 }

@@ -89,6 +89,8 @@ void mostrarCliente(Cliente *clientes) {
                clientes[posicao].telefone,
                clientes[posicao].email
         ); // Exibe se o cliente está ativo
+    }else {
+        printf("Cliente não encontrado!\n");
     }
 }
 

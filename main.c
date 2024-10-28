@@ -7,8 +7,9 @@
 
 int main(void) {
  setTipoArquivo(lerInt("Digite com qual tipo de dados vc deseja trabalhar: "));
-   menuCliente();
+   //menuCliente();
 //Cliente* clientes = readClientes();
+ menuFornecedor();
 
 /*
  Cliente *cliente = malloc(sizeof(Cliente));

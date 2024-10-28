@@ -16,6 +16,7 @@ int getTamanhoFornecedores() {
 void setTamanhoFornecedores() {
     qtdFornecedores++;
 }
+
 Fornecedor *migraDadosFornecedor() {
     Fornecedor *fornecedores = NULL;
     FILE *buffer;
@@ -67,6 +68,7 @@ Fornecedor *migraDadosFornecedor() {
     }
     return NULL;
 }
+
 void setFornecedores(Fornecedor *fornecedores) {
     FILE *buffer;
     if (getTipoArquivo() == TXT) {
@@ -85,6 +87,7 @@ void setFornecedores(Fornecedor *fornecedores) {
         }
     }
 }
+
 Fornecedor *getFornecedores() {
     FILE *buffer;
     Fornecedor *fornecedores = NULL;
@@ -109,6 +112,7 @@ Fornecedor *getFornecedores() {
     }
     return fornecedores;
 }
+
 Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer) {
     int numFornecedores = 0;
     Fornecedor *fornecedores = NULL;
@@ -120,11 +124,10 @@ Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer) {
         if (isPrimeiro == TRUE) {
             fornecedores = malloc(sizeof(Fornecedor) * (numFornecedores + 1));
             isPrimeiro = FALSE;
-        }else if (isPrimeiro == FALSE) {
+        } else if (isPrimeiro == FALSE) {
             fornecedores = realloc(fornecedores, (numFornecedores + 1) * sizeof(Fornecedor));
         }
         if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
-
             switch (i) {
                 case 0:
                     fornecedores[numFornecedores].codigo = atoi(removeTags(Linha));
@@ -170,9 +173,10 @@ Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer) {
     qtdFornecedores = numFornecedores;
     return fornecedores;
 }
-void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
-    if (getFornecedores() == 0) setTamanhoFornecedores(); // caso não tenha nenhum fornecedor cadastrado
 
+void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
+    if (getTamanhoFornecedores() == 0) setTamanhoFornecedores(); // caso não tenha nenhum fornecedor cadastrado
+    printf("getTamanhoF: %d no model",getTamanhoFornecedores());
     for (int i = 0; i < getTamanhoFornecedores(); i++) {
         int escrevendo = fprintf(buffer,
                                  "<registro>\n"
@@ -201,14 +205,22 @@ void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
         }
     }
 }
+
 Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer) {
     int tam = getTamanhoFornecedores();
-    Fornecedor *fornecedores = malloc(sizeof(Fornecedor) * (tam + 1));
+    int isPrimeiro = TRUE;
+    Fornecedor *fornecedores = NULL; //= malloc(sizeof(Fornecedor) * (tam + 1));
     int i = 0;
     while (fread(&fornecedores[i], sizeof(Fornecedor), 1, buffer)) {
+        if (isPrimeiro == TRUE) {
+            fornecedores = malloc(sizeof(Fornecedor) * (tam + 1));
+            isPrimeiro = FALSE;
+        } else if (isPrimeiro == FALSE) {
+            fornecedores = realloc(fornecedores, (tam + 1) * sizeof(Fornecedor));
+        }
         i++;
         setTamanhoFornecedores();
-        fornecedores = realloc(fornecedores, (tam + 1) * sizeof(Fornecedor));
+        //fornecedores = realloc(fornecedores, (tam + 1) * sizeof(Fornecedor));
     }
     return fornecedores;
 }
@@ -216,8 +228,6 @@ Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer) {
 void escrever_arquivo_bin_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
     for (int i = 0; i < getTamanhoFornecedores(); i++) {
         if (fwrite(&fornecedores[i], sizeof(Fornecedor), 1, buffer)) {
-            printf("Escreveu!\n");
         }
     }
 }
-

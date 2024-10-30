@@ -32,7 +32,7 @@ int deleteFornecedor(Fornecedor* fornecedores, int codigo);
 int buscaNovoIDFornecedor(Fornecedor * fornecedores);
 
 //View fornecedor
-void menuFornecedor();
+void menuFornecedor(Fornecedor **fornecedores);
 void novoFornecedor(Fornecedor **fornecedores);
 void mostrarFornecedor(Fornecedor *fornecedores);
 void editarFornecedor(Fornecedor *fornecedores);

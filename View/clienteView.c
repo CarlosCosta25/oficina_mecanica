@@ -4,10 +4,9 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/cliente.h"
 
-void menuCliente() {
-    Cliente *clientes = migraDadosCliente();
+void menuCliente(Cliente **clientes) {
     if (getTipoArquivo() != 3) {
-        clientes = readClientes();
+        *clientes = readClientes();
     }
     int opcao = -1;
     printf("==== MENU CLIENTE ====\n");
@@ -20,27 +19,27 @@ void menuCliente() {
             "0- Sair\n");
         switch (opcao) {
             case 1:
-                novoCliente(&clientes);
-                if( getTipoArquivo() != MEM) clientes = getClientes();
+                novoCliente(clientes);
+                if( getTipoArquivo() != MEM) *clientes = getClientes();
                 opcao = -1;
                 break;
 
             case 2:
-                mostrarCliente(clientes);
+                mostrarCliente(*clientes);
                 opcao = -1;
                 break;
             case 3:
-                editarCLiente(clientes);
+                editarCLiente(*clientes);
                 opcao = -1;
                 break;
             case 4:
-                apagarCliente(clientes);
+                apagarCliente(*clientes);
                 opcao = -1;
                 break;
         }
     }
-    free(clientes);
-    clientes = NULL;
+    //free(clientes);
+    //clientes = NULL;
 }
 
 void novoCliente(Cliente **clientes) {

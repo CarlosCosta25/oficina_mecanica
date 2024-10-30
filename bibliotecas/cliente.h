@@ -41,7 +41,7 @@ int deleteCliente(Cliente* clientes, int id);
 
 //View cliente
 
-void menuCliente();
+void menuCliente(Cliente **clientes);
 
 void novoCliente(Cliente **clientes);
 

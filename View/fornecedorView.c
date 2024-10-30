@@ -4,10 +4,10 @@
 #include "../bibliotecas/fornecedor.h"
 #include "../bibliotecas/utils.h"
 
-void menuFornecedor() {
-    Fornecedor *fornecedores = migraDadosFornecedor();
+void menuFornecedor(Fornecedor **fornecedores) {
+
     if (getTipoArquivo() != 3) {
-        fornecedores = readFornecedores();
+        *fornecedores = readFornecedores();
     }
     int opcao = -1;
     while (opcao != 0) {
@@ -20,27 +20,28 @@ void menuFornecedor() {
                        "0- Sair\n");
         switch (opcao) {
             case 1:
-                novoFornecedor(&fornecedores);
-            if (getTipoArquivo() != MEM) fornecedores = getFornecedores();
+                novoFornecedor(fornecedores);
+            if (getTipoArquivo() != MEM) *fornecedores = getFornecedores();
             opcao = -1;
             break;
 
             case 2:
-                mostrarFornecedor(fornecedores);
+                mostrarFornecedor(*fornecedores);
             opcao = -1;
             break;
             case 3:
-                editarFornecedor(fornecedores);
+                editarFornecedor(*fornecedores);
             opcao = -1;
             break;
             case 4:
-                apagarFornecedor(fornecedores);
+                apagarFornecedor(*fornecedores);
             opcao = -1;
             break;
         }
     }
-    free(fornecedores);
-    fornecedores = NULL;
+    //principal_fornecedores = fornecedores;
+    //free(fornecedores);
+    //fornecedores = NULL;
 }
 
 

@@ -207,6 +207,7 @@ void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
 }
 
 Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer) {
+    qtdFornecedores = 0;
     int tam = getTamanhoFornecedores();
     int isPrimeiro = TRUE;
 

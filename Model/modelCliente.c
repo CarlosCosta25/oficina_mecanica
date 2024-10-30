@@ -209,6 +209,7 @@ void escrever_arquivo_txt_cliente(FILE *buffer, Cliente *clientes) {
 }
 
 Cliente *ler_arquivo_bin_cliente(FILE *buffer) {
+    qtdClientes = 0;
     Cliente *clientes = malloc(sizeof(Cliente) * (getTamanhoClientes() + 1));
     int i = 0;
     while (fread(&clientes[i], sizeof(Cliente), 1, buffer)) {

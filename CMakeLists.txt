@@ -16,4 +16,6 @@ add_executable(trabalho main.c
         Controller/fornecedorController.c
         Controller/fornecedorController.c
         View/fornecedorView.c
-        View/fornecedorView.c)
+        View/fornecedorView.c
+        View/veiculoView.c
+        View/funcionarioView.c)

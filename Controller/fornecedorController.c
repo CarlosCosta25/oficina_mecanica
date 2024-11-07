@@ -5,46 +5,66 @@
 #include "../bibliotecas/utils.h"
 
 Fornecedor* readFornecedores() {
-    Fornecedor *fornecedores = NULL;
-    fornecedores = getFornecedores();
-    return fornecedores;
+    return  getFornecedores();
 }
 
-int createFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
-    fornecedores = realloc(fornecedores, (getTamanhoFornecedores() + 1) * sizeof(Fornecedor));
-    if (fornecedores == NULL) {
-        return FALSE;
+int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor) {
+    int tamanhoAtual = getTamanhoFornecedores();
+
+    // Realoca a memória para acomodar o novo fornecedor
+    Fornecedor *novoFornecedores = realloc(*fornecedores, (tamanhoAtual + 1) * sizeof(Fornecedor));
+    if (novoFornecedores == NULL) {
+        printf("Erro ao alocar memória para fornecedores.\n");
+        return 0; // Retorna 0 indicando falha
     }
-    fornecedores[getTamanhoFornecedores()].codigo = buscaNovoIDFornecedor(fornecedores);
-    strcpy(fornecedores[getTamanhoFornecedores()].nome_fantasia, fornecedor->nome_fantasia);
-    strcpy(fornecedores[getTamanhoFornecedores()].razao_social, fornecedor->razao_social);
-    fornecedores[getTamanhoFornecedores()].incricao_estadual = fornecedor->incricao_estadual;
-    strcpy(fornecedores[getTamanhoFornecedores()].cnpj, fornecedor->cnpj);
-    strcpy(fornecedores[getTamanhoFornecedores()].endereco, fornecedor->endereco);
-    strcpy(fornecedores[getTamanhoFornecedores()].telefone, fornecedor->telefone);
-    strcpy(fornecedores[getTamanhoFornecedores()].email, fornecedor->email);
-    fornecedores[getTamanhoFornecedores()].ativo = 1;
-    setTamanhoFornecedores();
-    setFornecedores(fornecedores);
+
+    *fornecedores = novoFornecedores; // Atualiza o ponteiro de fornecedores com o novo endereço
+    int index = tamanhoAtual; // Novo índice é o tamanho atual
+
+    // Preenche os dados do novo fornecedor no array
+    (*fornecedores)[index].codigo = buscaNovoIDFornecedor(*fornecedores);
+    strcpy((*fornecedores)[index].nome_fantasia, fornecedor->nome_fantasia);
+    strcpy((*fornecedores)[index].razao_social, fornecedor->razao_social);
+    (*fornecedores)[index].incricao_estadual = fornecedor->incricao_estadual;
+    strcpy((*fornecedores)[index].cnpj, fornecedor->cnpj);
+    strcpy((*fornecedores)[index].endereco, fornecedor->endereco);
+    strcpy((*fornecedores)[index].telefone, fornecedor->telefone);
+    strcpy((*fornecedores)[index].email, fornecedor->email);
+    (*fornecedores)[index].ativo = 1; // Fornecedor ativo ao ser criado
+    printf("Tamanho do vetor de fornecedores: %d\n", getTamanhoFornecedores());
+    setTamanhoFornecedores(); // Atualiza o tamanho dos fornecedores
+printf("Tamanho do vetor de fornecedores: %d\n", getTamanhoFornecedores());
+    // Salva fornecedores se o tipo de arquivo não for memória
+    if (getTipoArquivo() != MEM) setFornecedores(*fornecedores);
+
     return TRUE;
 }
 
 int showFornecedor(Fornecedor *fornecedores, int codigo) {
-    int i = 0;
-    while (fornecedores[i].codigo != codigo /*&& i < getTamanhoFornecedores()*/) {
-        i++;
+    if (fornecedores == NULL) return FALSE;
+
+    int posicao = 0;
+    int tamanho = getTamanhoFornecedores();
+
+    // Procura o fornecedor com o código especificado dentro do limite do array
+    while (posicao < tamanho && fornecedores[posicao].codigo != codigo) {
+        posicao++;
     }
-    if (i == getTamanhoFornecedores() || fornecedores[i].ativo == FALSE)
+
+    // Verifica se o fornecedor foi encontrado e se está ativo
+    if (posicao == tamanho || fornecedores[posicao].ativo == FALSE)
         return FALSE;
 
-    return i;
+    return posicao;
 }
 
 int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
+
     int posicao = showFornecedor(fornecedores, fornecedor->codigo);
 
     if (posicao == FALSE) return FALSE;
 
+    // Atualiza os campos necessários
     fornecedores[posicao].codigo = fornecedor->codigo;
     strcpy(fornecedores[posicao].nome_fantasia, fornecedor->nome_fantasia);
     strcpy(fornecedores[posicao].razao_social, fornecedor->razao_social);
@@ -53,17 +73,18 @@ int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
     strcpy(fornecedores[posicao].endereco, fornecedor->endereco);
     strcpy(fornecedores[posicao].telefone, fornecedor->telefone);
     strcpy(fornecedores[posicao].email, fornecedor->email);
-    fornecedores[posicao].ativo = fornecedor->ativo; // Mantém o estado ativo
+    fornecedores[posicao].ativo = fornecedor->ativo; // Atualiza o campo ativo
 
-    setFornecedores(fornecedores);
+    if (getTipoArquivo() != MEM) setFornecedores(fornecedores);
     return TRUE;
 }
-
 int deleteFornecedor(Fornecedor* fornecedores, int codigo) {
     int posicao = showFornecedor(fornecedores, codigo);
-    if (posicao == FALSE) return FALSE;
-    fornecedores[posicao].ativo = FALSE;
-    setFornecedores(fornecedores);
+
+    if (posicao == FALSE) return FALSE; // Verifica se o fornecedor existe e está ativo
+
+    fornecedores[posicao].ativo = FALSE; // Marca o fornecedor como inativo
+    if (getTipoArquivo() != MEM) setFornecedores(fornecedores);
     return TRUE;
 }
 

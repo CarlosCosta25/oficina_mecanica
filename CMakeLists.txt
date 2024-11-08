@@ -16,4 +16,12 @@ add_executable(trabalho main.c
         Controller/fornecedorController.c
         Controller/fornecedorController.c
         View/fornecedorView.c
-        View/fornecedorView.c)
+        View/fornecedorView.c
+        bibliotecas/peca.h
+        Controller/pecaController.c
+        Model/modelPeca.c
+        View/pecaView.c
+        bibliotecas/oficina.h
+        Controller/oficinaController.c
+        Model/modelOficina.c
+        View/oficinaView.c)

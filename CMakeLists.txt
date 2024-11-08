@@ -25,3 +25,6 @@ add_executable(trabalho main.c
         Controller/oficinaController.c
         Model/modelOficina.c
         View/oficinaView.c)
+        View/fornecedorView.c
+        View/veiculoView.c
+        View/funcionarioView.c)

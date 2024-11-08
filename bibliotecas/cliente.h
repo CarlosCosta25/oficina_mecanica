@@ -39,6 +39,8 @@ int  updateCliente(Cliente *clientes,Cliente * cliente);
 
 int deleteCliente(Cliente* clientes, int id);
 
+int buscaNovoIDCliente(Cliente * clientes);
+
 //View cliente
 
 void menuCliente(Cliente **clientes);
@@ -51,5 +53,6 @@ void apagarCliente(Cliente *clientes);
 
 void editarCLiente(Cliente * clientes);
 
-int buscaNovoIDCliente(Cliente * clientes);
+void mostrarTodosClientes(Cliente * clientes);
+
 #endif //CLIENTE_H

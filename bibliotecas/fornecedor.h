@@ -37,5 +37,6 @@ void novoFornecedor(Fornecedor **fornecedores);
 void mostrarFornecedor(Fornecedor *fornecedores);
 void editarFornecedor(Fornecedor *fornecedores);
 void apagarFornecedor(Fornecedor *fornecedores);
+void mostrarTodosFornecedores(Fornecedor * fornecedores);
 
 #endif //FORNECEDOR_H

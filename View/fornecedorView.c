@@ -74,10 +74,8 @@ void mostrarFornecedor(Fornecedor *fornecedores) {
         return;
     }
 
-    for (int i = 0; i < getTamanhoFornecedores(); i++) {
-    if(fornecedores[i].ativo != FALSE)
-        printf("Fornecedor: %s Código: %d\n\n", fornecedores[i].nome_fantasia, fornecedores[i].codigo);
-    }
+    printf("\tFORNECEDORES:\n");
+    mostrarTodosFornecedores(fornecedores);
 
     int codigo = lerInt("Digite o código do fornecedor que você deseja ver: ");
     int posicao = showFornecedor(fornecedores, codigo); // Assume que showFornecedor foi implementado
@@ -110,6 +108,10 @@ void editarFornecedor(Fornecedor *fornecedores) {
     }
 
     Fornecedor *fornecedor = malloc(sizeof(Fornecedor));
+
+    printf("\tFORNECEDORES:\n");
+    mostrarTodosFornecedores(fornecedores);
+
     fornecedor->codigo = lerInt("Digite o código do fornecedor que você deseja editar: ");
 
     // Procurar o fornecedor
@@ -145,12 +147,19 @@ void apagarFornecedor(Fornecedor *fornecedores) {
         printf("Nenhum fornecedor cadastrado\n");
         return;
     }
-
+    printf("\tFORNECEDORES:\n");
+    mostrarTodosFornecedores(fornecedores);
     int codigo = lerInt("Digite o código do fornecedor que você deseja apagar: ");
     if (deleteFornecedor(fornecedores, codigo) == TRUE) { // Presumindo que deleteFornecedor foi implementado
         printf("Fornecedor apagado com sucesso\n");
     } else {
         printf("Fornecedor não existe\n");
+    }
+}
+void mostrarTodosFornecedores(Fornecedor * fornecedores) {
+    for (int i = 0; i < getTamanhoFornecedores(); i++) {
+        if(fornecedores[i].ativo != FALSE)
+        printf("Fornecedor: %s Codigo: %d\n",fornecedores[i].nome_fantasia,fornecedores[i].codigo);
     }
 }
 

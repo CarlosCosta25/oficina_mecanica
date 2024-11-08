@@ -13,7 +13,7 @@ int lerInt(char* msg) {
 }
 float lerFloat(char* msg) {
     printf("%s", msg);
-    int valor;
+    float valor;
     setbuf(stdin, NULL);
     scanf("%f", &valor);
     return valor;

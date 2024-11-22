@@ -61,4 +61,6 @@ void apagarVeiculo(Veiculo *veiculos);
 void editarVeiculo(Veiculo * veiculos);
 
 int buscaNovoIDVeiculo(Veiculo * veiculos);
+
+void mostrarTodosVeiculos(Veiculo *veiculo);
 #endif //VEICULO_H

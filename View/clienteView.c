@@ -98,8 +98,14 @@ void editarCLiente(Cliente *clientes) {
     }
 
     Cliente *cliente = malloc(sizeof(Cliente));
+    if (cliente == NULL) {
+        printf("Erro ao alocar memória para a edição do cliente\n");
+        return;
+    }
+
     printf("\tCLIENTES:\n");
     mostrarTodosClientes(clientes);
+
     cliente->codigo = lerInt("Digite o código do cliente que você deseja editar: ");
 
     // Procurar o cliente
@@ -111,14 +117,50 @@ void editarCLiente(Cliente *clientes) {
         return;
     }
 
-    strcpy(cliente->nome, lerString("Digite o novo nome do cliente: "));
-    strcpy(cliente->cpf_cnpj, lerString("Digite o CPF/CNPJ do cliente: "));
-    strcpy(cliente->endereco, lerString("Digite o endereço completo do cliente: "));
-    strcpy(cliente->telefone, lerString("Digite o telefone do cliente: "));
-    strcpy(cliente->email, lerString("Digite o email do cliente: "));
+    // Edição do campo `nome`
+    printf("O nome do cliente é: %s\n", clientes[posicao].nome);
+    int opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(cliente->nome, lerString("Digite o novo nome do cliente: "));
+    } else {
+        strcpy(cliente->nome, clientes[posicao].nome);
+    }
 
-    // O campo ativo permanece inalterado e não é necessário modificar
-    // Se quiser, você pode adicionar código para editar o estado civil e data, caso sejam necessários.
+    // Edição do campo `cpf_cnpj`
+    printf("O CPF/CNPJ do cliente é: %s\n", clientes[posicao].cpf_cnpj);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(cliente->cpf_cnpj, lerString("Digite o novo CPF/CNPJ do cliente: "));
+    } else {
+        strcpy(cliente->cpf_cnpj, clientes[posicao].cpf_cnpj);
+    }
+
+    // Edição do campo `endereco`
+    printf("O endereço do cliente é: %s\n", clientes[posicao].endereco);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(cliente->endereco, lerString("Digite o novo endereço completo do cliente: "));
+    } else {
+        strcpy(cliente->endereco, clientes[posicao].endereco);
+    }
+
+    // Edição do campo `telefone`
+    printf("O telefone do cliente é: %s\n", clientes[posicao].telefone);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(cliente->telefone, lerString("Digite o novo telefone do cliente: "));
+    } else {
+        strcpy(cliente->telefone, clientes[posicao].telefone);
+    }
+
+    // Edição do campo `email`
+    printf("O email do cliente é: %s\n", clientes[posicao].email);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(cliente->email, lerString("Digite o novo email do cliente: "));
+    } else {
+        strcpy(cliente->email, clientes[posicao].email);
+    }
 
     if (updateCliente(clientes, cliente) == FALSE) {
         printf("Erro na edição dos dados do cliente\n");

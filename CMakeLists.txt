@@ -24,7 +24,17 @@ add_executable(trabalho main.c
         bibliotecas/oficina.h
         Controller/oficinaController.c
         Model/modelOficina.c
-        View/oficinaView.c)
+        View/oficinaView.c
         View/fornecedorView.c
         View/veiculoView.c
-        View/funcionarioView.c)
+        View/funcionarioView.c
+        View/veiculoView.c
+        Model/modelVeiculo.c
+        Model/modelFuncionario.c
+        Controller/veiculoController.c
+        Controller/funcionarioController.c
+        bibliotecas/servico.h
+        bibliotecas/servico.h
+        Controller/servicoController.c
+        Model/modelServico.c
+        View/servicoView.c)

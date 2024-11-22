@@ -108,6 +108,10 @@ void editarFornecedor(Fornecedor *fornecedores) {
     }
 
     Fornecedor *fornecedor = malloc(sizeof(Fornecedor));
+    if (fornecedor == NULL) {
+        printf("Erro ao alocar memória para a edição do fornecedor\n");
+        return;
+    }
 
     printf("\tFORNECEDORES:\n");
     mostrarTodosFornecedores(fornecedores);
@@ -115,7 +119,7 @@ void editarFornecedor(Fornecedor *fornecedores) {
     fornecedor->codigo = lerInt("Digite o código do fornecedor que você deseja editar: ");
 
     // Procurar o fornecedor
-    int posicao = showFornecedor(fornecedores, fornecedor->codigo); // Assume que showFornecedor foi implementado
+    int posicao = showFornecedor(fornecedores, fornecedor->codigo);
 
     if (posicao == FALSE) {
         printf("Fornecedor não encontrado.\n");
@@ -123,17 +127,70 @@ void editarFornecedor(Fornecedor *fornecedores) {
         return;
     }
 
-    strcpy(fornecedores[posicao].nome_fantasia, lerString("Digite o novo nome fantasia do fornecedor: "));
-    strcpy(fornecedores[posicao].razao_social, lerString("Digite a nova razão social do fornecedor: "));
-    fornecedores[posicao].incricao_estadual = lerInt("Digite a nova inscrição estadual do fornecedor: ");
-    strcpy(fornecedores[posicao].cnpj, lerString("Digite o novo CNPJ do fornecedor: "));
-    strcpy(fornecedores[posicao].endereco, lerString("Digite o novo endereço completo do fornecedor: "));
-    strcpy(fornecedores[posicao].telefone, lerString("Digite o novo telefone do fornecedor: "));
-    strcpy(fornecedores[posicao].email, lerString("Digite o novo email do fornecedor: "));
+    // Edição do campo `nome_fantasia`
+    printf("O nome fantasia do fornecedor é: %s\n", fornecedores[posicao].nome_fantasia);
+    int opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(fornecedor->nome_fantasia, lerString("Digite o novo nome fantasia do fornecedor: "));
+    } else {
+        strcpy(fornecedor->nome_fantasia, fornecedores[posicao].nome_fantasia);
+    }
 
-    // O campo ativo permanece inalterado e não é necessário modificar
+    // Edição do campo `razao_social`
+    printf("A razão social do fornecedor é: %s\n", fornecedores[posicao].razao_social);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(fornecedor->razao_social, lerString("Digite a nova razão social do fornecedor: "));
+    } else {
+        strcpy(fornecedor->razao_social, fornecedores[posicao].razao_social);
+    }
 
-    if (updateFornecedor(fornecedores, &fornecedores[posicao]) == FALSE) { // Assume que updateFornecedor foi implementado
+    // Edição do campo `incricao_estadual`
+    printf("A inscrição estadual do fornecedor é: %d\n", fornecedores[posicao].incricao_estadual);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        fornecedor->incricao_estadual = lerInt("Digite a nova inscrição estadual do fornecedor: ");
+    } else {
+        fornecedor->incricao_estadual = fornecedores[posicao].incricao_estadual;
+    }
+
+    // Edição do campo `cnpj`
+    printf("O CNPJ do fornecedor é: %s\n", fornecedores[posicao].cnpj);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(fornecedor->cnpj, lerString("Digite o novo CNPJ do fornecedor: "));
+    } else {
+        strcpy(fornecedor->cnpj, fornecedores[posicao].cnpj);
+    }
+
+    // Edição do campo `endereco`
+    printf("O endereço do fornecedor é: %s\n", fornecedores[posicao].endereco);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(fornecedor->endereco, lerString("Digite o novo endereço completo do fornecedor: "));
+    } else {
+        strcpy(fornecedor->endereco, fornecedores[posicao].endereco);
+    }
+
+    // Edição do campo `telefone`
+    printf("O telefone do fornecedor é: %s\n", fornecedores[posicao].telefone);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(fornecedor->telefone, lerString("Digite o novo telefone do fornecedor: "));
+    } else {
+        strcpy(fornecedor->telefone, fornecedores[posicao].telefone);
+    }
+
+    // Edição do campo `email`
+    printf("O email do fornecedor é: %s\n", fornecedores[posicao].email);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(fornecedor->email, lerString("Digite o novo email do fornecedor: "));
+    } else {
+        strcpy(fornecedor->email, fornecedores[posicao].email);
+    }
+
+    if (updateFornecedor(fornecedores, fornecedor) == FALSE) {
         printf("Erro na edição dos dados do fornecedor\n");
     } else {
         printf("Fornecedor editado com sucesso!\n");
@@ -149,6 +206,7 @@ void apagarFornecedor(Fornecedor *fornecedores) {
     }
     printf("\tFORNECEDORES:\n");
     mostrarTodosFornecedores(fornecedores);
+
     int codigo = lerInt("Digite o código do fornecedor que você deseja apagar: ");
     if (deleteFornecedor(fornecedores, codigo) == TRUE) { // Presumindo que deleteFornecedor foi implementado
         printf("Fornecedor apagado com sucesso\n");

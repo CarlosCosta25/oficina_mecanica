@@ -116,55 +116,91 @@ void editarPeca(Peca *pecas, Fornecedor *fornecedores) {
         return;
     }
 
-    Peca *peca = malloc(sizeof(Peca));
-    printf("\tPEÇAS:\n");
-    mostrarTodasPecas(pecas);
-    if (peca == NULL) {
+    Peca *novaPeca = malloc(sizeof(Peca));
+    if (novaPeca == NULL) {
         printf("Erro ao alocar memória para a edição da peça\n");
         return;
     }
 
-    peca->codigo = lerInt("Digite o código da peça que você deseja editar: ");
+    printf("\tPEÇAS:\n");
+    mostrarTodasPecas(pecas);
+
+    novaPeca->codigo = lerInt("Digite o código da peça que você deseja editar: ");
 
     // Procurar a peça
-    int posicao = showPeca(pecas, peca->codigo); // Assume que showPeca foi implementada
+    int posicao = showPeca(pecas, novaPeca->codigo);
 
     if (posicao == FALSE) {
         printf("Peça não encontrada.\n");
-        free(peca);
+        free(novaPeca);
         return;
     }
 
-    strcpy(peca->descricao, lerString("Digite a nova descrição da peça: "));
-    strcpy(peca->fabricante, lerString("Digite o novo nome do fabricante: "));
+    printf("A descrição atual da peça é: %s\n", pecas[posicao].descricao);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        strcpy(novaPeca->descricao, lerString("Digite a nova descrição da peça: "));
+    } else {
+        strcpy(novaPeca->descricao, pecas[posicao].descricao);
+    }
 
-    // Atualização do campo `fornecedor`
+    printf("O fabricante atual da peça é: %s\n", pecas[posicao].fabricante);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        strcpy(novaPeca->fabricante, lerString("Digite o novo nome do fabricante: "));
+    } else {
+        strcpy(novaPeca->fabricante, pecas[posicao].fabricante);
+    }
 
-    int fornecedor = lerInt("Digite o código do fornecedor: ");
-
-    printf("\tFORNECEDORES: \n");
+    printf("\tFORNECEDORES:\n");
     mostrarTodosFornecedores(fornecedores);
-    if (showFornecedor(fornecedores, fornecedor) == FALSE) {
-        // Assume que showFornecedor foi implementada
-        printf("Fornecedor não existe, por favor tente novamente.\n");
-        return;
+
+    printf("O fornecedor atual é: %d\n", pecas[posicao].fornecedor);
+    if (lerInt("Deseja editar o fornecedor? (1 - Sim, 0 - Não): ") == TRUE) {
+        int fornecedor = lerInt("Digite o código do novo fornecedor: ");
+        if (showFornecedor(fornecedores, fornecedor) == FALSE) {
+            printf("Fornecedor não encontrado. Usando o fornecedor atual.\n");
+            novaPeca->fornecedor = pecas[posicao].fornecedor;
+        } else {
+            novaPeca->fornecedor = fornecedor;
+        }
+    } else {
+        novaPeca->fornecedor = pecas[posicao].fornecedor;
     }
 
-    peca->fornecedor = fornecedor;
+    printf("O preço de custo atual é: %.2f\n", pecas[posicao].preco_custo);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->preco_custo = lerFloat("Digite o novo preço de custo: ");
+    } else {
+        novaPeca->preco_custo = pecas[posicao].preco_custo;
+    }
 
-    peca->preco_custo = lerFloat("Digite o novo preço de custo da peça: ");
-    peca->preco_venda = lerFloat("Digite o novo preço de venda da peça: ");
-    peca->estoque = lerInt("Digite a nova quantidade em estoque: ");
-    peca->estoque_min = lerInt("Digite o novo estoque mínimo: ");
+    printf("O preço de venda atual é: %.2f\n", pecas[posicao].preco_venda);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->preco_venda = lerFloat("Digite o novo preço de venda: ");
+    } else {
+        novaPeca->preco_venda = pecas[posicao].preco_venda;
+    }
 
-    if (updatePeca(pecas, peca) == FALSE) {
-        // Assume que updatePeca foi implementada
+    printf("O estoque atual é: %d\n", pecas[posicao].estoque);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->estoque = lerInt("Digite a nova quantidade em estoque: ");
+    } else {
+        novaPeca->estoque = pecas[posicao].estoque;
+    }
+
+    printf("O estoque mínimo atual é: %d\n", pecas[posicao].estoque_min);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->estoque_min = lerInt("Digite o novo estoque mínimo: ");
+    } else {
+        novaPeca->estoque_min = pecas[posicao].estoque_min;
+    }
+
+    if (updatePeca(&pecas[posicao], novaPeca) == FALSE) {
         printf("Erro na edição dos dados da peça\n");
     } else {
         printf("Peça editada com sucesso!\n");
     }
 
-    free(peca); // Libera a memória alocada
+    free(novaPeca);
 }
 
 void apagarPeca(Peca *pecas) {

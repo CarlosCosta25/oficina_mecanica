@@ -14,25 +14,25 @@ void menuFuncionario() {
     printf("==== MENU FUNCIONÁRIO ====\n");
     while (opcao != 0) {
         opcao = lerInt("Digite a opção desejada:\n"
-                       "1- Cadastrar novo funcionário\n"
-                       "2- Ver funcionários\n"
-                       "3- Editar funcionário\n"
-                       "4- Excluir funcionário\n"
-                       "0- Sair\n");
+            "1- Cadastrar novo funcionário\n"
+            "2- Ver funcionários\n"
+            "3- Editar funcionário\n"
+            "4- Excluir funcionário\n"
+            "0- Sair\n");
         switch (opcao) {
             case 1:
                 novoFuncionario(&funcionarios);
-            if (getTipoArquivo() != MEM) funcionarios = getFuncionarios();
-            break;
+                if (getTipoArquivo() != MEM) funcionarios = getFuncionarios();
+                break;
             case 2:
                 mostrarFuncionario(funcionarios);
-            break;
+                break;
             case 3:
                 editarFuncionario(funcionarios);
-            break;
+                break;
             case 4:
                 apagarFuncionario(funcionarios);
-            break;
+                break;
         }
     }
     free(funcionarios);
@@ -56,7 +56,7 @@ void novoFuncionario(Funcionario **funcionarios) {
     } else {
         printf("Erro no cadastro do funcionario!\n");
     }
-    printf("Tamanho do funcionário %d\n",getTamanhoFuncionarios());
+    printf("Tamanho do funcionário %d\n", getTamanhoFuncionarios());
 
     free(funcionario); // Libera a memória do funcionario após o cadastro
 }
@@ -67,9 +67,8 @@ void mostrarFuncionario(Funcionario *funcionarios) {
         return;
     }
 
-    for (int i = 0; i < getTamanhoFuncionarios(); i++) {
-        printf("Funcionário: %s Código: %d\n\n", funcionarios[i].nome, funcionarios[i].codigo);
-    }
+    printf("\tFUNCIONARIOS:\n");
+    mostrarTodosFuncionarios(funcionarios);
 
     int codigo = lerInt("Digite o código do funcionário que você deseja ver: ");
     int posicao = showFuncionario(funcionarios, codigo);
@@ -100,9 +99,16 @@ void editarFuncionario(Funcionario *funcionarios) {
     }
 
     Funcionario *funcionario = malloc(sizeof(Funcionario));
+    if (funcionario == NULL) {
+        printf("Erro ao alocar memória para a edição do funcionário\n");
+        return;
+    }
+
+    printf("\tFUNCIONÁRIOS:\n");
+    mostrarTodosFuncionarios(funcionarios);
+
     funcionario->codigo = lerInt("Digite o código do funcionário que você deseja editar: ");
 
-    // Procurar o funcionário
     int posicao = showFuncionario(funcionarios, funcionario->codigo);
 
     if (posicao == FALSE) {
@@ -111,22 +117,61 @@ void editarFuncionario(Funcionario *funcionarios) {
         return;
     }
 
-    strcpy(funcionarios[posicao].nome, lerString("Digite o nome atualizado do funcionário: "));
-    strcpy(funcionarios[posicao].cpf, lerString("Digite o cpf do funcionário: "));
-    strcpy(funcionarios[posicao].endereco, lerString("Digite o endereço do funcionário: "));
-    strcpy(funcionarios[posicao].telefone, lerString("Digite o telefone do funcionário: "));
-    strcpy(funcionarios[posicao].cargo, lerString("Digite o cargo do funcionário: "));
-    funcionarios[posicao].salario = atoi(lerString("Digite o salário do funcionário: "));
+    printf("O nome do funcionário é: %s\n", funcionarios[posicao].nome);
+    int opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(funcionario->nome, lerString("Digite o novo nome do funcionário: "));
+    } else {
+        strcpy(funcionario->nome, funcionarios[posicao].nome);
+    }
 
-    // O campo ativo permanece inalterado e não é necessário modificar
+    printf("O CPF do funcionário é: %s\n", funcionarios[posicao].cpf);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(funcionario->cpf, lerString("Digite o novo CPF do funcionário: "));
+    } else {
+        strcpy(funcionario->cpf, funcionarios[posicao].cpf);
+    }
 
-    if (updateFuncionario(funcionarios, &funcionarios[posicao]) == FALSE) {
+    printf("O endereço do funcionário é: %s\n", funcionarios[posicao].endereco);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(funcionario->endereco, lerString("Digite o novo endereço do funcionário: "));
+    } else {
+        strcpy(funcionario->endereco, funcionarios[posicao].endereco);
+    }
+
+    printf("O telefone do funcionário é: %s\n", funcionarios[posicao].telefone);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(funcionario->telefone, lerString("Digite o novo telefone do funcionário: "));
+    } else {
+        strcpy(funcionario->telefone, funcionarios[posicao].telefone);
+    }
+
+    printf("O cargo do funcionário é: %s\n", funcionarios[posicao].cargo);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(funcionario->cargo, lerString("Digite o novo cargo do funcionário: "));
+    } else {
+        strcpy(funcionario->cargo, funcionarios[posicao].cargo);
+    }
+
+    printf("O salário do funcionário é: %.2f\n", funcionarios[posicao].salario);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        funcionario->salario = lerFloat("Digite o novo salário do funcionário: ");
+    } else {
+        funcionario->salario = funcionarios[posicao].salario;
+    }
+
+    if (updateFuncionario(funcionarios, funcionario) == FALSE) {
         printf("Erro na edição dos dados do funcionário\n");
     } else {
         printf("Funcionário editado com sucesso!\n");
     }
 
-    free(funcionario); // Libera a memória alocada
+    free(funcionario);
 }
 
 void apagarFuncionario(Funcionario *funcionarios) {
@@ -134,6 +179,8 @@ void apagarFuncionario(Funcionario *funcionarios) {
         printf("Nenhum funcionário cadastrado\n");
         return;
     }
+    printf("\tFUNCIONÁRIOS:\n");
+    mostrarTodosFuncionarios(funcionarios);
 
     int codigo = lerInt("Digite o código do funcionário que você deseja apagar: ");
     if (deleteFuncionario(funcionarios, codigo) == TRUE) {
@@ -143,3 +190,9 @@ void apagarFuncionario(Funcionario *funcionarios) {
     }
 }
 
+void mostrarTodosFuncionarios(Funcionario *funcionarios) {
+    for (int i = 0; i < getTamanhoFuncionarios(); i++) {
+        if (funcionarios[i].ativo != FALSE)
+            printf("Fornecedor: %s Codigo: %d\n", funcionarios[i].nome, funcionarios[i].codigo);
+    }
+}

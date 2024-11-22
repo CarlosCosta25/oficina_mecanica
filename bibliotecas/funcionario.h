@@ -62,4 +62,6 @@ void apagarFuncionario(Funcionario *funcionarios);
 void editarFuncionario(Funcionario * funcionarios);
 
 int buscaNovoIDFuncionario(Funcionario * funcionarios);
+
+void mostrarTodosFuncionarios(Funcionario *funcionarios);
 #endif //FUNCIONARIO_H

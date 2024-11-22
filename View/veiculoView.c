@@ -65,9 +65,8 @@ void mostrarVeiculo(Veiculo *veiculos) {
         return;
     }
 
-    for (int i = 0; i < getTamanhoVeiculos(); i++) {
-        printf("Veículo: %s Código: %d\n\n", veiculos[i].placa, veiculos[i].codigo);
-    }
+    printf("\tVEÍCULOS:\n");
+    mostrarTodosVeiculos(veiculos);
 
     int codigo = lerInt("Digite o código do veículo que você deseja ver: ");
     int posicao = showVeiculo(veiculos, codigo);
@@ -96,6 +95,14 @@ void editarVeiculo(Veiculo *veiculos) {
     }
 
     Veiculo *veiculo = malloc(sizeof(Veiculo));
+    if (veiculo == NULL) {
+        printf("Erro ao alocar memória para a edição do veículo\n");
+        return;
+    }
+
+    printf("\tVEÍCULOS:\n");
+    mostrarTodosVeiculos(veiculos);
+
     veiculo->codigo = lerInt("Digite o código do veículo que você deseja editar: ");
 
     // Procurar o veículo
@@ -107,15 +114,52 @@ void editarVeiculo(Veiculo *veiculos) {
         return;
     }
 
-    strcpy(veiculos[posicao].placa, lerString("Digite a nova placa do veículo: "));
-    strcpy(veiculos[posicao].modelo, lerString("Digite o modelo do veículo: "));
-    strcpy(veiculos[posicao].marca, lerString("Digite a marca do veículo: "));
-    veiculos[posicao].anofabricacao = atoi(lerString("Digite o ano de fabricação do veículo: "));
-    strcpy(veiculos[posicao].chassi, lerString("Digite o chassi do veículo: "));
+    // Edição do campo `placa`
+    printf("A placa do veículo é: %s\n", veiculos[posicao].placa);
+    int opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(veiculo->placa, lerString("Digite a nova placa do veículo: "));
+    } else {
+        strcpy(veiculo->placa, veiculos[posicao].placa);
+    }
 
-    // O campo ativo permanece inalterado e não é necessário modificar
+    // Edição do campo `modelo`
+    printf("O modelo do veículo é: %s\n", veiculos[posicao].modelo);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(veiculo->modelo, lerString("Digite o novo modelo do veículo: "));
+    } else {
+        strcpy(veiculo->modelo, veiculos[posicao].modelo);
+    }
 
-    if (updateVeiculo(veiculos, &veiculos[posicao]) == FALSE) {
+    // Edição do campo `marca`
+    printf("A marca do veículo é: %s\n", veiculos[posicao].marca);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(veiculo->marca, lerString("Digite a nova marca do veículo: "));
+    } else {
+        strcpy(veiculo->marca, veiculos[posicao].marca);
+    }
+
+    // Edição do campo `anofabricacao`
+    printf("O ano de fabricação do veículo é: %d\n", veiculos[posicao].anofabricacao);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        veiculo->anofabricacao = lerInt("Digite o novo ano de fabricação do veículo: ");
+    } else {
+        veiculo->anofabricacao = veiculos[posicao].anofabricacao;
+    }
+
+    // Edição do campo `chassi`
+    printf("O chassi do veículo é: %s\n", veiculos[posicao].chassi);
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
+        strcpy(veiculo->chassi, lerString("Digite o novo chassi do veículo: "));
+    } else {
+        strcpy(veiculo->chassi, veiculos[posicao].chassi);
+    }
+
+    if (updateVeiculo(veiculos, veiculo) == FALSE) {
         printf("Erro na edição dos dados do veículo\n");
     } else {
         printf("Veículo editado com sucesso!\n");
@@ -130,6 +174,8 @@ void apagarVeiculo(Veiculo *veiculos) {
         return;
     }
 
+    printf("\tVEÍCULOS:\n");
+    mostrarTodosVeiculos(veiculos);
     int codigo = lerInt("Digite o código do veículo que você deseja apagar: ");
     if (deleteVeiculo(veiculos, codigo) == TRUE) {
         printf("Veículo apagado com sucesso\n");
@@ -137,4 +183,11 @@ void apagarVeiculo(Veiculo *veiculos) {
         printf("Veículo não existe\n");
     }
 }
+void mostrarTodosVeiculos(Veiculo *veiculo) {
+    for (int i = 0; i < getTamanhoVeiculos(); i++) {
+        if (veiculo[i].ativo != FALSE)
+            printf("Placa: %s Codigo: %d\n", veiculo[i].placa, veiculo[i].codigo);
+    }
+}
+
 

@@ -11,7 +11,7 @@ int createServico(Servico **servicos, Servico *servico) {
     Servico *novoServicos = realloc(*servicos, (tamanhoAtual + 1) * sizeof(Servico));
     if (novoServicos == NULL) {
         printf("Erro ao alocar mais memória para serviços.\n");
-        return 0; // Retorna 0 indicando falha
+        return FALSE; // Retorna -1 indicando falha
     }
 
     *servicos = novoServicos;

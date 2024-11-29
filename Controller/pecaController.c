@@ -13,7 +13,7 @@ int createPeca(Peca **pecas, Peca *peca) {
     Peca *novoPecas = realloc(*pecas, (tamanhoAtual + 1) * sizeof(Peca));
     if (novoPecas == NULL) {
         printf("Erro ao alocar mais meoria para peças.\n");
-        return 0; // Retorna 0 indicando falha
+        return FALSE; // Retorna -1 indicando falha
     }
     *pecas = novoPecas;
     int index = tamanhoAtual;

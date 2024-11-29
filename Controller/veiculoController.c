@@ -17,7 +17,7 @@ int createVeiculo(Veiculo **veiculos, Veiculo *veiculo) {
     Veiculo *novoVeiculos = realloc(*veiculos, (tamanhoAtual + 1) * sizeof(Veiculo));
     if (novoVeiculos == NULL) {
         printf("Erro ao alocar memória para Veículos.\n");
-        return 0; // Retorna 0 indicando falha
+        return FALSE; // Retorna -1 indicando falha
     }
 
     *veiculos = novoVeiculos; // Atualiza o ponteiro de veiculos com o novo endereço

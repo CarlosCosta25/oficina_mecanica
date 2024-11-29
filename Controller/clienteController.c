@@ -19,7 +19,7 @@ int createCliente(Cliente **clientes, Cliente *cliente) {
     Cliente *novoClientes = realloc(*clientes, (tamanhoAtual + 1) * sizeof(Cliente));
     if (novoClientes == NULL) {
         printf("Erro ao alocar memória para clientes.\n");
-        return 0; // Retorna 0 em caso de falha na alocação
+        return FALSE; // Retorna -1 em caso de falha na alocação
     }
 
     *clientes = novoClientes; // Atualiza o ponteiro para o novo bloco de memória

@@ -17,7 +17,7 @@ int createFuncionario(Funcionario **funcionarios, Funcionario *funcionario) {
     Funcionario *novoFuncionarios = realloc(*funcionarios, (tamanhoAtual + 1) * sizeof(Funcionario));
     if (novoFuncionarios == NULL) {
         printf("Erro ao alocar memória para Funcionários.\n");
-        return 0; // Retorna 0 indicando falha
+        return FALSE; // Retorna -1 indicando falha
     }
 
     *funcionarios = novoFuncionarios; // Atualiza o ponteiro de Funcionario com o novo endereço

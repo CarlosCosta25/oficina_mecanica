@@ -15,7 +15,7 @@ int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor) {
     Fornecedor *novoFornecedores = realloc(*fornecedores, (tamanhoAtual + 1) * sizeof(Fornecedor));
     if (novoFornecedores == NULL) {
         printf("Erro ao alocar memória para fornecedores.\n");
-        return 0; // Retorna 0 indicando falha
+        return FALSE; // Retorna -1 indicando falha
     }
 
     *fornecedores = novoFornecedores; // Atualiza o ponteiro de fornecedores com o novo endereço

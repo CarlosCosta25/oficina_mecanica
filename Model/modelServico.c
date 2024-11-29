@@ -3,21 +3,25 @@
 #include <string.h>
 #include "../bibliotecas/servico.h"
 #include "../bibliotecas/utils.h"
-
+// Variável global para rastrear o número de serviços cadastrado
 int qtdServicos = 0;
-
+// Função para retornar o tamanho atual do vetor de serviços
 int getTamanhoServicos() {
     return qtdServicos;
 }
-
+// Incrementa o contador global de serviços
 void setTamanhoServicos() {
     qtdServicos++;
 }
 
+/**
+ * Função para migrar dados de serviços entre diferentes formatos de armazenamento (TXT, BIN ou MEM).
+ * Retorna um ponteiro para os dados migrados ou NULL se não for necessário migrar.
+ */
 Servico * migraDadosServicos() {
     Servico *servicos = NULL;
     FILE *buffer;
-    if (getTipoArquivo() == TXT) {
+    if (getTipoArquivo() == TXT) {// Caso o tipo de arquivo seja TXT
         buffer = fopen("../bd/servicos.bin", "rb");
         if (buffer != NULL) {
             fclose(buffer);
@@ -30,7 +34,7 @@ Servico * migraDadosServicos() {
             return NULL;
         }
     }
-    if (getTipoArquivo() == BIN) {
+    if (getTipoArquivo() == BIN) {// Caso o tipo de arquivo seja BIN
         buffer = fopen("../bd/servicos.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -42,7 +46,7 @@ Servico * migraDadosServicos() {
             return NULL;
         }
     }
-    if (getTipoArquivo() == MEM) {
+    if (getTipoArquivo() == MEM) {// Caso o tipo de armazenamento seja MEM
         buffer = fopen("../bd/servicos.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -65,7 +69,9 @@ Servico * migraDadosServicos() {
     }
     return NULL;
 }
-
+/**
+ * Salva os dados de serviços no formato especificado (TXT ou BIN).
+ */
 void setServicos(Servico *servicos) {
     FILE *buffer;
     if (getTipoArquivo() == TXT) {
@@ -84,6 +90,11 @@ void setServicos(Servico *servicos) {
         }
     }
 }
+
+/**
+ * Lê os dados de serviços do formato especificado (TXT ou BIN).
+ * Retorna um ponteiro para o array de clientes.
+ */
 Servico *getServicos() {
     FILE *buffer;
     Servico *servicos = NULL;
@@ -108,21 +119,25 @@ Servico *getServicos() {
     }
     return servicos;
 }
-
+/**
+ * Lê os serviços de um arquivo TXT e retorna um array dinâmico de `Serviço`.
+ */
 Servico *ler_arquivo_txt_servico(FILE *buffer) {
-    int numServicos = 0;
+    int numServicos = 0; // armazena a cada interação o numero de serviços lidos do arquivo
     Servico *servicos = NULL;
-    char Linha[100];
-    int i = 0;
-    int isPrimeiro = TRUE;
+    char Linha[100];// variavel para receber os dados lidos do arquivo
+    int i = 0; // contador para calcular quantos dados foram lidos de casa serviço
+    int isPrimeiro = TRUE; // usado para dizer se é a primeira iteração do loop
 
-    while (fgets(Linha, sizeof(Linha), buffer) != NULL) {
+    while (fgets(Linha, sizeof(Linha), buffer) != NULL) { // lê o arquivo linha a linha
         if (isPrimeiro == TRUE) {
+            // se for a primeira iteração, cria uma posição de memoria
             servicos = malloc(sizeof(Servico) * (numServicos + 1));
             isPrimeiro = FALSE;
-        } else {
+        } else { //se não so realoca memeoria para o ponteiro
             servicos = realloc(servicos, (numServicos + 1) * sizeof(Servico));
         }
+        // ignora as tegs de registro
         if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
             switch (i) {
                 case 0:
@@ -144,8 +159,7 @@ Servico *ler_arquivo_txt_servico(FILE *buffer) {
                 case 4:
                     servicos[numServicos].ativo = atoi(removeTags(Linha));
                 i = 0; // Reinicia para ler o próximo serviço
-                numServicos++;
-                servicos = realloc(servicos, (numServicos + 1) * sizeof(Servico));
+                numServicos++; // aumenta a qtd de serviços lidos
                 break;
             }
         }
@@ -154,6 +168,9 @@ Servico *ler_arquivo_txt_servico(FILE *buffer) {
     return servicos;
 }
 
+/**
+ * Escreve os dados de serviço em um arquivo TXT.
+ */
 void escrever_arquivo_txt_servico(FILE *buffer, Servico *servicos) {
     if (getTamanhoServicos() == 0) setTamanhoServicos(); // caso não tenha nenhum serviço cadastrado
 
@@ -178,6 +195,10 @@ void escrever_arquivo_txt_servico(FILE *buffer, Servico *servicos) {
         }
     }
 }
+
+/**
+ * Lê os serviço de um arquivo BIN e retorna um array dinâmico de `Serviço`.
+ */
 Servico *ler_arquivo_bin_servico(FILE *buffer) {
     qtdServicos = 0;
     int tam = getTamanhoServicos();
@@ -191,10 +212,6 @@ Servico *ler_arquivo_bin_servico(FILE *buffer) {
 
     int i = 0;
     while (fread(&servicos[i], sizeof(Servico), 1, buffer)) {
-        if (servicos == NULL) {
-            printf("Erro ao realocar memória\n");
-            return NULL;
-        }
         i++;
         setTamanhoServicos();
         servicos = realloc(servicos, (getTamanhoServicos() + 1) * sizeof(Servico));
@@ -205,7 +222,9 @@ Servico *ler_arquivo_bin_servico(FILE *buffer) {
     }
     return servicos;
 }
-
+/**
+ * Escreve os dados de serviços em um arquivo BIN.
+ */
 void escrever_arquivo_bin_servico(FILE *buffer, Servico *servicos) {
     for (int i = 0; i < getTamanhoServicos(); i++) {
         if (fwrite(&servicos[i], sizeof(Servico), 1, buffer) != 1) {

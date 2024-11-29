@@ -3,19 +3,21 @@
 #include <string.h>
 #include "../bibliotecas/servico.h"
 #include "../bibliotecas/utils.h"
-Servico * readServicos() {
-    return getServicos();
+Servico * readServicos() {// Função para ler os clientes existentes
+    return getServicos();// Obtém a lista de clientes de um arquivo ou memória e retorna
 }
+
+// Função para criar um novo cliente
 int createServico(Servico **servicos, Servico *servico) {
-    int tamanhoAtual = getTamanhoServicos();
+    int tamanhoAtual = getTamanhoServicos();// Obtém o tamanho atual da lista de clientes
     Servico *novoServicos = realloc(*servicos, (tamanhoAtual + 1) * sizeof(Servico));
     if (novoServicos == NULL) {
         printf("Erro ao alocar mais memória para serviços.\n");
-        return 0; // Retorna 0 indicando falha
+        return FALSE; // Retorna -1 indicando falha
     }
 
-    *servicos = novoServicos;
-    int index = tamanhoAtual;
+    *servicos = novoServicos;// Atualiza o ponteiro para o novo bloco de memória
+    int index = tamanhoAtual;// O índice do novo cliente é igual ao tamanho atual da lista
     (*servicos)[index].codigo = buscaNovoIDServico(*servicos); // Função para buscar novo ID de serviço
     strcpy((*servicos)[index].descricao, servico->descricao);
     (*servicos)[index].preco = servico->preco;
@@ -29,7 +31,7 @@ int createServico(Servico **servicos, Servico *servico) {
 
     return TRUE; // Retorna 1 indicando sucesso
 }
-
+// Função para exibir um cliente com base no código
 int showServico(Servico *servicos, int codigo) {
     if (servicos == NULL) return FALSE;
 

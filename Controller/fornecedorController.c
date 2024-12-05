@@ -58,11 +58,12 @@ int showFornecedor(Fornecedor *fornecedores, int codigo) {
     return posicao;
 }
 
+// Função para atualizar os dados de um fornecedor existente
 int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
 
     int posicao = showFornecedor(fornecedores, fornecedor->codigo);
 
-    if (posicao == FALSE) return FALSE;
+    if (posicao == FALSE) return FALSE; // Retorna FALSE se o fornecedor não for encontrado ou estiver inativo
 
     // Atualiza os campos necessários
     fornecedores[posicao].codigo = fornecedor->codigo;
@@ -78,6 +79,8 @@ int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
     if (getTipoArquivo() != MEM) setFornecedores(fornecedores);
     return TRUE;
 }
+
+// Função para deletar (ou desativar) um fornecedor
 int deleteFornecedor(Fornecedor* fornecedores, int codigo) {
     int posicao = showFornecedor(fornecedores, codigo);
 
@@ -88,6 +91,7 @@ int deleteFornecedor(Fornecedor* fornecedores, int codigo) {
     return TRUE;
 }
 
+// Função para gerar um novo ID exclusivo para um fornecedor
 int buscaNovoIDFornecedor(Fornecedor * fornecedores) {
     int maior = 1;
     if(getTamanhoFornecedores() == 0 ) return maior;

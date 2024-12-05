@@ -4,24 +4,31 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/oficina.h"
 
+// Variável global para verificar se a oficina está registrada
 int oficina = FALSE;
 
+// Função que verifica se há uma oficina registrada
 int hasOficina() {
     return oficina;
 }
 
+// Função para registrar uma oficina
 void addOficina() {
     oficina = TRUE;
 }
+
+// Função para remover o registro da oficina
 int removeOficina() {
     oficina = FALSE;
     return FALSE;
 }
 
+// Função que migra dados da oficina entre diferentes formatos de arquivo (TXT, BIN, MEM)
 Oficina *migraDadosOficina() {
     Oficina *oficina = NULL;
     FILE *buffer;
 
+    // Se o formato atual for TXT, converte os dados do binário para texto
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/oficina.bin", "rb");
         if (buffer != NULL) {
@@ -33,7 +40,9 @@ Oficina *migraDadosOficina() {
             remove("../bd/oficina.bin");
             return NULL;
         }
-    } else if (getTipoArquivo() == BIN) {
+    }
+    // Se o formato atual for BIN, converte os dados de texto para binário
+    else if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/oficina.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -44,7 +53,9 @@ Oficina *migraDadosOficina() {
             remove("../bd/oficina.txt");
             return NULL;
         }
-    } else if (getTipoArquivo() == MEM) {
+    }
+    // Se os dados estão na memória (MEM), verifica os formatos disponíveis para migração
+    else if (getTipoArquivo() == MEM) {
         buffer = fopen("../bd/oficina.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -72,18 +83,22 @@ Oficina *migraDadosOficina() {
     free(buffer);
     return NULL;
 }
+
+// Função para salvar os dados da oficina no formato atual
 void setOficina(Oficina *oficina) {
     FILE *buffer;
+    // Salva no formato texto
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/oficina.txt", "w"); // Abre o arquivo para escrita de texto
+        buffer = fopen("../bd/oficina.txt", "w");
         if (buffer != NULL) {
             escrever_arquivo_txt_oficina(buffer, oficina);
             fclose(buffer);
             return;
         }
     }
+    // Salva no formato binário
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/oficina.bin", "wb"); // Abre o arquivo para escrita binária
+        buffer = fopen("../bd/oficina.bin", "wb");
         if (buffer != NULL) {
             escrever_arquivo_bin_oficina(buffer, oficina);
             fclose(buffer);
@@ -91,11 +106,12 @@ void setOficina(Oficina *oficina) {
     }
 }
 
-
+// Função para carregar os dados da oficina do arquivo
 Oficina *getOficina() {
     FILE *buffer;
     Oficina *oficina = NULL;
 
+    // Carrega do formato texto
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/oficina.txt", "r");
         if (buffer == NULL) {
@@ -104,7 +120,9 @@ Oficina *getOficina() {
             return NULL;
         }
         oficina = ler_arquivo_txt_oficina(buffer);
-    } else if (getTipoArquivo() == BIN) {
+    }
+    // Carrega do formato binário
+    else if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/oficina.bin", "rb");
         if (buffer == NULL) {
             printf("Erro na abertura do arquivo oficina.bin!\n");
@@ -112,7 +130,9 @@ Oficina *getOficina() {
             return NULL;
         }
         oficina = ler_arquivo_bin_oficina(buffer);
-    } else if (getTipoArquivo() == MEM) {
+    }
+    // Dados na memória, retorna NULL
+    else if (getTipoArquivo() == MEM) {
         return NULL;
     }
 
@@ -121,11 +141,11 @@ Oficina *getOficina() {
     return oficina;
 }
 
+// Função para ler os dados da oficina a partir de um arquivo texto
 Oficina *ler_arquivo_txt_oficina(FILE *buffer) {
     int i = 0;
     int isPrimeiro = TRUE;
     Oficina *oficina = NULL;
-
     char linha[200];
 
     while (fgets(linha, sizeof(linha), buffer) != NULL) {
@@ -170,6 +190,8 @@ Oficina *ler_arquivo_txt_oficina(FILE *buffer) {
 
     return oficina;
 }
+
+// Função para salvar os dados da oficina em um arquivo texto
 void escrever_arquivo_txt_oficina(FILE *buffer, Oficina *oficina) {
     fprintf(buffer,
             "<registro>\n"
@@ -188,6 +210,8 @@ void escrever_arquivo_txt_oficina(FILE *buffer, Oficina *oficina) {
             oficina->porcentagem_lucro);
     addOficina();
 }
+
+// Função para carregar os dados da oficina a partir de um arquivo binário
 Oficina *ler_arquivo_bin_oficina(FILE *buffer) {
     Oficina *oficina = malloc(sizeof(Oficina));
     if (oficina == NULL) {
@@ -203,19 +227,20 @@ Oficina *ler_arquivo_bin_oficina(FILE *buffer) {
     return oficina;
 }
 
+// Função para salvar os dados da oficina em um arquivo binário
 void escrever_arquivo_bin_oficina(FILE *buffer, Oficina *oficina) {
     fwrite(oficina, sizeof(Oficina), 1, buffer);
     addOficina();
 }
+
+// Função para deletar arquivos de dados da oficina
 void delete_arq_oficina() {
-    if(getTipoArquivo() == TXT) {
+    if (getTipoArquivo() == TXT) {
         remove("../bd/oficina.txt");
         fopen("../bd/oficina.txt", "w");
-
     }
-    if(getTipoArquivo() == BIN) {
+    if (getTipoArquivo() == BIN) {
         remove("../bd/oficina.bin");
         fopen("../bd/oficina.bin", "bw");
     }
 }
-

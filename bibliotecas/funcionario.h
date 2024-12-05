@@ -9,7 +9,6 @@ o Funcionários: Este cadastro contém os dados dos funcionários da oficina.
 ➢ CPF
 ➢ Cargo
 ➢ Salário
-
 */
 typedef struct {
     int codigo;

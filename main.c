@@ -6,29 +6,36 @@
 #include "bibliotecas/fornecedor.h"
 
 int main(void) {
- setTipoArquivo(lerInt("Digite com qual tipo de dados vc deseja trabalhar: "));
-   menuCliente();
-//Cliente* clientes = readClientes();
+    setTipoArquivo(lerInt("Digite com qual tipo de dados vc deseja trabalhar: "));
+    Cliente *clientes = migraDadosCliente();
+    menuCliente(&clientes);
 
-/*
- Cliente *cliente = malloc(sizeof(Cliente));
- cliente->id = 1;
- strcpy(cliente->nome, "John");
- strcpy(cliente->endereco, "Rua A, 123");
- strcpy(cliente->cpf,"123.456.789-10");
- strcpy(cliente->telefone,"(11)98765-4321");
- strcpy(cliente->email,"carlos.silva@email.com");
- cliente->sexo = 1;
- strcpy(cliente->estado_civil,"Solteiro");
- cliente->data.dia = 1;
- cliente->data.mes = 1;
- cliente->data.ano = 1;
- setTamanhoClientes();
- setClientes(cliente);
-*/
+ if (clientes == NULL)
+ printf("Cliente vazio");
+    /*Fornecedor *fornecedores = migraDadosFornecedor();
+    menuFornecedor(&fornecedores);*/
+
+    /*
+     Cliente *cliente = malloc(sizeof(Cliente));
+     cliente->id = 1;
+     strcpy(cliente->nome, "John");
+     strcpy(cliente->endereco, "Rua A, 123");
+     strcpy(cliente->cpf,"123.456.789-10");
+     strcpy(cliente->telefone,"(11)98765-4321");
+     strcpy(cliente->email,"carlos.silva@email.com");
+     cliente->sexo = 1;
+     strcpy(cliente->estado_civil,"Solteiro");
+     cliente->data.dia = 1;
+     cliente->data.mes = 1;
+     cliente->data.ano = 1;
+     setTamanhoClientes();
+     setClientes(cliente);
+    */
+
+    //free(fornecedores);
+    //fornecedores = NULL;
     return 0;
 }
-
 
 
 /*Cliente *clientes = NULL;

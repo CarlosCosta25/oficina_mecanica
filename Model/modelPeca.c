@@ -4,34 +4,40 @@
 #include "../bibliotecas/peca.h"
 #include "../bibliotecas/utils.h"
 
-int qtdPecas = 0;
+int qtdPecas = 0; // Variável global para controlar a quantidade de peças registradas
 
+// Retorna o tamanho atual do array de peças
 int getTamanhoPecas() {
     return qtdPecas;
 }
 
+// Incrementa a quantidade de peças
 void setTamanhoPecas() {
     qtdPecas++;
 }
 
+// Função para migrar os dados das peças entre diferentes formatos (TXT, BIN, MEM)
 Peca *migraDadosPeca() {
     Peca *pecas = NULL;
     FILE *buffer;
+
+    // Verifica se o formato atual é TXT
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/pecas.bin", "rb");
+        buffer = fopen("../bd/pecas.bin", "rb"); // Verifica se o arquivo binário existe
         if (buffer != NULL) {
             fclose(buffer);
-            setTipoArquivo(BIN); // muda o tipo de arquivo para bin
-            pecas = getPecas();
-            setTipoArquivo(TXT); // volta para o arquivo txt
-
-            setPecas(pecas); // escreve no txt
-            remove("../bd/pecas.bin");
+            setTipoArquivo(BIN); // Altera para formato BIN
+            pecas = getPecas(); // Lê os dados
+            setTipoArquivo(TXT); // Retorna para TXT
+            setPecas(pecas); // Escreve no formato TXT
+            remove("../bd/pecas.bin"); // Remove o arquivo binário
             return NULL;
         }
     }
+
+    // Verifica se o formato atual é BIN
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/pecas.txt", "r");
+        buffer = fopen("../bd/pecas.txt", "r"); // Verifica se o arquivo TXT existe
         if (buffer != NULL) {
             fclose(buffer);
             setTipoArquivo(TXT);
@@ -42,11 +48,13 @@ Peca *migraDadosPeca() {
             return NULL;
         }
     }
+
+    // Verifica se o formato atual é MEM (dados em memória)
     if (getTipoArquivo() == MEM) {
         buffer = fopen("../bd/pecas.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
-            setTipoArquivo(TXT); // muda o tipo de arquivo para TXT
+            setTipoArquivo(TXT);
             pecas = getPecas();
             setTipoArquivo(MEM);
             remove("../bd/pecas.txt");
@@ -56,28 +64,32 @@ Peca *migraDadosPeca() {
         buffer = fopen("../bd/pecas.bin", "rb");
         if (buffer != NULL) {
             fclose(buffer);
-            setTipoArquivo(BIN); // muda o tipo de arquivo para BIN
+            setTipoArquivo(BIN);
             pecas = getPecas();
             setTipoArquivo(MEM);
             remove("../bd/pecas.bin");
             return pecas;
         }
     }
+
     return NULL;
 }
 
+// Função para salvar os dados de peças no formato atual (TXT ou BIN)
 void setPecas(Peca *pecas) {
     FILE *buffer;
+
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/pecas.txt", "w"); // Abre o arquivo para escrita de texto
+        buffer = fopen("../bd/pecas.txt", "w");
         if (buffer != NULL) {
             escrever_arquivo_txt_peca(buffer, pecas);
             fclose(buffer);
             return;
         }
     }
+
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/pecas.bin", "wb"); // Abre o arquivo para escrita binária
+        buffer = fopen("../bd/pecas.bin", "wb");
         if (buffer != NULL) {
             escrever_arquivo_bin_peca(buffer, pecas);
             fclose(buffer);
@@ -85,31 +97,37 @@ void setPecas(Peca *pecas) {
     }
 }
 
+// Função para obter os dados de peças no formato atual
 Peca *getPecas() {
     FILE *buffer;
     Peca *pecas = NULL;
+
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/pecas.txt", "r"); // Abre o arquivo corretamente
+        buffer = fopen("../bd/pecas.txt", "r");
         if (buffer == NULL) {
             printf("Erro na abertura do arquivo pecas.txt!\n");
             return NULL;
         }
         pecas = ler_arquivo_txt_peca(buffer);
     }
+
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/pecas.bin", "rb"); // Abre o arquivo corretamente
+        buffer = fopen("../bd/pecas.bin", "rb");
         if (buffer == NULL) {
             printf("Erro na abertura do arquivo pecas.bin!\n");
             return NULL;
         }
         pecas = ler_arquivo_bin_peca(buffer);
     }
+
     if (getTipoArquivo() == MEM) {
         return NULL;
     }
+
     return pecas;
 }
 
+// Função para ler dados de peças de um arquivo TXT
 Peca *ler_arquivo_txt_peca(FILE *buffer) {
     int numPecas = 0;
     Peca *pecas = NULL;
@@ -124,6 +142,7 @@ Peca *ler_arquivo_txt_peca(FILE *buffer) {
         } else {
             pecas = realloc(pecas, (numPecas + 1) * sizeof(Peca));
         }
+
         if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
             switch (i) {
                 case 0:
@@ -160,69 +179,69 @@ Peca *ler_arquivo_txt_peca(FILE *buffer) {
                     break;
                 case 8:
                     pecas[numPecas].ativo = atoi(removeTags(Linha));
-                    i = 0; // Reinicia para ler a próxima peça
+                    i = 0;
                     numPecas++;
                     pecas = realloc(pecas, (numPecas + 1) * sizeof(Peca));
                     break;
             }
         }
     }
+
     qtdPecas = numPecas;
     return pecas;
 }
 
+// Função para escrever dados de peças em um arquivo TXT
 void escrever_arquivo_txt_peca(FILE *buffer, Peca *pecas) {
-    if (getTamanhoPecas() == 0) setTamanhoPecas(); // caso não tenha nenhuma peça cadastrada
-    printf("getTamanhoP: %d no model", getTamanhoPecas());
     for (int i = 0; i < getTamanhoPecas(); i++) {
-        int escrevendo = fprintf(buffer,
-                                 "<registro>\n"
-                                 "<codigo>%d</codigo>\n"
-                                 "<descricao>%s</descricao>\n"
-                                 "<fabricante>%s</fabricante>\n"
-                                 "<fornecedor>%d</fornecedor>\n"
-                                 "<preco_custo>%.2f</preco_custo>\n"
-                                 "<preco_venda>%.2f</preco_venda>\n"
-                                 "<estoque>%d</estoque>\n"
-                                 "<estoque_min>%d</estoque_min>\n"
-                                 "<ativo>%d</ativo>\n"
-                                 "</registro>\n",
-                                 pecas[i].codigo,
-                                 pecas[i].descricao,
-                                 pecas[i].fabricante,
-                                 pecas[i].fornecedor,
-                                 pecas[i].preco_custo,
-                                 pecas[i].preco_venda,
-                                 pecas[i].estoque,
-                                 pecas[i].estoque_min,
-                                 pecas[i].ativo
-        );
-        if (escrevendo < 0) {
-            return;
-        }
+        fprintf(buffer,
+                "<registro>\n"
+                "<codigo>%d</codigo>\n"
+                "<descricao>%s</descricao>\n"
+                "<fabricante>%s</fabricante>\n"
+                "<fornecedor>%d</fornecedor>\n"
+                "<preco_custo>%.2f</preco_custo>\n"
+                "<preco_venda>%.2f</preco_venda>\n"
+                "<estoque>%d</estoque>\n"
+                "<estoque_min>%d</estoque_min>\n"
+                "<ativo>%d</ativo>\n"
+                "</registro>\n",
+                pecas[i].codigo,
+                pecas[i].descricao,
+                pecas[i].fabricante,
+                pecas[i].fornecedor,
+                pecas[i].preco_custo,
+                pecas[i].preco_venda,
+                pecas[i].estoque,
+                pecas[i].estoque_min,
+                pecas[i].ativo);
     }
 }
 
+// Função para ler dados de peças de um arquivo BIN
 Peca *ler_arquivo_bin_peca(FILE *buffer) {
     qtdPecas = 0;
     int tam = getTamanhoPecas();
-    int isPrimeiro = TRUE;
-
     Peca *pecas = malloc(sizeof(Peca) * (tam + 1));
-    if (pecas == NULL) printf("Erro ao alocar a memoria\n");
+
+    if (pecas == NULL) {
+        printf("Erro ao alocar memória\n");
+        return NULL;
+    }
+
     int i = 0;
     while (fread(&pecas[i], sizeof(Peca), 1, buffer)) {
-        if (pecas == NULL) printf("Erro ao realocar a memoria\n");
         i++;
         setTamanhoPecas();
         pecas = realloc(pecas, (getTamanhoPecas() + 1) * sizeof(Peca));
     }
+
     return pecas;
 }
 
+// Função para escrever dados de peças em um arquivo BIN
 void escrever_arquivo_bin_peca(FILE *buffer, Peca *pecas) {
     for (int i = 0; i < getTamanhoPecas(); i++) {
-        if (fwrite(&pecas[i], sizeof(Peca), 1, buffer)) {
-        }
+        fwrite(&pecas[i], sizeof(Peca), 1, buffer);
     }
 }

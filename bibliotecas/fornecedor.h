@@ -1,42 +1,47 @@
 #ifndef FORNECEDOR_H
 #define FORNECEDOR_H
+
+// Estrutura para armazenar os dados de um fornecedor
 typedef struct {
-    int codigo;
-    char nome_fantasia[50];
-    char razao_social[50];
-   int  incricao_estadual;
-    char cnpj[19];
-    char endereco[60];
-    char telefone[20];
-    char email[50];
-    int ativo;
-}Fornecedor;
+    int codigo;                  // Código único do fornecedor
+    char nome_fantasia[50];      // Nome fantasia do fornecedor
+    char razao_social[50];       // Razão social do fornecedor
+    int incricao_estadual;       // Inscrição estadual do fornecedor
+    char cnpj[19];               // CNPJ do fornecedor
+    char endereco[60];           // Endereço do fornecedor
+    char telefone[20];           // Telefone do fornecedor
+    char email[50];              // E-mail do fornecedor
+    int ativo;                   // Status do fornecedor (ativo ou inativo)
+} Fornecedor;
 
-//Model fornecedor
-Fornecedor *migraDadosFornecedor();
-Fornecedor* getFornecedores();
-void setFornecedores(Fornecedor *fornecedores);
-int getTamanhoFornecedores();
-void setTamanhoFornecedores();
-void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores);
-Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer);
-Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer);
-void escrever_arquivo_bin_fornecedor(FILE *buffer, Fornecedor *fornecedores);
+// Model fornecedor
 
-//Controller fornecedores
-Fornecedor* readFornecedores();
-int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor);
-int showFornecedor(Fornecedor *fornecedores, int codigo);
-int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor);
-int deleteFornecedor(Fornecedor* fornecedores, int codigo);
-int buscaNovoIDFornecedor(Fornecedor * fornecedores);
+Fornecedor *migraDadosFornecedor();                    // Função que migra dados entre diferentes tipos de arquivo
+Fornecedor* getFornecedores();                        // Função que retorna a lista de fornecedores
+void setFornecedores(Fornecedor *fornecedores);       // Função que atualiza a lista de fornecedores
+int getTamanhoFornecedores();                         // Função que retorna o número de fornecedores cadastrados
+void setTamanhoFornecedores();                        // Função que incrementa o número de fornecedores cadastrados
+void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores);  // Função para escrever no arquivo txt
+Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer);  // Função que lê os dados de um fornecedor do arquivo txt
+Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer);  // Função que lê os dados de um fornecedor do arquivo binário
+void escrever_arquivo_bin_fornecedor(FILE *buffer, Fornecedor *fornecedores); // Função para escrever no arquivo binário
 
-//View fornecedor
-void menuFornecedor(Fornecedor **fornecedores);
-void novoFornecedor(Fornecedor **fornecedores);
-void mostrarFornecedor(Fornecedor *fornecedores);
-void editarFornecedor(Fornecedor *fornecedores);
-void apagarFornecedor(Fornecedor *fornecedores);
-void mostrarTodosFornecedores(Fornecedor * fornecedores);
+// Controller fornecedores
+
+Fornecedor* readFornecedores();                       // Função que retorna todos os fornecedores cadastrados
+int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor);  // Função para criar um novo fornecedor
+int showFornecedor(Fornecedor *fornecedores, int codigo);  // Função que mostra os dados de um fornecedor baseado no código
+int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor);  // Função que atualiza os dados de um fornecedor
+int deleteFornecedor(Fornecedor* fornecedores, int codigo);  // Função que exclui um fornecedor com base no código
+int buscaNovoIDFornecedor(Fornecedor * fornecedores);  // Função que encontra um ID válido para um novo fornecedor
+
+// View fornecedor
+
+void menuFornecedor(Fornecedor **fornecedores);       // Menu que exibe as opções de interação com os fornecedores
+void novoFornecedor(Fornecedor **fornecedores);      // Função para cadastrar um novo fornecedor
+void mostrarFornecedor(Fornecedor *fornecedores);    // Função que exibe os dados de um fornecedor
+void editarFornecedor(Fornecedor *fornecedores);     // Função que permite editar os dados de um fornecedor
+void apagarFornecedor(Fornecedor *fornecedores);     // Função que apaga os dados de um fornecedor
+void mostrarTodosFornecedores(Fornecedor * fornecedores);  // Função que exibe todos os fornecedores cadastrados
 
 #endif //FORNECEDOR_H

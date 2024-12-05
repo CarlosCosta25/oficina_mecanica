@@ -4,9 +4,10 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/servico.h"
 
+// Função que gerencia o menu principal para operações com serviços
 void menuServicos(Servico **servicos) {
     if (getTipoArquivo() != 3) {
-        *servicos = readServicos(); // Carrega os serviços
+        *servicos = readServicos();  // Se o tipo de armazenamento não for memória, lê os clientes do armazenamento
     }
     int opcao = -1;
     while (opcao != 0) {
@@ -36,10 +37,13 @@ void menuServicos(Servico **servicos) {
                 apagarServico(*servicos);  // Função para excluir um serviço
             opcao = -1;
             break;
+            default: // Opção inválida
+                printf("Opção inválida. Tente novamente.\n");
+            break;
         }
     }
 }
-
+// Função para cadastrar um novo serviço
 void novoServico(Servico **servicos) {
     Servico *servico = malloc(sizeof(Servico));
     if (servico == NULL) {
@@ -63,6 +67,8 @@ void novoServico(Servico **servicos) {
 
     free(servico); // Libera a memória do serviço após o cadastro
 }
+
+// Função para listar e exibir detalhes de um serviço
 void mostrarServico(Servico *servicos) {
     if (getTamanhoServicos() == 0) {
         printf("Nenhum serviço cadastrado até o momento\n");
@@ -89,6 +95,8 @@ void mostrarServico(Servico *servicos) {
         printf("Serviço não encontrado!\n");
     }
 }
+
+// Função para editar os dados de um cliente
 void editarServico(Servico *servicos) {
     if (getTamanhoServicos() == 0) {
         printf("Nenhum serviço cadastrado\n");
@@ -149,7 +157,7 @@ void editarServico(Servico *servicos) {
 
     free(servico); // Libera a memória alocada
 }
-
+// Função para excluir um serviço
 void apagarServico(Servico *servicos) {
     if (getTamanhoServicos() == 0) {
         printf("Nenhum serviço cadastrado\n");
@@ -159,13 +167,12 @@ void apagarServico(Servico *servicos) {
     mostrarTodosServicos(servicos);
     int codigo = lerInt("Digite o código do serviço que você deseja apagar: ");
     if (deleteServico(servicos, codigo) == TRUE) {
-        // Presumindo que deleteServico foi implementada
         printf("Serviço apagado com sucesso\n");
     } else {
         printf("Serviço não existe\n");
     }
 }
-
+// Função para exibir todos os serviços
 void mostrarTodosServicos(Servico *servicos) {
     for (int i = 0; i < getTamanhoServicos(); i++) {
         if (servicos[i].ativo != FALSE)

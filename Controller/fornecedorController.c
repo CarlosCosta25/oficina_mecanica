@@ -4,25 +4,27 @@
 #include "../bibliotecas/fornecedor.h"
 #include "../bibliotecas/utils.h"
 
+// Obtém a lista de fornecedores a partir do armazenamento
 Fornecedor* readFornecedores() {
-    return  getFornecedores();
+    return getFornecedores();
 }
 
+// Cria um novo fornecedor e adiciona à lista
 int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor) {
-    int tamanhoAtual = getTamanhoFornecedores();
+    int tamanhoAtual = getTamanhoFornecedores(); // Obtém o tamanho atual da lista
 
-    // Realoca a memória para acomodar o novo fornecedor
+    // Realoca memória para adicionar o novo fornecedor
     Fornecedor *novoFornecedores = realloc(*fornecedores, (tamanhoAtual + 1) * sizeof(Fornecedor));
     if (novoFornecedores == NULL) {
         printf("Erro ao alocar memória para fornecedores.\n");
-        return 0; // Retorna 0 indicando falha
+        return 0; // Retorna 0 indicando falha na alocação
     }
 
-    *fornecedores = novoFornecedores; // Atualiza o ponteiro de fornecedores com o novo endereço
-    int index = tamanhoAtual; // Novo índice é o tamanho atual
+    *fornecedores = novoFornecedores; // Atualiza o ponteiro para a nova lista
+    int index = tamanhoAtual; // Índice onde será adicionado o novo fornecedor
 
-    // Preenche os dados do novo fornecedor no array
-    (*fornecedores)[index].codigo = buscaNovoIDFornecedor(*fornecedores);
+    // Preenche os dados do novo fornecedor
+    (*fornecedores)[index].codigo = buscaNovoIDFornecedor(*fornecedores); // Gera um novo ID
     strcpy((*fornecedores)[index].nome_fantasia, fornecedor->nome_fantasia);
     strcpy((*fornecedores)[index].razao_social, fornecedor->razao_social);
     (*fornecedores)[index].incricao_estadual = fornecedor->incricao_estadual;
@@ -30,41 +32,44 @@ int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor) {
     strcpy((*fornecedores)[index].endereco, fornecedor->endereco);
     strcpy((*fornecedores)[index].telefone, fornecedor->telefone);
     strcpy((*fornecedores)[index].email, fornecedor->email);
-    (*fornecedores)[index].ativo = 1; // Fornecedor ativo ao ser criado
+    (*fornecedores)[index].ativo = 1; // Marca o fornecedor como ativo
+
     printf("Tamanho do vetor de fornecedores: %d\n", getTamanhoFornecedores());
-    setTamanhoFornecedores(); // Atualiza o tamanho dos fornecedores
-printf("Tamanho do vetor de fornecedores: %d\n", getTamanhoFornecedores());
-    // Salva fornecedores se o tipo de arquivo não for memória
+    setTamanhoFornecedores(); // Atualiza o tamanho da lista
+    printf("Tamanho do vetor de fornecedores: %d\n", getTamanhoFornecedores());
+
+    // Salva os fornecedores caso o armazenamento não seja apenas em memória
     if (getTipoArquivo() != MEM) setFornecedores(*fornecedores);
 
-    return TRUE;
+    return TRUE; // Retorna 1 indicando sucesso
 }
 
+// Exibe o fornecedor com base no código
 int showFornecedor(Fornecedor *fornecedores, int codigo) {
-    if (fornecedores == NULL) return FALSE;
+    if (fornecedores == NULL) return FALSE; // Verifica se a lista está vazia
 
     int posicao = 0;
-    int tamanho = getTamanhoFornecedores();
+    int tamanho = getTamanhoFornecedores(); // Obtém o tamanho da lista
 
-    // Procura o fornecedor com o código especificado dentro do limite do array
+    // Procura o fornecedor pelo código fornecido
     while (posicao < tamanho && fornecedores[posicao].codigo != codigo) {
         posicao++;
     }
 
-    // Verifica se o fornecedor foi encontrado e se está ativo
+    // Retorna falso se não encontrar ou se estiver inativo
     if (posicao == tamanho || fornecedores[posicao].ativo == FALSE)
         return FALSE;
 
-    return posicao;
+    return posicao; // Retorna a posição do fornecedor
 }
 
+// Atualiza os dados de um fornecedor existente
 int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
+    int posicao = showFornecedor(fornecedores, fornecedor->codigo); // Busca a posição do fornecedor
 
-    int posicao = showFornecedor(fornecedores, fornecedor->codigo);
+    if (posicao == FALSE) return FALSE; // Retorna falso se não encontrar o fornecedor
 
-    if (posicao == FALSE) return FALSE;
-
-    // Atualiza os campos necessários
+    // Atualiza os dados do fornecedor
     fornecedores[posicao].codigo = fornecedor->codigo;
     strcpy(fornecedores[posicao].nome_fantasia, fornecedor->nome_fantasia);
     strcpy(fornecedores[posicao].razao_social, fornecedor->razao_social);
@@ -73,28 +78,34 @@ int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
     strcpy(fornecedores[posicao].endereco, fornecedor->endereco);
     strcpy(fornecedores[posicao].telefone, fornecedor->telefone);
     strcpy(fornecedores[posicao].email, fornecedor->email);
-    fornecedores[posicao].ativo = fornecedor->ativo; // Atualiza o campo ativo
+    fornecedores[posicao].ativo = fornecedor->ativo; // Atualiza o estado ativo/inativo
 
+    // Salva a lista atualizada se não for apenas em memória
     if (getTipoArquivo() != MEM) setFornecedores(fornecedores);
     return TRUE;
 }
-int deleteFornecedor(Fornecedor* fornecedores, int codigo) {
-    int posicao = showFornecedor(fornecedores, codigo);
 
-    if (posicao == FALSE) return FALSE; // Verifica se o fornecedor existe e está ativo
+// Remove um fornecedor (desativando-o)
+int deleteFornecedor(Fornecedor* fornecedores, int codigo) {
+    int posicao = showFornecedor(fornecedores, codigo); // Busca a posição do fornecedor
+
+    if (posicao == FALSE) return FALSE; // Retorna falso se o fornecedor não existir
 
     fornecedores[posicao].ativo = FALSE; // Marca o fornecedor como inativo
-    if (getTipoArquivo() != MEM) setFornecedores(fornecedores);
+    if (getTipoArquivo() != MEM) setFornecedores(fornecedores); // Salva a lista atualizada
     return TRUE;
 }
 
+// Gera um novo ID para o próximo fornecedor
 int buscaNovoIDFornecedor(Fornecedor * fornecedores) {
-    int maior = 1;
-    if(getTamanhoFornecedores() == 0 ) return maior;
-    for(int i = 0; i < getTamanhoFornecedores(); i++) {
-        if(maior <= fornecedores[i].codigo) {
-            maior = fornecedores[i].codigo+1;
+    int maior = 1; // ID inicial é 1
+    if (getTamanhoFornecedores() == 0) return maior; // Retorna 1 se a lista estiver vazia
+
+    // Itera pelos fornecedores para encontrar o maior ID
+    for (int i = 0; i < getTamanhoFornecedores(); i++) {
+        if (maior <= fornecedores[i].codigo) {
+            maior = fornecedores[i].codigo + 1; // Incrementa o ID para o próximo disponível
         }
     }
-    return maior;
+    return maior; // Retorna o novo ID gerado
 }

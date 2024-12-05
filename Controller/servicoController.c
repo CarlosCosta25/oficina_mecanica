@@ -49,6 +49,8 @@ int showServico(Servico *servicos, int codigo) {
 
     return posicao;
 }
+
+// Função para atualizar os dados de um serviço existente
 int updateServico(Servico *servicos, Servico *servico) {
     int posicao = showServico(servicos, servico->codigo);
 
@@ -64,6 +66,7 @@ int updateServico(Servico *servicos, Servico *servico) {
     return TRUE;
 }
 
+// Função para deletar (ou desativar) um serviço
 int deleteServico(Servico *servicos, int codigo) {
     int posicao = showServico(servicos, codigo);
 
@@ -73,13 +76,15 @@ int deleteServico(Servico *servicos, int codigo) {
     if (getTipoArquivo() != MEM) setServicos(servicos);
     return TRUE;
 }
-
+// Função para gerar um novo ID exclusivo para o novo serviço
 int buscaNovoIDServico(Servico *servicos) {
     int maior = 1;
     if (getTamanhoServicos() == 0) return maior; // Caso não haja nenhum serviço registrado
+
+    // Itera sobre a lista de clientes para encontrar o maior ID
     for (int i = 0; i < getTamanhoServicos(); i++) {
         if (maior <= servicos[i].codigo) {
-            maior = servicos[i].codigo + 1;
+            maior = servicos[i].codigo + 1; // Define o próximo ID como maior + 1
         }
     }
     return maior;

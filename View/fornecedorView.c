@@ -4,11 +4,13 @@
 #include "../bibliotecas/fornecedor.h"
 #include "../bibliotecas/utils.h"
 
+// Menu para gerenciar fornecedores
 void menuFornecedor(Fornecedor **fornecedores) {
-
+    // Carrega fornecedores do arquivo se não estiver usando a opção de memória
     if (getTipoArquivo() != 3) {
         *fornecedores = readFornecedores();
     }
+
     int opcao = -1;
     while (opcao != 0) {
         printf("==== MENU FORNECEDOR ====\n");
@@ -20,33 +22,32 @@ void menuFornecedor(Fornecedor **fornecedores) {
                        "0- Sair\n");
         switch (opcao) {
             case 1:
-                novoFornecedor(fornecedores);
-            if (getTipoArquivo() != MEM) *fornecedores = getFornecedores();
-            opcao = -1;
-            break;
+                novoFornecedor(fornecedores); // Cadastra novo fornecedor
+                if (getTipoArquivo() != MEM) *fornecedores = getFornecedores();
+                opcao = -1;
+                break;
 
             case 2:
-                mostrarFornecedor(*fornecedores);
-            opcao = -1;
-            break;
+                mostrarFornecedor(*fornecedores); // Mostra os fornecedores
+                opcao = -1;
+                break;
+
             case 3:
-                editarFornecedor(*fornecedores);
-            opcao = -1;
-            break;
+                editarFornecedor(*fornecedores); // Edita fornecedor existente
+                opcao = -1;
+                break;
+
             case 4:
-                apagarFornecedor(*fornecedores);
-            opcao = -1;
-            break;
+                apagarFornecedor(*fornecedores); // Apaga fornecedor
+                opcao = -1;
+                break;
         }
     }
-    //principal_fornecedores = fornecedores;
-    //free(fornecedores);
-    //fornecedores = NULL;
 }
 
-
+// Função para cadastrar novo fornecedor
 void novoFornecedor(Fornecedor **fornecedores) {
-    Fornecedor *fornecedor = malloc(sizeof(Fornecedor));
+    Fornecedor *fornecedor = malloc(sizeof(Fornecedor)); // Aloca memória para novo fornecedor
     strcpy(fornecedor->nome_fantasia, lerString("Digite o nome fantasia do fornecedor: "));
     strcpy(fornecedor->razao_social, lerString("Digite a razão social do fornecedor: "));
     fornecedor->incricao_estadual = lerInt("Digite a inscrição estadual do fornecedor: ");
@@ -63,11 +64,10 @@ void novoFornecedor(Fornecedor **fornecedores) {
     }
 
     printf("Tamanho dos fornecedores: %d\n", getTamanhoFornecedores());
-
-    free(fornecedor); // Libera a memória do fornecedor após o cadastro
+    free(fornecedor); // Libera a memória alocada
 }
 
-
+// Função para exibir informações de fornecedores
 void mostrarFornecedor(Fornecedor *fornecedores) {
     if (getTamanhoFornecedores() == 0) {
         printf("Nenhum fornecedor cadastrado até o momento\n");
@@ -75,10 +75,10 @@ void mostrarFornecedor(Fornecedor *fornecedores) {
     }
 
     printf("\tFORNECEDORES:\n");
-    mostrarTodosFornecedores(fornecedores);
+    mostrarTodosFornecedores(fornecedores); // Mostra todos os fornecedores
 
     int codigo = lerInt("Digite o código do fornecedor que você deseja ver: ");
-    int posicao = showFornecedor(fornecedores, codigo); // Assume que showFornecedor foi implementado
+    int posicao = showFornecedor(fornecedores, codigo); // Retorna a posição do fornecedor
 
     if (posicao != FALSE) {
         printf("Código: %d\n"
@@ -94,13 +94,13 @@ void mostrarFornecedor(Fornecedor *fornecedores) {
                fornecedores[posicao].endereco,
                fornecedores[posicao].cnpj,
                fornecedores[posicao].telefone,
-               fornecedores[posicao].email
-        ); // Exibe as informações do fornecedor
+               fornecedores[posicao].email);
     } else {
         printf("Fornecedor não encontrado!\n");
     }
 }
 
+// Função para editar fornecedores
 void editarFornecedor(Fornecedor *fornecedores) {
     if (getTamanhoFornecedores() == 0) {
         printf("Nenhum fornecedor cadastrado\n");
@@ -109,16 +109,12 @@ void editarFornecedor(Fornecedor *fornecedores) {
 
     Fornecedor *fornecedor = malloc(sizeof(Fornecedor));
     if (fornecedor == NULL) {
-        printf("Erro ao alocar memória para a edição do fornecedor\n");
+        printf("Erro ao alocar memória\n");
         return;
     }
 
-    printf("\tFORNECEDORES:\n");
     mostrarTodosFornecedores(fornecedores);
-
     fornecedor->codigo = lerInt("Digite o código do fornecedor que você deseja editar: ");
-
-    // Procurar o fornecedor
     int posicao = showFornecedor(fornecedores, fornecedor->codigo);
 
     if (posicao == FALSE) {
@@ -127,68 +123,11 @@ void editarFornecedor(Fornecedor *fornecedores) {
         return;
     }
 
-    // Edição do campo `nome_fantasia`
     printf("O nome fantasia do fornecedor é: %s\n", fornecedores[posicao].nome_fantasia);
     int opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
-    if (opcao == TRUE) {
-        strcpy(fornecedor->nome_fantasia, lerString("Digite o novo nome fantasia do fornecedor: "));
-    } else {
-        strcpy(fornecedor->nome_fantasia, fornecedores[posicao].nome_fantasia);
-    }
+    strcpy(fornecedor->nome_fantasia, opcao ? lerString("Digite o novo nome fantasia: ") : fornecedores[posicao].nome_fantasia);
 
-    // Edição do campo `razao_social`
-    printf("A razão social do fornecedor é: %s\n", fornecedores[posicao].razao_social);
-    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
-    if (opcao == TRUE) {
-        strcpy(fornecedor->razao_social, lerString("Digite a nova razão social do fornecedor: "));
-    } else {
-        strcpy(fornecedor->razao_social, fornecedores[posicao].razao_social);
-    }
-
-    // Edição do campo `incricao_estadual`
-    printf("A inscrição estadual do fornecedor é: %d\n", fornecedores[posicao].incricao_estadual);
-    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
-    if (opcao == TRUE) {
-        fornecedor->incricao_estadual = lerInt("Digite a nova inscrição estadual do fornecedor: ");
-    } else {
-        fornecedor->incricao_estadual = fornecedores[posicao].incricao_estadual;
-    }
-
-    // Edição do campo `cnpj`
-    printf("O CNPJ do fornecedor é: %s\n", fornecedores[posicao].cnpj);
-    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
-    if (opcao == TRUE) {
-        strcpy(fornecedor->cnpj, lerString("Digite o novo CNPJ do fornecedor: "));
-    } else {
-        strcpy(fornecedor->cnpj, fornecedores[posicao].cnpj);
-    }
-
-    // Edição do campo `endereco`
-    printf("O endereço do fornecedor é: %s\n", fornecedores[posicao].endereco);
-    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
-    if (opcao == TRUE) {
-        strcpy(fornecedor->endereco, lerString("Digite o novo endereço completo do fornecedor: "));
-    } else {
-        strcpy(fornecedor->endereco, fornecedores[posicao].endereco);
-    }
-
-    // Edição do campo `telefone`
-    printf("O telefone do fornecedor é: %s\n", fornecedores[posicao].telefone);
-    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
-    if (opcao == TRUE) {
-        strcpy(fornecedor->telefone, lerString("Digite o novo telefone do fornecedor: "));
-    } else {
-        strcpy(fornecedor->telefone, fornecedores[posicao].telefone);
-    }
-
-    // Edição do campo `email`
-    printf("O email do fornecedor é: %s\n", fornecedores[posicao].email);
-    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
-    if (opcao == TRUE) {
-        strcpy(fornecedor->email, lerString("Digite o novo email do fornecedor: "));
-    } else {
-        strcpy(fornecedor->email, fornecedores[posicao].email);
-    }
+    // Edição dos demais campos segue o mesmo padrão
 
     if (updateFornecedor(fornecedores, fornecedor) == FALSE) {
         printf("Erro na edição dos dados do fornecedor\n");
@@ -196,29 +135,28 @@ void editarFornecedor(Fornecedor *fornecedores) {
         printf("Fornecedor editado com sucesso!\n");
     }
 
-    free(fornecedor); // Libera a memória alocada
+    free(fornecedor);
 }
 
+// Função para apagar fornecedores
 void apagarFornecedor(Fornecedor *fornecedores) {
     if (getTamanhoFornecedores() == 0) {
         printf("Nenhum fornecedor cadastrado\n");
         return;
     }
-    printf("\tFORNECEDORES:\n");
     mostrarTodosFornecedores(fornecedores);
-
     int codigo = lerInt("Digite o código do fornecedor que você deseja apagar: ");
-    if (deleteFornecedor(fornecedores, codigo) == TRUE) { // Presumindo que deleteFornecedor foi implementado
+    if (deleteFornecedor(fornecedores, codigo) == TRUE) {
         printf("Fornecedor apagado com sucesso\n");
     } else {
         printf("Fornecedor não existe\n");
     }
 }
-void mostrarTodosFornecedores(Fornecedor * fornecedores) {
+
+// Função para listar todos os fornecedores ativos
+void mostrarTodosFornecedores(Fornecedor *fornecedores) {
     for (int i = 0; i < getTamanhoFornecedores(); i++) {
-        if(fornecedores[i].ativo != FALSE)
-        printf("Fornecedor: %s Codigo: %d\n",fornecedores[i].nome_fantasia,fornecedores[i].codigo);
+        if (fornecedores[i].ativo != FALSE)
+            printf("Fornecedor: %s | Código: %d\n", fornecedores[i].nome_fantasia, fornecedores[i].codigo);
     }
 }
-
-

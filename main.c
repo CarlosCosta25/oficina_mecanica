@@ -3,68 +3,103 @@
 #include <string.h>
 #include "bibliotecas/utils.h"
 #include "bibliotecas/cliente.h"
+#include "bibliotecas/veiculo.h"
 #include "bibliotecas/fornecedor.h"
+#include "bibliotecas/oficina.h"
+#include "bibliotecas/peca.h"
+#include "bibliotecas/funcionario.h"
+#include "bibliotecas/servico.h"
 
-int main(void) {
- setTipoArquivo(lerInt("Digite com qual tipo de dados vc deseja trabalhar: "));
-   menuCliente();
-//Cliente* clientes = readClientes();
+int main(void)
+{
+    setTipoArquivo(lerInt("Digite com qual tipo de dados vc deseja trabalhar: "));
 
-/*
- Cliente *cliente = malloc(sizeof(Cliente));
- cliente->id = 1;
- strcpy(cliente->nome, "John");
- strcpy(cliente->endereco, "Rua A, 123");
- strcpy(cliente->cpf,"123.456.789-10");
- strcpy(cliente->telefone,"(11)98765-4321");
- strcpy(cliente->email,"carlos.silva@email.com");
- cliente->sexo = 1;
- strcpy(cliente->estado_civil,"Solteiro");
- cliente->data.dia = 1;
- cliente->data.mes = 1;
- cliente->data.ano = 1;
- setTamanhoClientes();
- setClientes(cliente);
-*/
+    int opc = 0;
+
+    Oficina* oficina_atual = readOficina();
+
+    while (opc != 7)
+    {
+        //verifica se a oficina ex
+        if (oficina_atual != NULL)
+        {
+            printf("\n===============SISTEMA GERENCIAL DE UMA OFICINA===============\n\n \t\tSeja bem vindo!! %s \n\n",
+                   oficina_atual->nome);
+            opc = lerInt(
+                "\t DIGITE UMA OPÇÃO:\n"
+                "      \t\t\t 1- CADASTROS\n"
+                "      \t\t\t 2- AGENDAMENTOS E CONTROLE\n"
+                "      \t\t\t 3- ESTOQUE\n"
+                "      \t\t\t 4- FINANCEIRO\n"
+                "      \t\t\t 5- RELATORIOS\n"
+                "      \t\t\t 6- IMPORTAÇÃO/EXPORTAÇÃO\n"
+                "      \t\t\t 7-SAIR\n"
+                "=>");
+            switch (opc)
+            {
+                //aqui vai chamar para cadastro...
+            case 1:
+                int cadastros = lerInt("\n=========MODULOS CADASTROS==============\n"
+                    "\t DIGITE UMA OPÇÃO:\n"
+                    "      \t\t\t 1- CLIENTES\n"
+                    "      \t\t\t 2- VEICULOS\n"
+                    "      \t\t\t 3- PEÇAS\n"
+                    "      \t\t\t 4- FORNECEDORES\n"
+                    "      \t\t\t 5- SERVIÇOS\n"
+                    "      \t\t\t 6- FUNCIONARIOS\n"
+                    "      \t\t\t 7- VOLTAR\n"
+                    "=>");
+                switch (cadastros)
+                {
+                case 1:
+                    Cliente* cliente = migraDadosCliente();
+                    menuCliente(&cliente);
+                    break;
+                case 2:
+                    /* code */
+                    Veiculo* veiculo = migraDadosVeiculo();
+                //menuVeiculo(&veiculo);
+                    break;
+                case 3:
+                    /* para  pecas preciso passar fornecedor e pecas */
+                    Peca* pecas = migraDadosPeca();
+                    Fornecedor* fornercedor = migraDadosFornecedor();
+                    menuPecas(&pecas,&fornercedor);
+                    break;
+                case 4:
+            
+                    menuFornecedor(&fornercedor);
+                    break;
+                case 5:
+                    Servico* servico = migraDadosServicos();
+                    menuServicos(&servico);
+                    break;
+                case 6:
+                    Funcionario* funcionario = migraDadosFuncionario();
+                    menuFuncionario(&funcionario);
+                    break;
+                default:
+                    break;
+                }
+
+
+                break;
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+                break;
+            }
+        }
+        else
+        {
+            Oficina* oficina_nova = migraDadosOficina();
+            menuOficina(&oficina_nova);
+        }
+    }
+
     return 0;
 }
-
-
-
-/*Cliente *clientes = NULL;
- clientes =readClientes();
- printf("%d",buscaNovoIDCliente(clientes));
- //Fornecedor * fornecedores = malloc(sizeof(Fornecedor));
-  /*Fornecedor *fornecedores =getFornecedores();
- printf("Fornecedores:%d\n",getTamanhoFornecedores());
- fornecedores[1].codigo = 1;
- strcpy(fornecedores[1].nome_fantasia,"Fantasia4");
- strcpy(fornecedores[1].razao_social,"Razão Social Fictícia 2 LTDA");
- fornecedores[1].incricao_estadual = 123456789;
- strcpy(fornecedores[1].cnpj,"12.345.678/0001-90");
- strcpy(fornecedores[1].endereco,"Rua Exemplo 123, Cidade A");
- strcpy(fornecedores[1].telefone,"(11) 1234-5678");
- strcpy(fornecedores[1].email,"contato@ficticia1.com");
- fornecedores[1].ativo = 1;
- setFornecedores(fornecedores);
- for(int i =0;i<getTamanhoFornecedores();i++) {
-  printf("%s\n",fornecedores[i].nome_fantasia);
- }*/
-//novoCliente(clientes);
-//mostrarCliente(clientes);
-// apagarCliente(clientes);
-//editarCLiente(clientes);
-/*Cliente *cliente = malloc(sizeof(Cliente));
-strcpy(cliente->nome, "John");
-strcpy(cliente->endereco, "Rua A, 123");
-strcpy(cliente->cpf,"123.456.789-10");
-strcpy(cliente->telefone,"(11)98765-4321");
-strcpy(cliente->email,"carlos.silva@email.com");
-cliente->sexo = 1;
-strcpy(cliente->estado_civil,"Solteiro");
-cliente->data.dia = 1;
-cliente->data.mes = 1;
-cliente->data.ano = 1;
-
-createCliente(clientes,cliente);
-clientes =readClientes();*/

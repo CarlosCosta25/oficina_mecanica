@@ -4,6 +4,7 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/funcionario.h"
 
+// Função que exibe o menu de opções para o usuário e realiza as ações com base na escolha
 void menuFuncionario(Funcionario ** funcionarios) {
     if (getTipoArquivo() != MEM) {
         *funcionarios = readFuncionarios();
@@ -11,6 +12,7 @@ void menuFuncionario(Funcionario ** funcionarios) {
 
     int opcao = -1;
     while (opcao != 0) {
+        // Exibe o menu de opções para o usuário
         printf("\t==== MENU FUNCIONÁRIO ====\n");
         opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
                     "\t\t\t1- CADASTRAR NOVO FUNCIONÁRIO\n"
@@ -40,9 +42,10 @@ void menuFuncionario(Funcionario ** funcionarios) {
     funcionarios = NULL;
 }
 
-
+// Função para cadastrar um novo funcionário
 void novoFuncionario(Funcionario **funcionarios) {
     Funcionario *funcionario = malloc(sizeof(Funcionario));
+    // Solicita os dados do novo funcionário
     strcpy(funcionario->nome, lerString("Digite o nome completo do funcionário: "));
     strcpy(funcionario->cpf, lerString("Digite o cpf do funcionário: "));
     strcpy(funcionario->endereco, lerString("Digite o endereço do funcionário: "));
@@ -51,7 +54,7 @@ void novoFuncionario(Funcionario **funcionarios) {
     strcpy(funcionario->cargo, lerString("Digite o cargo do funcionário: "));
     funcionario->salario = atoi(lerString("Digite o salário do funcionário: "));
     funcionario->ativo = 1; // Define o funcionario como ativo
-
+    // Tenta cadastrar o novo funcionário
     if (createFuncionario(funcionarios, funcionario) != FALSE) {
         printf("Funcionario cadastrado com sucesso!\n");
     } else {
@@ -61,7 +64,7 @@ void novoFuncionario(Funcionario **funcionarios) {
 
     free(funcionario); // Libera a memória do funcionario após o cadastro
 }
-
+// Função para exibir os funcionários cadastrados
 void mostrarFuncionario(Funcionario *funcionarios) {
     if (getTamanhoFuncionarios() == 0) {
         printf("Nenhum funcionário cadastrado até o momento\n");
@@ -75,6 +78,7 @@ void mostrarFuncionario(Funcionario *funcionarios) {
     int posicao = showFuncionario(funcionarios, codigo);
 
     if (posicao != FALSE) {
+        // Exibe os detalhes do funcionário
         printf("Código: %d\n"
                "Nome Completo: %s\n"
                "CPF: %s\n"
@@ -92,14 +96,15 @@ void mostrarFuncionario(Funcionario *funcionarios) {
         ); // Exibe se o funcionário está ativo
     }
 }
-
+// Função para editar os dados de um funcionário
 void editarFuncionario(Funcionario *funcionarios) {
     if (getTamanhoFuncionarios() == 0) {
         printf("Nenhum funcionário cadastrado\n");
         return;
     }
 
-    Funcionario *funcionario = malloc(sizeof(Funcionario));
+    Funcionario *funcionario = malloc(sizeof(Funcionario));// Aloca memória para armazenar as modificações
+
     if (funcionario == NULL) {
         printf("Erro ao alocar memória para a edição do funcionário\n");
         return;
@@ -174,7 +179,7 @@ void editarFuncionario(Funcionario *funcionarios) {
 
     free(funcionario);
 }
-
+// Função para apagar um funcionário do sistema
 void apagarFuncionario(Funcionario *funcionarios) {
     if (getTamanhoFuncionarios() == 0) {
         printf("Nenhum funcionário cadastrado\n");
@@ -184,13 +189,13 @@ void apagarFuncionario(Funcionario *funcionarios) {
     mostrarTodosFuncionarios(funcionarios);
 
     int codigo = lerInt("Digite o código do funcionário que você deseja apagar: ");
-    if (deleteFuncionario(funcionarios, codigo) == TRUE) {
+    if (deleteFuncionario(funcionarios, codigo) == TRUE) {// Exclui o funcionário
         printf("Funcionário apagado com sucesso\n");
     } else {
         printf("Funcionário não existe\n");
     }
 }
-
+// Função para exibir todos os funcionários cadastrados
 void mostrarTodosFuncionarios(Funcionario *funcionarios) {
     for (int i = 0; i < getTamanhoFuncionarios(); i++) {
         if (funcionarios[i].ativo != FALSE)

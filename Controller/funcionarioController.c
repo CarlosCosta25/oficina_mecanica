@@ -3,7 +3,7 @@
 #include <string.h>
 #include "../bibliotecas/funcionario.h"
 #include "../bibliotecas/utils.h"
-
+// Função para ler a funcionario
 Funcionario* readFuncionarios() {
         return getFuncionarios();;
     }

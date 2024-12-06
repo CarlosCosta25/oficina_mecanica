@@ -35,7 +35,7 @@ Funcionario* getFuncionarios();
 Funcionario *ler_arquivo_txt_funcionario(FILE *buffer);
 void escrever_arquivo_txt_funcionario(FILE *buffer, Funcionario *funcionarios);
 Funcionario *ler_arquivo_bin_funcionario(FILE *buffer);
-void *escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios);
+void escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios);
 
 //Controller Funcionario
 Funcionario* readFuncionarios();

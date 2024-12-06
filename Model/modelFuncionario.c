@@ -7,47 +7,50 @@
 
 int qtdFuncionarios = 0;
 
-// Função para cadastrar Funcionario no arquivo
+// Função para retornar a quantidade de funcionários cadastrados
 int getTamanhoFuncionarios() {
     return qtdFuncionarios;
 }
 
+// Função para incrementar a quantidade de funcionários cadastrados
 void setTamanhoFuncionarios() {
     qtdFuncionarios++;
 }
 
+// Função para migrar dados de funcionários entre diferentes formatos de arquivo (TXT, BIN, MEM)
 Funcionario *migraDadosFuncionario() {
     Funcionario *funcionarios = NULL;
     FILE *buffer;
+
+    // Verifica o tipo de arquivo e realiza a migração
     if (getTipoArquivo() == TXT) {
-        // se o usuario deseja gravar os dados no txt
+        // Se o usuário deseja gravar os dados no arquivo TXT
         buffer = fopen("../bd/funcionarios.bin", "rb");
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            setTipoArquivo(BIN); // muda o tipo de arquivo para bin
-            funcionarios = getFuncionarios();
-            setTipoArquivo(TXT); // volta para o arquivo txt
-
-            setFuncionarios(funcionarios); // escreve no txt
+            setTipoArquivo(BIN); // Muda o tipo de arquivo para BIN
+            funcionarios = getFuncionarios(); // Obtém os funcionários
+            setTipoArquivo(TXT); // Retorna para o arquivo TXT
+            setFuncionarios(funcionarios); // Escreve os dados no arquivo TXT
             free(buffer);
-            remove("../bd/funcionarios.bin");
+            remove("../bd/funcionarios.bin"); // Remove o arquivo BIN
             return NULL;
         }
         fclose(buffer);
         free(buffer);
     }
     if (getTipoArquivo() == BIN) {
-        //se o usuario deseja gravar em binario
+        // Se o usuário deseja gravar em arquivo BIN
         buffer = fopen("../bd/funcionarios.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            setTipoArquivo(TXT);
-            funcionarios = getFuncionarios();
-            setTipoArquivo(BIN);
-            setFuncionarios(funcionarios);
-            remove("../bd/funcionarios.txt");
+            setTipoArquivo(TXT); // Muda o tipo de arquivo para TXT
+            funcionarios = getFuncionarios(); // Obtém os funcionários
+            setTipoArquivo(BIN); // Retorna para o arquivo BIN
+            setFuncionarios(funcionarios); // Escreve os dados no arquivo BIN
+            remove("../bd/funcionarios.txt"); // Remove o arquivo TXT
             return NULL;
         }
         fclose(buffer);
@@ -59,11 +62,11 @@ Funcionario *migraDadosFuncionario() {
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            //se antes ele tiver gravado os dados em txt
-            setTipoArquivo(TXT); // muda o tipo de arquivo para
-            funcionarios = getFuncionarios();
-            setTipoArquivo(MEM);
-            remove("../bd/funcionarios.txt");
+            // Se o usuário gravou os dados em TXT anteriormente
+            setTipoArquivo(TXT); // Muda para o arquivo TXT
+            funcionarios = getFuncionarios(); // Obtém os funcionários
+            setTipoArquivo(MEM); // Muda para o tipo de arquivo MEM
+            remove("../bd/funcionarios.txt"); // Remove o arquivo TXT
             return funcionarios;
         }
         fclose(buffer);
@@ -73,11 +76,11 @@ Funcionario *migraDadosFuncionario() {
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            //se antes ele tiver gravado os dados em binario
-            setTipoArquivo(BIN); // muda o tipo de arquivo para
-            funcionarios = getFuncionarios();
-            setTipoArquivo(MEM);
-            remove("../bd/funcionarios.bin");
+            // Se o usuário gravou os dados em BIN anteriormente
+            setTipoArquivo(BIN); // Muda para o arquivo BIN
+            funcionarios = getFuncionarios(); // Obtém os funcionários
+            setTipoArquivo(MEM); // Muda para o tipo de arquivo MEM
+            remove("../bd/funcionarios.bin"); // Remove o arquivo BIN
             return funcionarios;
         }
         fclose(buffer);
@@ -87,48 +90,57 @@ Funcionario *migraDadosFuncionario() {
     return NULL;
 }
 
+// Função para gravar os dados de funcionários no arquivo conforme o tipo de arquivo (TXT ou BIN)
 void setFuncionarios(Funcionario *funcionarios) {
     FILE *buffer;
+
+    // Verifica o tipo de arquivo e grava os dados correspondentes
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/funcionarios.txt", "w"); // Abre o arquivo corretamente
+        buffer = fopen("../bd/funcionarios.txt", "w"); // Abre o arquivo TXT
         if (buffer != NULL) {
-            escrever_arquivo_txt_funcionario(buffer, funcionarios);
+            escrever_arquivo_txt_funcionario(buffer, funcionarios); // Escreve no arquivo TXT
             fclose(buffer);
             return;
         }
     }
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/funcionarios.bin", "wb"); // Abre o arquivo corretamente
+        buffer = fopen("../bd/funcionarios.bin", "wb"); // Abre o arquivo BIN
         if (buffer != NULL) {
-            escrever_arquivo_bin_funcionario(buffer, funcionarios);
+            escrever_arquivo_bin_funcionario(buffer, funcionarios); // Escreve no arquivo BIN
             fclose(buffer);
         }
     }
 }
 
+// Função para obter os funcionários do arquivo conforme o tipo de arquivo (TXT ou BIN)
 Funcionario *getFuncionarios() {
     FILE *buffer;
     Funcionario *funcionarios = NULL;
+
+    // Lê os dados do arquivo TXT
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/funcionarios.txt", "r"); // Abre o arquivo corretamente
+        buffer = fopen("../bd/funcionarios.txt", "r"); // Abre o arquivo TXT
         if (buffer == NULL) {
             return NULL;
         }
-        funcionarios = ler_arquivo_txt_funcionario(buffer);
+        funcionarios = ler_arquivo_txt_funcionario(buffer); // Lê os funcionários do arquivo TXT
     }
+    // Lê os dados do arquivo BIN
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/funcionarios.bin", "rb"); // Abre o arquivo corretamente
+        buffer = fopen("../bd/funcionarios.bin", "rb"); // Abre o arquivo BIN
         if (buffer == NULL) {
             return NULL;
         }
-        funcionarios = ler_arquivo_bin_funcionario(buffer);
+        funcionarios = ler_arquivo_bin_funcionario(buffer); // Lê os funcionários do arquivo BIN
     }
+    // Caso o tipo de arquivo seja MEM, retorna NULL
     if (getTipoArquivo() == MEM) {
         return NULL;
     }
     return funcionarios;
 }
 
+// Função para ler dados de funcionários a partir de um arquivo TXT
 Funcionario *ler_arquivo_txt_funcionario(FILE *buffer) {
     int numFuncionarios = 0;
     Funcionario *funcionarios = NULL;
@@ -136,59 +148,61 @@ Funcionario *ler_arquivo_txt_funcionario(FILE *buffer) {
     int i = 0;
     int isPrimeiro = TRUE;
 
+    // Lê o arquivo linha por linha
     while (fgets(Linha, sizeof(Linha), buffer) != NULL) {
         if (isPrimeiro == TRUE) {
-            funcionarios = malloc(sizeof(Funcionario) * (numFuncionarios + 1));
+            funcionarios = malloc(sizeof(Funcionario) * (numFuncionarios + 1)); // Aloca memória para o primeiro funcionário
             isPrimeiro = FALSE;
         }
-        if (equals("<registro>\n", Linha) == FALSE
-            && equals("</registro>\n", Linha) == FALSE) {
-            if (isPrimeiro == FALSE) funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario));
+        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
+            if (isPrimeiro == FALSE) funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario)); // Realoca memória para cada novo funcionário
             switch (i) {
                 case 0:
-                    funcionarios[numFuncionarios].codigo = atoi(removeTags(Linha));
+                    funcionarios[numFuncionarios].codigo = atoi(removeTags(Linha)); // Lê o código do funcionário
                     i++;
                     break;
                 case 1:
-                    strcpy(funcionarios[numFuncionarios].nome, removeTags(Linha));
+                    strcpy(funcionarios[numFuncionarios].nome, removeTags(Linha)); // Lê o nome do funcionário
                     i++;
                     break;
                 case 2:
-                    strcpy(funcionarios[numFuncionarios].cpf, removeTags(Linha));
+                    strcpy(funcionarios[numFuncionarios].cpf, removeTags(Linha)); // Lê o CPF do funcionário
                     i++;
                     break;
                 case 3:
-                    strcpy(funcionarios[numFuncionarios].endereco, removeTags(Linha));
+                    strcpy(funcionarios[numFuncionarios].endereco, removeTags(Linha)); // Lê o endereço do funcionário
                     i++;
                     break;
                 case 4:
-                    strcpy(funcionarios[numFuncionarios].telefone, removeTags(Linha));
+                    strcpy(funcionarios[numFuncionarios].telefone, removeTags(Linha)); // Lê o telefone do funcionário
                     i++;
                     break;
                 case 5:
-                    strcpy(funcionarios[numFuncionarios].cargo, removeTags(Linha));
+                    strcpy(funcionarios[numFuncionarios].cargo, removeTags(Linha)); // Lê o cargo do funcionário
                     i++;
                     break;
                 case 6:
-                    funcionarios[numFuncionarios].salario = atof(removeTags(Linha));
+                    funcionarios[numFuncionarios].salario = atof(removeTags(Linha)); // Lê o salário do funcionário
                     i++;
                     break;
                 case 7:
-                    funcionarios[numFuncionarios].ativo = atoi(removeTags(Linha));
-                    i = 0; // Reinicia para ler o próximo funcionario
+                    funcionarios[numFuncionarios].ativo = atoi(removeTags(Linha)); // Lê o status de ativo do funcionário
+                    i = 0; // Reinicia para o próximo funcionário
                     numFuncionarios++;
-                    funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario));
+                    funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario)); // Realoca memória para o próximo funcionário
                     break;
             }
         }
     }
-    qtdFuncionarios = numFuncionarios;
+    qtdFuncionarios = numFuncionarios; // Atualiza a quantidade de funcionários
     return funcionarios;
 }
 
+// Função para escrever dados de funcionários no arquivo TXT
 void escrever_arquivo_txt_funcionario(FILE *buffer, Funcionario *funcionarios) {
-    if (getTamanhoFuncionarios() == 0) setTamanhoFuncionarios(); // se acaso não tiver nenhum Funcionario cadastrado
+    if (getTamanhoFuncionarios() == 0) setTamanhoFuncionarios(); // Se não houver funcionários, inicializa a quantidade
 
+    // Escreve cada funcionário no arquivo TXT
     for (int i = 0; i < getTamanhoFuncionarios(); i++) {
         int escrevendo = fprintf(buffer,
                                  "<registro>\n"
@@ -216,20 +230,18 @@ void escrever_arquivo_txt_funcionario(FILE *buffer, Funcionario *funcionarios) {
     }
 }
 
+// Função para ler dados de funcionários de um arquivo BIN
 Funcionario *ler_arquivo_bin_funcionario(FILE *buffer) {
-    Funcionario *funcionarios = malloc(sizeof(Funcionario) * (getTamanhoFuncionarios() + 1));
-    int i = 0;
-    while (fread(&funcionarios[i], sizeof(Funcionario), 1, buffer)) {
-        i++;
-        setTamanhoFuncionarios();
-        funcionarios = realloc(funcionarios, (getTamanhoFuncionarios() + 1) * sizeof(Funcionario));
+    Funcionario *funcionarios = malloc(sizeof(Funcionario) * (getTamanhoFuncionarios() + 1)); // Aloca memória para os funcionários
+    for (int i = 0; i < getTamanhoFuncionarios(); i++) {
+        fread(&funcionarios[i], sizeof(Funcionario), 1, buffer); // Lê os dados dos funcionários do arquivo BIN
     }
     return funcionarios;
 }
 
-void *escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios) {
+// Função para escrever dados de funcionários no arquivo BIN
+void escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios) {
     for (int i = 0; i < getTamanhoFuncionarios(); i++) {
-        if (fwrite(&funcionarios[i], sizeof(Funcionario), 1, buffer)) {
-        }
+        fwrite(&funcionarios[i], sizeof(Funcionario), 1, buffer); // Escreve os dados dos funcionários no arquivo BIN
     }
 }

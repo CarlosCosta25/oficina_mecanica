@@ -110,7 +110,7 @@ Peca *getPecas() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/pecas.txt", "r"); // Abre o arquivo para leitura de texto
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo pecas.txt!\n");
+
             return NULL;
         }
         pecas = ler_arquivo_txt_peca(buffer); // Lê as peças do arquivo de texto
@@ -120,7 +120,7 @@ Peca *getPecas() {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/pecas.bin", "rb"); // Abre o arquivo para leitura binária
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo pecas.bin!\n");
+
             return NULL;
         }
         pecas = ler_arquivo_bin_peca(buffer); // Lê as peças do arquivo binário
@@ -202,7 +202,6 @@ Peca *ler_arquivo_txt_peca(FILE *buffer) {
 // Função para escrever as peças em um arquivo de texto
 void escrever_arquivo_txt_peca(FILE *buffer, Peca *pecas) {
     if (getTamanhoPecas() == 0) setTamanhoPecas(); // Se não houver peças cadastradas, incrementa o número
-    printf("getTamanhoP: %d no model", getTamanhoPecas()); // Exibe o número de peças
     for (int i = 0; i < getTamanhoPecas(); i++) {
         int escrevendo = fprintf(buffer,
                                  "<registro>\n"

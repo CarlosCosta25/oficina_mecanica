@@ -27,9 +27,9 @@ Funcionario *migraDadosFuncionario() {
             free(buffer);
             setTipoArquivo(BIN); // muda o tipo de arquivo para bin
             funcionarios = getFuncionarios();
-            setTipoArquivo(TXT);// volta para o arquivo txt
+            setTipoArquivo(TXT); // volta para o arquivo txt
 
-            setFuncionarios(funcionarios);// escreve no txt
+            setFuncionarios(funcionarios); // escreve no txt
             free(buffer);
             remove("../bd/funcionarios.bin");
             return NULL;
@@ -86,6 +86,7 @@ Funcionario *migraDadosFuncionario() {
     }
     return NULL;
 }
+
 void setFuncionarios(Funcionario *funcionarios) {
     FILE *buffer;
     if (getTipoArquivo() == TXT) {
@@ -111,7 +112,6 @@ Funcionario *getFuncionarios() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/funcionarios.txt", "r"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo funcionário.txt!\n");
             return NULL;
         }
         funcionarios = ler_arquivo_txt_funcionario(buffer);
@@ -119,7 +119,6 @@ Funcionario *getFuncionarios() {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/funcionarios.bin", "rb"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo funcionários.bin!\n");
             return NULL;
         }
         funcionarios = ler_arquivo_bin_funcionario(buffer);
@@ -129,6 +128,7 @@ Funcionario *getFuncionarios() {
     }
     return funcionarios;
 }
+
 Funcionario *ler_arquivo_txt_funcionario(FILE *buffer) {
     int numFuncionarios = 0;
     Funcionario *funcionarios = NULL;
@@ -147,40 +147,40 @@ Funcionario *ler_arquivo_txt_funcionario(FILE *buffer) {
             switch (i) {
                 case 0:
                     funcionarios[numFuncionarios].codigo = atoi(removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 1:
                     strcpy(funcionarios[numFuncionarios].nome, removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 2:
                     strcpy(funcionarios[numFuncionarios].cpf, removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 3:
                     strcpy(funcionarios[numFuncionarios].endereco, removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 4:
                     strcpy(funcionarios[numFuncionarios].telefone, removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 5:
                     strcpy(funcionarios[numFuncionarios].cargo, removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 6:
                     funcionarios[numFuncionarios].salario = atof(removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 7:
                     funcionarios[numFuncionarios].ativo = atoi(removeTags(Linha));
-                i = 0; // Reinicia para ler o próximo funcionario
-                numFuncionarios++;
-                funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario));
-                break;
-               }
+                    i = 0; // Reinicia para ler o próximo funcionario
+                    numFuncionarios++;
+                    funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario));
+                    break;
             }
+        }
     }
     qtdFuncionarios = numFuncionarios;
     return funcionarios;
@@ -228,10 +228,8 @@ Funcionario *ler_arquivo_bin_funcionario(FILE *buffer) {
 }
 
 void *escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios) {
-    printf("O tamanho do vetor e: %d\n", getTamanhoFuncionarios());
     for (int i = 0; i < getTamanhoFuncionarios(); i++) {
         if (fwrite(&funcionarios[i], sizeof(Funcionario), 1, buffer)) {
-            printf("escreveu!\n");
         }
     }
 }

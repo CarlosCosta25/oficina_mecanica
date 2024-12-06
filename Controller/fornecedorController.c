@@ -34,9 +34,8 @@ int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor) {
     strcpy((*fornecedores)[index].email, fornecedor->email);
     (*fornecedores)[index].ativo = 1; // Marca o fornecedor como ativo
 
-    printf("Tamanho do vetor de fornecedores: %d\n", getTamanhoFornecedores());
+
     setTamanhoFornecedores(); // Atualiza o tamanho da lista
-    printf("Tamanho do vetor de fornecedores: %d\n", getTamanhoFornecedores());
 
     // Salva os fornecedores caso o armazenamento não seja apenas em memória
     if (getTipoArquivo() != MEM) setFornecedores(*fornecedores);

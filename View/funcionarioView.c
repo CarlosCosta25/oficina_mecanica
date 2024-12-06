@@ -4,34 +4,35 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/funcionario.h"
 
-void menuFuncionario() {
-    Funcionario *funcionarios = migraDadosFuncionario();
-    if (getTipoArquivo() != MEM && funcionarios == NULL) {
-        funcionarios = getFuncionarios();
+void menuFuncionario(Funcionario ** funcionarios) {
+    if (getTipoArquivo() != MEM) {
+        *funcionarios = readFuncionarios();
     }
 
     int opcao = -1;
-    printf("==== MENU FUNCIONÁRIO ====\n");
     while (opcao != 0) {
-        opcao = lerInt("Digite a opção desejada:\n"
-            "1- Cadastrar novo funcionário\n"
-            "2- Ver funcionários\n"
-            "3- Editar funcionário\n"
-            "4- Excluir funcionário\n"
-            "0- Sair\n");
+        printf("\t==== MENU FUNCIONÁRIO ====\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+                    "\t\t\t1- CADASTRAR NOVO FUNCIONÁRIO\n"
+                    "\t\t\t2- VER FUNCIONÁRIOS\n"
+                    "\t\t\t3- EDITAR FUNCIONÁRIO\n"
+                    "\t\t\t4- EXCLUIR FUNCIONÁRIO\n"
+                    "\t\t\t0- SAIR\n"
+                    "=>");
+
         switch (opcao) {
             case 1:
-                novoFuncionario(&funcionarios);
-                if (getTipoArquivo() != MEM) funcionarios = getFuncionarios();
+                novoFuncionario(funcionarios);
+                if (getTipoArquivo() != MEM) *funcionarios = getFuncionarios();
                 break;
             case 2:
-                mostrarFuncionario(funcionarios);
+                mostrarFuncionario(*funcionarios);
                 break;
             case 3:
-                editarFuncionario(funcionarios);
+                editarFuncionario(*funcionarios);
                 break;
             case 4:
-                apagarFuncionario(funcionarios);
+                apagarFuncionario(*funcionarios);
                 break;
         }
     }

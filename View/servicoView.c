@@ -7,42 +7,46 @@
 // Função que gerencia o menu principal para operações com serviços
 void menuServicos(Servico **servicos) {
     if (getTipoArquivo() != 3) {
-        *servicos = readServicos();  // Se o tipo de armazenamento não for memória, lê os clientes do armazenamento
+        *servicos = readServicos(); // Se o tipo de armazenamento não for memória, lê os clientes do armazenamento
     }
     int opcao = -1;
     while (opcao != 0) {
-        printf("==== MENU SERVIÇOS ====\n");
-        opcao = lerInt("Digite a opção desejada:\n"
-            "1- Cadastrar novo serviço\n"
-            "2- Ver serviço\n"
-            "3- Editar serviço\n"
-            "4- Excluir serviço\n"
-            "0- Sair\n");
+        printf("\t==== MENU FORNECEDOR ====\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+            "\t\t\t1- CADASTRAR NOVO FORNECEDOR\n"
+            "\t\t\t2- VER FORNECEDORES\n"
+            "\t\t\t3- EDITAR FORNECEDOR\n"
+            "\t\t\t4- EXCLUIR FORNECEDOR\n"
+            "\t\t\t0- SAIR\n"
+            "=>");
+
         switch (opcao) {
             case 1:
-                novoServico(servicos);  // Função para cadastrar um novo serviço
-            if (getTipoArquivo() != MEM) *servicos = readServicos(); // Atualiza os serviços se não estiver em memória
-            opcao = -1;
-            break;
+                novoServico(servicos); // Função para cadastrar um novo serviço
+                if (getTipoArquivo() != MEM) *servicos = readServicos();
+            // Atualiza os serviços se não estiver em memória
+                opcao = -1;
+                break;
 
             case 2:
                 mostrarServico(*servicos); // Função para exibir um serviço
-            opcao = -1;
-            break;
+                opcao = -1;
+                break;
             case 3:
-                editarServico(*servicos);  // Função para editar um serviço
-            opcao = -1;
-            break;
+                editarServico(*servicos); // Função para editar um serviço
+                opcao = -1;
+                break;
             case 4:
-                apagarServico(*servicos);  // Função para excluir um serviço
-            opcao = -1;
-            break;
+                apagarServico(*servicos); // Função para excluir um serviço
+                opcao = -1;
+                break;
             default: // Opção inválida
                 printf("Opção inválida. Tente novamente.\n");
-            break;
+                break;
         }
     }
 }
+
 // Função para cadastrar um novo serviço
 void novoServico(Servico **servicos) {
     Servico *servico = malloc(sizeof(Servico));
@@ -157,6 +161,7 @@ void editarServico(Servico *servicos) {
 
     free(servico); // Libera a memória alocada
 }
+
 // Função para excluir um serviço
 void apagarServico(Servico *servicos) {
     if (getTamanhoServicos() == 0) {
@@ -172,6 +177,7 @@ void apagarServico(Servico *servicos) {
         printf("Serviço não existe\n");
     }
 }
+
 // Função para exibir todos os serviços
 void mostrarTodosServicos(Servico *servicos) {
     for (int i = 0; i < getTamanhoServicos(); i++) {

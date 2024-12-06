@@ -111,7 +111,7 @@ Veiculo *getVeiculos() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/veiculos.txt", "r"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo veículos.txt!\n");
+
             return NULL;
         }
         veiculos = ler_arquivo_txt_veiculo(buffer);
@@ -119,7 +119,7 @@ Veiculo *getVeiculos() {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/veiculos.bin", "rb"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo veículos.bin!\n");
+
             return NULL;
         }
         veiculos = ler_arquivo_bin_veiculo(buffer);
@@ -222,10 +222,10 @@ Veiculo *ler_arquivo_bin_veiculo(FILE *buffer) {
 }
 
 void *escrever_arquivo_bin_veiculo(FILE *buffer, Veiculo *veiculos) {
-    printf("O tamanho do vetor e: %d\n", getTamanhoVeiculos());
+
     for (int i = 0; i < getTamanhoVeiculos(); i++) {
         if (fwrite(&veiculos[i], sizeof(Veiculo), 1, buffer)) {
-            printf("escreveu!\n");
+
         }
     }
 }

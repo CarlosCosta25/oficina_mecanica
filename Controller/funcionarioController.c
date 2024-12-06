@@ -11,19 +11,16 @@ Funcionario* readFuncionarios() {
     }
 
 int createFuncionario(Funcionario **funcionarios, Funcionario *funcionario) {
-    int tamanhoAtual = getTamanhoFuncionarios();
+    int tamanhoAtual = getTamanhoFuncionarios(); // Obtém o tamanho atual do array de funcionários
+    Funcionario *novoFuncionarios = realloc(*funcionarios, (tamanhoAtual + 1) * sizeof(Funcionario)); // Realoca memória para mais um funcionário
 
-    // Realoca a memória para acomodar um novo Funcionario
-    Funcionario *novoFuncionarios = realloc(*funcionarios, (tamanhoAtual + 1) * sizeof(Funcionario));
-    if (novoFuncionarios == NULL) {
-        printf("Erro ao alocar memória para Funcionários.\n");
-        return 0; // Retorna 0 indicando falha
+    if (novoFuncionarios == NULL) { // Se a realocação falhar
+        printf("Erro ao alocar mais memória para funcionários.\n");
+        return FALSE; // Retorna 0 indicando falha
     }
-
-    *funcionarios = novoFuncionarios; // Atualiza o ponteiro de Funcionario com o novo endereço
-    int index = tamanhoAtual; // Novo índice é o tamanho atual
-
-    // Preenche os dados do novo Funcionario no array
+    *funcionarios = novoFuncionarios; // Atualiza o ponteiro para o array de funcionários
+    int index = tamanhoAtual; // Define o índice do novo funcionário
+    // Preenche os campos do novo funcionário
     (*funcionarios)[index].codigo = buscaNovoIDFuncionario(*funcionarios);
     strcpy((*funcionarios)[index].nome, funcionario->nome);
     strcpy((*funcionarios)[index].cpf, funcionario->cpf);
@@ -31,13 +28,12 @@ int createFuncionario(Funcionario **funcionarios, Funcionario *funcionario) {
     strcpy((*funcionarios)[index].telefone, funcionario->telefone);
     strcpy((*funcionarios)[index].cargo, funcionario->cargo);
     (*funcionarios)[index].salario = funcionario->salario;
-    (*funcionarios)[index].ativo = 1; // Funcionário ativo ao ser criado
+    (*funcionarios)[index].ativo = 1; // Marca o funcionário como ativo ao ser criado
+    setTamanhoFuncionarios(); // Atualiza o tamanho dos funcionários
 
-    setTamanhoFuncionarios(); // Atualiza o tamanho dos Funcionarios
+    if (getTipoArquivo() != MEM) setFuncionarios(*funcionarios); // Se não estiver no modo MEM, grava os funcionários no arquivo
 
-    // Salva Funcionarios se o tipo de arquivo não for memória
-    if (getTipoArquivo() != MEM) setFuncionarios(*funcionarios);
-    return TRUE;
+    return TRUE; // Retorna verdadeiro indicando sucesso
 }
 
 int showFuncionario(Funcionario *funcionarios, int codigo) {

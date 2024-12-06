@@ -13,14 +13,17 @@ void menuOficina(Oficina **oficina) {
 
     int opcao = -1; // Inicializa a variável de opção
     while (opcao != 0) { // O loop continua até o usuário escolher sair
-        printf("==== MENU OFICINA ====\n");
+
         // Exibe as opções de menu e lê a escolha do usuário
-        opcao = lerInt("Digite a opção desejada:\n"
-            "1- Cadastrar nova oficina\n"
-            "2- Ver oficina\n"
-            "3- Editar oficina\n"
-            "4- Excluir oficina\n"
-            "0- Sair\n");
+        printf("\t==== MENU OFICINA ====\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+                    "\t\t\t1- CADASTRAR NOVA OFICINA\n"
+                    "\t\t\t2- VER OFICINA\n"
+                    "\t\t\t3- EDITAR OFICINA\n"
+                    "\t\t\t4- EXCLUIR OFICINA\n"
+                    "\t\t\t0- SAIR\n"
+                    "=>");
+
 
         // Executa a ação de acordo com a opção escolhida
         switch (opcao) {

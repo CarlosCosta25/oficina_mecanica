@@ -105,7 +105,7 @@ Fornecedor *getFornecedores() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/fornecedores.txt", "r");
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo fornecedores.txt!\n");
+
             return NULL;
         }
         fornecedores = ler_arquivo_txt_fornecedor(buffer);
@@ -114,7 +114,7 @@ Fornecedor *getFornecedores() {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/fornecedores.bin", "rb");
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo fornecedores.bin!\n");
+
             return NULL;
         }
         fornecedores = ler_arquivo_bin_fornecedor(buffer);

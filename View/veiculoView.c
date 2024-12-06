@@ -4,34 +4,35 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/veiculo.h"
 
-void menuVeiculo() {
-    Veiculo *veiculos = migraDadosVeiculo();
-    if (getTipoArquivo() != MEM && veiculos == NULL) {
-        veiculos = getVeiculos();
+void menuVeiculo(Veiculo **veiculos) {
+    if (getTipoArquivo() != MEM) {
+        *veiculos = readVeiculos();
     }
 
     int opcao = -1;
-    printf("==== MENU VEICULO ====\n");
     while (opcao != 0) {
-        opcao = lerInt("Digite a opção desejada:\n"
-                       "1- Cadastrar novo veículo\n"
-                       "2- Ver veículos\n"
-                       "3- Editar veículo\n"
-                       "4- Excluir veículo\n"
-                       "0- Sair\n");
+        printf("\t==== MENU VEÍCULO ====\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+                    "\t\t\t1- CADASTRAR NOVO VEÍCULO\n"
+                    "\t\t\t2- VER VEÍCULOS\n"
+                    "\t\t\t3- EDITAR VEÍCULO\n"
+                    "\t\t\t4- EXCLUIR VEÍCULO\n"
+                    "\t\t\t0- SAIR\n"
+                    "=>");
+
         switch (opcao) {
             case 1:
-                novoVeiculo(&veiculos);
-            if (getTipoArquivo() != MEM) veiculos = getVeiculos();
+                novoVeiculo(veiculos);
+            if (getTipoArquivo() != MEM) *veiculos = getVeiculos();
             break;
             case 2:
-                mostrarVeiculo(veiculos);
+                mostrarVeiculo(*veiculos);
             break;
             case 3:
-                editarVeiculo(veiculos);
+                editarVeiculo(*veiculos);
             break;
             case 4:
-                apagarVeiculo(veiculos);
+                apagarVeiculo(*veiculos);
             break;
         }
     }
@@ -54,7 +55,6 @@ void novoVeiculo(Veiculo **veiculos) {
     } else {
         printf("Erro no cadastro do veículo!\n");
     }
-    printf("Tamnho do veículo %d\n",getTamanhoVeiculos());
 
     free(veiculo); // Libera a memória do veículo após o cadastro
 }

@@ -110,7 +110,6 @@ Cliente *getClientes() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/clientes.txt", "r"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo clientes.txt!\n");
             return NULL;
         }
         clientes = ler_arquivo_txt_cliente(buffer);
@@ -118,7 +117,6 @@ Cliente *getClientes() {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/clientes.bin", "rb"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo clientes.bin!\n");
             return NULL;
         }
         clientes = ler_arquivo_bin_cliente(buffer);
@@ -221,10 +219,8 @@ Cliente *ler_arquivo_bin_cliente(FILE *buffer) {
 }
 
 void *escrever_arquivo_bin_cliente(FILE *buffer, Cliente *clientes) {
-    printf("O tamanho do vetor e: %d\n", getTamanhoClientes());
     for (int i = 0; i < getTamanhoClientes(); i++) {
         if (fwrite(&clientes[i], sizeof(Cliente), 1, buffer)) {
-            printf("escreveu!\n");
         }
     }
 }

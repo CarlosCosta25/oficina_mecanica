@@ -13,13 +13,15 @@ void menuFornecedor(Fornecedor **fornecedores) {
 
     int opcao = -1;
     while (opcao != 0) {
-        printf("==== MENU FORNECEDOR ====\n");
-        opcao = lerInt("Digite a opção desejada:\n"
-                       "1- Cadastrar novo fornecedor\n"
-                       "2- Ver fornecedores\n"
-                       "3- Editar fornecedor\n"
-                       "4- Excluir fornecedor\n"
-                       "0- Sair\n");
+        printf("\t==== MENU FORNECEDOR ====\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+                       "\t\t\t1- CADASTRAR NOVO FORNECEDOR\n"
+                       "\t\t\t2- VER FORNECEDORES\n"
+                       "\t\t\t3- EDITAR FORNECEDOR\n"
+                       "\t\t\t4- EXCLUIR FORNECEDOR\n"
+                       "\t\t\t0- SAIR\n"
+                       "=>");
+
         switch (opcao) {
             case 1:
                 novoFornecedor(fornecedores); // Cadastra novo fornecedor

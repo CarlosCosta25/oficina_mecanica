@@ -116,7 +116,6 @@ Oficina *getOficina() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/oficina.txt", "r");  // Abre o arquivo de texto para leitura
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo oficina.txt!\n");
             free(oficina);  // Libera memória caso ocorra erro
             return NULL;
         }
@@ -126,7 +125,6 @@ Oficina *getOficina() {
     else if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/oficina.bin", "rb");  // Abre o arquivo binário para leitura
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo oficina.bin!\n");
             free(oficina);  // Libera memória caso ocorra erro
             return NULL;
         }

@@ -14,15 +14,18 @@ void menuPecas(Peca **pecas, Fornecedor *fornecedores) {
     }
 
     int opcao = -1; // Variável para armazenar a opção do usuário
-    while (opcao != 0) { // Enquanto a opção não for 0 (sair)
+    while (opcao != 0) {
+        // Enquanto a opção não for 0 (sair)
         // Exibe o menu
         printf("==== MENU PEÇAS ====\n");
-        opcao = lerInt("Digite a opção desejada:\n"
-            "1- Cadastrar nova peça\n"
-            "2- Ver peça\n"
-            "3- Editar peça\n"
-            "4- Excluir peça\n"
-            "0- Sair\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+            "\t\t\t1- CADASTRAR NOVA PEÇA\n"
+            "\t\t\t2- VER PEÇA\n"
+            "\t\t\t3- EDITAR PEÇA\n"
+            "\t\t\t4- EXCLUIR PEÇA\n"
+            "\t\t\t0- SAIR\n"
+            "=>");
+
 
         switch (opcao) {
             case 1: // Cadastrar nova peça
@@ -85,7 +88,6 @@ void novaPeca(Peca **pecas, Fornecedor *fornecedores) {
         printf("Erro no cadastro da peça!\n");
     }
 
-    printf("Tamanho das peças: %d\n", getTamanhoPecas());
 
     free(peca); // Libera a memória da peça após o cadastro
 }
@@ -253,6 +255,7 @@ void apagarPeca(Peca *pecas) {
 
     printf("Peça excluída com sucesso!\n");
 }
+
 // Função para listar todos as peças ativas
 void mostrarTodasPecas(Peca *pecas) {
     for (int i = 0; i < getTamanhoPecas(); i++) {

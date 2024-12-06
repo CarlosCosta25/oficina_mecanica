@@ -10,13 +10,14 @@ void menuCliente(Cliente **clientes) {
     }
     int opcao = -1;
     while (opcao != 0) {
-        printf("==== MENU CLIENTE ====\n");
-        opcao = lerInt("Digite a opcao deseja:\n"
-            "1- Cadastrar novo cliente\n"
-            "2- Ver clientes\n"
-            "3- Editar cliente\n"
-            "4- Excluir cliente\n"
-            "0- Sair\n");
+        printf("\t==== MENU CLIENTE ====\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+            "\t\t\t1- CADASTRAR NOVA TRANSAÇÃO\n"
+            "\t\t\t2- VER TRANSAÇÕES\n"
+            "\t\t\t3- EDITAR TRANSAÇÃO\n"
+            "\t\t\t4- EXCLUIR TRANSAÇÃO\n"
+            "\t\t\t0- SAIR\n"
+            "=>");
         switch (opcao) {
             case 1:
                 novoCliente(clientes);

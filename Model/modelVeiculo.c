@@ -2,69 +2,68 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "../bibliotecas/utils.h"  // Funções utilitárias, como removeTags e equals
-#include "../bibliotecas/veiculo.h"  // Definições de estrutura Veiculo
+#include "../bibliotecas/utils.h"
+#include "../bibliotecas/veiculo.h"
 
-int qtdVeiculos = 0;  // Variável global para manter o controle da quantidade de veículos
+int qtdVeiculos = 0;
 
-// Função para obter a quantidade atual de veículos
+// Função para cadastrar veiculo no arquivo
 int getTamanhoVeiculos() {
     return qtdVeiculos;
 }
 
-// Função para incrementar o número de veículos
 void setTamanhoVeiculos() {
     qtdVeiculos++;
 }
 
-// Função para migrar dados entre os diferentes tipos de armazenamento (TXT, BIN, MEM)
 Veiculo *migraDadosVeiculo() {
     Veiculo *veiculos = NULL;
     FILE *buffer;
-    // Se o tipo de arquivo for TXT, migra para binário
     if (getTipoArquivo() == TXT) {
+        // se o usuario deseja gravar os dados no txt
         buffer = fopen("../bd/veiculos.bin", "rb");
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            setTipoArquivo(BIN);  // Muda para BIN
-            veiculos = getVeiculos();  // Obtém os veículos
-            setTipoArquivo(TXT);  // Volta para TXT
-            setVeiculos(veiculos);  // Salva os veículos no formato TXT
+            setTipoArquivo(BIN); // muda o tipo de arquivo para bin
+            veiculos = getVeiculos();
+            setTipoArquivo(TXT);// volta para o arquivo txt
+
+            setVeiculos(veiculos);// escreve no txt
             free(buffer);
-            remove("../bd/veiculos.bin");  // Remove o arquivo binário
+            remove("../bd/veiculos.bin");
             return NULL;
         }
         fclose(buffer);
         free(buffer);
     }
-    // Se o tipo de arquivo for BIN, migra para TXT
     if (getTipoArquivo() == BIN) {
+        //se o usuario deseja gravar em binario
         buffer = fopen("../bd/veiculos.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            setTipoArquivo(TXT);  // Muda para TXT
-            veiculos = getVeiculos();  // Obtém os veículos
-            setTipoArquivo(BIN);  // Muda para BIN
-            setVeiculos(veiculos);  // Salva os veículos no formato BIN
-            remove("../bd/veiculos.txt");  // Remove o arquivo TXT
+            setTipoArquivo(TXT);
+            veiculos = getVeiculos();
+            setTipoArquivo(BIN);
+            setVeiculos(veiculos);
+            remove("../bd/veiculos.txt");
             return NULL;
         }
         fclose(buffer);
         free(buffer);
         return NULL;
     }
-    // Se o tipo de arquivo for MEM, verifica e migra os dados para a memória
     if (getTipoArquivo() == MEM) {
         buffer = fopen("../bd/veiculos.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            setTipoArquivo(TXT);  // Muda para TXT
-            veiculos = getVeiculos();  // Obtém os veículos
-            setTipoArquivo(MEM);  // Muda para MEM
-            remove("../bd/veiculos.txt");  // Remove o arquivo TXT
+            //se antes ele tiver gravado os dados em txt
+            setTipoArquivo(TXT); // muda o tipo de arquivo para
+            veiculos = getVeiculos();
+            setTipoArquivo(MEM);
+            remove("../bd/veiculos.txt");
             return veiculos;
         }
         fclose(buffer);
@@ -74,10 +73,11 @@ Veiculo *migraDadosVeiculo() {
         if (buffer != NULL) {
             fclose(buffer);
             free(buffer);
-            setTipoArquivo(BIN);  // Muda para BIN
-            veiculos = getVeiculos();  // Obtém os veículos
-            setTipoArquivo(MEM);  // Muda para MEM
-            remove("../bd/veiculos.bin");  // Remove o arquivo BIN
+            //se antes ele tiver gravado os dados em binario
+            setTipoArquivo(BIN); // muda o tipo de arquivo para
+            veiculos = getVeiculos();
+            setTipoArquivo(MEM);
+            remove("../bd/veiculos.bin");
             return veiculos;
         }
         fclose(buffer);
@@ -86,59 +86,49 @@ Veiculo *migraDadosVeiculo() {
     }
     return NULL;
 }
-
-// Função para definir os veículos no arquivo
 void setVeiculos(Veiculo *veiculos) {
     FILE *buffer;
-    // Se o tipo de arquivo for TXT, salva os veículos no formato TXT
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/veiculos.txt", "w");  // Abre o arquivo TXT para escrita
+        buffer = fopen("../bd/veiculos.txt", "w"); // Abre o arquivo corretamente
         if (buffer != NULL) {
-            escrever_arquivo_txt_veiculo(buffer, veiculos);  // Escreve os veículos no arquivo TXT
+            escrever_arquivo_txt_veiculo(buffer, veiculos);
             fclose(buffer);
             return;
         }
     }
-    // Se o tipo de arquivo for BIN, salva os veículos no formato BIN
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/veiculos.bin", "wb");  // Abre o arquivo BIN para escrita
+        buffer = fopen("../bd/veiculos.bin", "wb"); // Abre o arquivo corretamente
         if (buffer != NULL) {
-            escrever_arquivo_bin_veiculo(buffer, veiculos);  // Escreve os veículos no arquivo BIN
+            escrever_arquivo_bin_veiculo(buffer, veiculos);
             fclose(buffer);
         }
     }
 }
 
-// Função para obter os veículos armazenados no arquivo
 Veiculo *getVeiculos() {
     FILE *buffer;
     Veiculo *veiculos = NULL;
-    // Se o tipo de arquivo for TXT, lê os veículos do formato TXT
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/veiculos.txt", "r");  // Abre o arquivo TXT para leitura
+        buffer = fopen("../bd/veiculos.txt", "r"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo veículos.txt!\n");
+
             return NULL;
         }
-        veiculos = ler_arquivo_txt_veiculo(buffer);  // Lê os veículos do arquivo TXT
+        veiculos = ler_arquivo_txt_veiculo(buffer);
     }
-    // Se o tipo de arquivo for BIN, lê os veículos do formato BIN
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/veiculos.bin", "rb");  // Abre o arquivo BIN para leitura
+        buffer = fopen("../bd/veiculos.bin", "rb"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo veículos.bin!\n");
+
             return NULL;
         }
-        veiculos = ler_arquivo_bin_veiculo(buffer);  // Lê os veículos do arquivo BIN
+        veiculos = ler_arquivo_bin_veiculo(buffer);
     }
-    // Se o tipo de arquivo for MEM, retorna NULL (dados são em memória)
     if (getTipoArquivo() == MEM) {
         return NULL;
     }
     return veiculos;
 }
-
-// Função para ler os veículos do arquivo TXT
 Veiculo *ler_arquivo_txt_veiculo(FILE *buffer) {
     int numVeiculos = 0;
     Veiculo *veiculos = NULL;
@@ -146,58 +136,55 @@ Veiculo *ler_arquivo_txt_veiculo(FILE *buffer) {
     int i = 0;
     int isPrimeiro = TRUE;
 
-    // Lê cada linha do arquivo TXT e converte para a estrutura Veiculo
     while (fgets(Linha, sizeof(Linha), buffer) != NULL) {
         if (isPrimeiro == TRUE) {
-            veiculos = malloc(sizeof(Veiculo) * (numVeiculos + 1));  // Aloca espaço para o primeiro veículo
+            veiculos = malloc(sizeof(Veiculo) * (numVeiculos + 1));
             isPrimeiro = FALSE;
         }
-        // Processa cada linha para preencher os campos da estrutura Veiculo
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
-            if (isPrimeiro == FALSE) veiculos = realloc(veiculos, (numVeiculos + 1) * sizeof(Veiculo));  // Realoca memória conforme necessário
+        if (equals("<registro>\n", Linha) == FALSE
+            && equals("</registro>\n", Linha) == FALSE) {
+            if (isPrimeiro == FALSE) veiculos = realloc(veiculos, (numVeiculos + 1) * sizeof(Veiculo));
             switch (i) {
                 case 0:
-                    veiculos[numVeiculos].codigo = atoi(removeTags(Linha));  // Converte o código
-                    i++;
-                    break;
+                    veiculos[numVeiculos].codigo = atoi(removeTags(Linha));
+                i++;
+                break;
                 case 1:
-                    strcpy(veiculos[numVeiculos].placa, removeTags(Linha));  // Copia a placa
-                    i++;
-                    break;
+                    strcpy(veiculos[numVeiculos].placa, removeTags(Linha));
+                i++;
+                break;
                 case 2:
-                    strcpy(veiculos[numVeiculos].modelo, removeTags(Linha));  // Copia o modelo
-                    i++;
-                    break;
+                    strcpy(veiculos[numVeiculos].modelo, removeTags(Linha));
+                i++;
+                break;
                 case 3:
-                    strcpy(veiculos[numVeiculos].marca, removeTags(Linha));  // Copia a marca
-                    i++;
-                    break;
+                    strcpy(veiculos[numVeiculos].marca, removeTags(Linha));
+                i++;
+                break;
                 case 4:
-                    veiculos[numVeiculos].anofabricacao = atoi(removeTags(Linha));  // Converte o ano de fabricação
-                    i++;
-                    break;
+                    veiculos[numVeiculos].anofabricacao = atoi(removeTags(Linha));
+                i++;
+                break;
                 case 5:
-                    strcpy(veiculos[numVeiculos].chassi, removeTags(Linha));  // Copia o número do chassi
-                    i++;
-                    break;
+                    strcpy(veiculos[numVeiculos].chassi, removeTags(Linha));
+                i++;
+                break;
                 case 6:
-                    veiculos[numVeiculos].ativo = atoi(removeTags(Linha));  // Define se o veículo está ativo
-                    i = 0;  // Reinicia o contador
-                    numVeiculos++;  // Incrementa o contador de veículos
-                    veiculos = realloc(veiculos, (numVeiculos + 1) * sizeof(Veiculo));  // Realoca memória
-                    break;
+                    veiculos[numVeiculos].ativo = atoi(removeTags(Linha));
+                i = 0; // Reinicia para ler o próximo veiculo
+                numVeiculos++;
+                veiculos = realloc(veiculos, (numVeiculos + 1) * sizeof(Veiculo));
+                break;
+               }
             }
-        }
     }
-    qtdVeiculos = numVeiculos;  // Atualiza a quantidade de veículos
+    qtdVeiculos = numVeiculos;
     return veiculos;
 }
 
-// Função para escrever os veículos no arquivo TXT
 void escrever_arquivo_txt_veiculo(FILE *buffer, Veiculo *veiculos) {
-    if (getTamanhoVeiculos() == 0) setTamanhoVeiculos();  // Garante que pelo menos um veículo esteja registrado
+    if (getTamanhoVeiculos() == 0) setTamanhoVeiculos(); // se acaso não tiver nenhum veiculo cadastrado
 
-    // Escreve todos os veículos no arquivo TXT
     for (int i = 0; i < getTamanhoVeiculos(); i++) {
         int escrevendo = fprintf(buffer,
                                  "<registro>\n"
@@ -223,7 +210,6 @@ void escrever_arquivo_txt_veiculo(FILE *buffer, Veiculo *veiculos) {
     }
 }
 
-// Função para ler os veículos do arquivo BIN
 Veiculo *ler_arquivo_bin_veiculo(FILE *buffer) {
     Veiculo *veiculos = malloc(sizeof(Veiculo) * (getTamanhoVeiculos() + 1));
     int i = 0;
@@ -235,13 +221,11 @@ Veiculo *ler_arquivo_bin_veiculo(FILE *buffer) {
     return veiculos;
 }
 
-// Função para escrever os veículos no arquivo BIN
 void *escrever_arquivo_bin_veiculo(FILE *buffer, Veiculo *veiculos) {
-    printf("O tamanho do vetor é: %d\n", getTamanhoVeiculos());
-    // Escreve todos os veículos no arquivo BIN
+
     for (int i = 0; i < getTamanhoVeiculos(); i++) {
         if (fwrite(&veiculos[i], sizeof(Veiculo), 1, buffer)) {
-            printf("Escreveu com sucesso!\n");
+
         }
     }
 }

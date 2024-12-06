@@ -9,6 +9,7 @@ int qtdServicos = 0;
 int getTamanhoServicos() {
     return qtdServicos;
 }
+
 // Incrementa o contador global de serviços
 void setTamanhoServicos() {
     qtdServicos++;
@@ -18,10 +19,11 @@ void setTamanhoServicos() {
  * Função para migrar dados de serviços entre diferentes formatos de armazenamento (TXT, BIN ou MEM).
  * Retorna um ponteiro para os dados migrados ou NULL se não for necessário migrar.
  */
-Servico * migraDadosServicos() {
+Servico *migraDadosServicos() {
     Servico *servicos = NULL;
     FILE *buffer;
-    if (getTipoArquivo() == TXT) {// Caso o tipo de arquivo seja TXT
+    if (getTipoArquivo() == TXT) {
+        // Caso o tipo de arquivo seja TXT
         buffer = fopen("../bd/servicos.bin", "rb");
         if (buffer != NULL) {
             fclose(buffer);
@@ -34,7 +36,8 @@ Servico * migraDadosServicos() {
             return NULL;
         }
     }
-    if (getTipoArquivo() == BIN) {// Caso o tipo de arquivo seja BIN
+    if (getTipoArquivo() == BIN) {
+        // Caso o tipo de arquivo seja BIN
         buffer = fopen("../bd/servicos.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -46,7 +49,8 @@ Servico * migraDadosServicos() {
             return NULL;
         }
     }
-    if (getTipoArquivo() == MEM) {// Caso o tipo de armazenamento seja MEM
+    if (getTipoArquivo() == MEM) {
+        // Caso o tipo de armazenamento seja MEM
         buffer = fopen("../bd/servicos.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -69,6 +73,7 @@ Servico * migraDadosServicos() {
     }
     return NULL;
 }
+
 /**
  * Salva os dados de serviços no formato especificado (TXT ou BIN).
  */
@@ -101,7 +106,6 @@ Servico *getServicos() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/servicos.txt", "r"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo servicos.txt!\n");
             return NULL;
         }
         servicos = ler_arquivo_txt_servico(buffer);
@@ -109,7 +113,6 @@ Servico *getServicos() {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/servicos.bin", "rb"); // Abre o arquivo corretamente
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo servicos.bin!\n");
             return NULL;
         }
         servicos = ler_arquivo_bin_servico(buffer);
@@ -119,22 +122,25 @@ Servico *getServicos() {
     }
     return servicos;
 }
+
 /**
  * Lê os serviços de um arquivo TXT e retorna um array dinâmico de `Serviço`.
  */
 Servico *ler_arquivo_txt_servico(FILE *buffer) {
     int numServicos = 0; // armazena a cada interação o numero de serviços lidos do arquivo
     Servico *servicos = NULL;
-    char Linha[100];// variavel para receber os dados lidos do arquivo
+    char Linha[100]; // variavel para receber os dados lidos do arquivo
     int i = 0; // contador para calcular quantos dados foram lidos de casa serviço
     int isPrimeiro = TRUE; // usado para dizer se é a primeira iteração do loop
 
-    while (fgets(Linha, sizeof(Linha), buffer) != NULL) { // lê o arquivo linha a linha
+    while (fgets(Linha, sizeof(Linha), buffer) != NULL) {
+        // lê o arquivo linha a linha
         if (isPrimeiro == TRUE) {
             // se for a primeira iteração, cria uma posição de memoria
             servicos = malloc(sizeof(Servico) * (numServicos + 1));
             isPrimeiro = FALSE;
-        } else { //se não so realoca memeoria para o ponteiro
+        } else {
+            //se não so realoca memeoria para o ponteiro
             servicos = realloc(servicos, (numServicos + 1) * sizeof(Servico));
         }
         // ignora as tegs de registro
@@ -142,25 +148,25 @@ Servico *ler_arquivo_txt_servico(FILE *buffer) {
             switch (i) {
                 case 0:
                     servicos[numServicos].codigo = atoi(removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 1:
                     strcpy(servicos[numServicos].descricao, removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 2:
                     servicos[numServicos].preco = atof(removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 3:
                     servicos[numServicos].comicao = atof(removeTags(Linha));
-                i++;
-                break;
+                    i++;
+                    break;
                 case 4:
                     servicos[numServicos].ativo = atoi(removeTags(Linha));
-                i = 0; // Reinicia para ler o próximo serviço
-                numServicos++; // aumenta a qtd de serviços lidos
-                break;
+                    i = 0; // Reinicia para ler o próximo serviço
+                    numServicos++; // aumenta a qtd de serviços lidos
+                    break;
             }
         }
     }
@@ -222,6 +228,7 @@ Servico *ler_arquivo_bin_servico(FILE *buffer) {
     }
     return servicos;
 }
+
 /**
  * Escreve os dados de serviços em um arquivo BIN.
  */
@@ -233,4 +240,3 @@ void escrever_arquivo_bin_servico(FILE *buffer, Servico *servicos) {
         }
     }
 }
-

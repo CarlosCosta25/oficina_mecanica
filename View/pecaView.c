@@ -5,40 +5,48 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/peca.h"
 
-// Função principal do menu de peças
+// Função que exibe o menu de peças e realiza operações com as peças
 void menuPecas(Peca **pecas, Fornecedor *fornecedores) {
-    // Verifica se a leitura deve ser feita do arquivo ou da memória
-    if (getTipoArquivo() != 3) {
+    // Verifica o tipo de arquivo e carrega os dados das peças e fornecedores, se necessário
+    if (getTipoArquivo() != MEM) {
         *pecas = readPecas();
-        fornecedores = readFornecedores(); // Lê os fornecedores
+        fornecedores = readFornecedores();
     }
 
-    int opcao = -1;
-    // Loop do menu até que o usuário escolha a opção de sair
+    int opcao = -1; // Variável para armazenar a opção do usuário
     while (opcao != 0) {
+        // Enquanto a opção não for 0 (sair)
+        // Exibe o menu
         printf("==== MENU PEÇAS ====\n");
-        opcao = lerInt("Digite a opção desejada:\n"
-            "1- Cadastrar nova peça\n"
-            "2- Ver peça\n"
-            "3- Editar peça\n"
-            "4- Excluir peça\n"
-            "0- Sair\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+            "\t\t\t1- CADASTRAR NOVA PEÇA\n"
+            "\t\t\t2- VER PEÇA\n"
+            "\t\t\t3- EDITAR PEÇA\n"
+            "\t\t\t4- EXCLUIR PEÇA\n"
+            "\t\t\t0- SAIR\n"
+            "=>");
 
-        // Estrutura de controle de fluxo com base na escolha do usuário
+
         switch (opcao) {
-            case 1:
-                novaPeca(pecas, fornecedores); // Cadastra uma nova peça
-                if (getTipoArquivo() != MEM) *pecas = readPecas(); // Atualiza as peças
+            case 1: // Cadastrar nova peça
+                novaPeca(pecas, fornecedores);
+                if (getTipoArquivo() != MEM) *pecas = readPecas(); // Recarrega as peças se necessário
+                opcao = -1; // Reseta a opção
                 break;
 
-            case 2:
-                mostrarPeca(*pecas); // Exibe informações de uma peça
+            case 2: // Mostrar peça
+                mostrarPeca(*pecas);
+                opcao = -1;
                 break;
-            case 3:
-                editarPeca(*pecas, fornecedores); // Edita uma peça existente
+
+            case 3: // Editar peça
+                editarPeca(*pecas, fornecedores);
+                opcao = -1;
                 break;
-            case 4:
-                apagarPeca(*pecas); // Exclui uma peça
+
+            case 4: // Excluir peça
+                apagarPeca(*pecas);
+                opcao = -1;
                 break;
         }
     }
@@ -46,46 +54,47 @@ void menuPecas(Peca **pecas, Fornecedor *fornecedores) {
 
 // Função que cadastra uma nova peça
 void novaPeca(Peca **pecas, Fornecedor *fornecedores) {
-    Peca *peca = malloc(sizeof(Peca)); // Aloca memória para a nova peça
+    // Aloca memória para a nova peça
+    Peca *peca = malloc(sizeof(Peca));
     if (peca == NULL) {
         printf("Erro ao alocar memória para a nova peça!\n");
         return;
     }
 
-    // Coleta informações do usuário sobre a peça
+    // Solicita informações da peça
     strcpy(peca->descricao, lerString("Digite a descrição da peça: "));
     strcpy(peca->fabricante, lerString("Digite o nome do fabricante: "));
-
     printf("\tFORNECEDORES: \n");
-    mostrarTodosFornecedores(fornecedores); // Exibe todos os fornecedores disponíveis
+    mostrarTodosFornecedores(fornecedores);
 
     peca->fornecedor = lerInt("Digite o código do fornecedor: ");
+    // Verifica se o fornecedor existe
     if (showFornecedor(fornecedores, peca->fornecedor) == FALSE) {
         printf("Fornecedor não existe, por favor tente novamente");
-        free(peca);
+        free(peca); // Libera a memória caso o fornecedor não seja encontrado
         return;
     }
 
+    // Solicita os outros dados da peça
     peca->preco_custo = lerFloat("Digite o preço de custo da peça: ");
     peca->preco_venda = lerFloat("Digite o preço de venda da peça: ");
     peca->estoque = lerInt("Digite a quantidade em estoque: ");
     peca->estoque_min = lerInt("Digite o estoque mínimo: ");
 
-    // Chama a função para adicionar a peça à lista
+    // Cria a nova peça no sistema
     if (createPeca(pecas, peca) != FALSE) {
         printf("Peça cadastrada com sucesso!\n");
     } else {
         printf("Erro no cadastro da peça!\n");
     }
 
-    // Exibe o tamanho da lista de peças
-    printf("Tamanho das peças: %d\n", getTamanhoPecas());
 
-    free(peca); // Libera a memória alocada para a peça
+    free(peca); // Libera a memória da peça após o cadastro
 }
 
-// Função que exibe os dados de uma peça
+// Função que exibe as informações de uma peça
 void mostrarPeca(Peca *pecas) {
+    // Verifica se há peças cadastradas
     if (getTamanhoPecas() == 0) {
         printf("Nenhuma peça cadastrada até o momento\n");
         return;
@@ -94,12 +103,12 @@ void mostrarPeca(Peca *pecas) {
     printf("\tPEÇAS:\n");
     mostrarTodasPecas(pecas); // Exibe todas as peças cadastradas
 
-    // Solicita ao usuário o código da peça que deseja visualizar
+    // Solicita o código da peça a ser visualizada
     int codigo = lerInt("Digite o código da peça que você deseja ver: ");
-    int posicao = showPeca(pecas, codigo); // Verifica se a peça existe
+    int posicao = showPeca(pecas, codigo); // Localiza a peça pelo código
 
+    // Se a peça for encontrada, exibe seus dados
     if (posicao != FALSE) {
-        // Exibe os detalhes da peça encontrada
         printf("Código: %d\n"
                "Descrição: %s\n"
                "Fabricante: %s\n"
@@ -124,12 +133,14 @@ void mostrarPeca(Peca *pecas) {
 
 // Função que edita uma peça existente
 void editarPeca(Peca *pecas, Fornecedor *fornecedores) {
+    // Verifica se há peças cadastradas
     if (getTamanhoPecas() == 0) {
         printf("Nenhuma peça cadastrada\n");
         return;
     }
 
-    Peca *novaPeca = malloc(sizeof(Peca)); // Aloca memória para a nova versão da peça
+    // Aloca memória para a nova versão da peça
+    Peca *novaPeca = malloc(sizeof(Peca));
     if (novaPeca == NULL) {
         printf("Erro ao alocar memória para a edição da peça\n");
         return;
@@ -140,30 +151,87 @@ void editarPeca(Peca *pecas, Fornecedor *fornecedores) {
 
     novaPeca->codigo = lerInt("Digite o código da peça que você deseja editar: ");
 
-    int posicao = showPeca(pecas, novaPeca->codigo); // Procura pela peça
+    // Procura pela peça com o código informado
+    int posicao = showPeca(pecas, novaPeca->codigo);
 
+    // Se a peça não for encontrada, exibe uma mensagem e encerra a função
     if (posicao == FALSE) {
         printf("Peça não encontrada.\n");
         free(novaPeca);
         return;
     }
 
-    // Solicita ao usuário para editar os dados da peça, conforme necessário
-    // Para cada campo, o programa pergunta se o usuário deseja alterar o valor ou manter o valor atual
-
-    // [Processo similar para descrição, fabricante, fornecedor, preço de custo, preço de venda, estoque, estoque mínimo]
-
-    if (updatePeca(&pecas[posicao], novaPeca) == FALSE) {
-        printf("Erro na edição dos dados da peça\n");
+    // Solicita ao usuário se ele deseja editar os dados da peça
+    printf("A descrição atual da peça é: %s\n", pecas[posicao].descricao);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        strcpy(novaPeca->descricao, lerString("Digite a nova descrição da peça: "));
     } else {
-        printf("Peça editada com sucesso!\n");
+        strcpy(novaPeca->descricao, pecas[posicao].descricao); // Mantém o valor atual se não for editado
     }
 
-    free(novaPeca);
+    // Repete o processo para os outros dados (fabricante, fornecedor, preço, etc.)
+    printf("O fabricante atual da peça é: %s\n", pecas[posicao].fabricante);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        strcpy(novaPeca->fabricante, lerString("Digite o novo nome do fabricante: "));
+    } else {
+        strcpy(novaPeca->fabricante, pecas[posicao].fabricante);
+    }
+
+    printf("\tFORNECEDORES:\n");
+    mostrarTodosFornecedores(fornecedores);
+
+    printf("O fornecedor atual é: %d\n", pecas[posicao].fornecedor);
+    if (lerInt("Deseja editar o fornecedor? (1 - Sim, 0 - Não): ") == TRUE) {
+        int fornecedor = lerInt("Digite o código do novo fornecedor: ");
+        if (showFornecedor(fornecedores, fornecedor) == FALSE) {
+            printf("Fornecedor não encontrado. Usando o fornecedor atual.\n");
+            novaPeca->fornecedor = pecas[posicao].fornecedor;
+        } else {
+            novaPeca->fornecedor = fornecedor;
+        }
+    } else {
+        novaPeca->fornecedor = pecas[posicao].fornecedor;
+    }
+
+    // Solicita os novos valores para os preços e estoques
+    printf("O preço de custo atual é: %.2f\n", pecas[posicao].preco_custo);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->preco_custo = lerFloat("Digite o novo preço de custo: ");
+    } else {
+        novaPeca->preco_custo = pecas[posicao].preco_custo;
+    }
+
+    printf("O preço de venda atual é: %.2f\n", pecas[posicao].preco_venda);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->preco_venda = lerFloat("Digite o novo preço de venda: ");
+    } else {
+        novaPeca->preco_venda = pecas[posicao].preco_venda;
+    }
+
+    printf("O estoque atual é: %d\n", pecas[posicao].estoque);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->estoque = lerInt("Digite a nova quantidade em estoque: ");
+    } else {
+        novaPeca->estoque = pecas[posicao].estoque;
+    }
+
+    printf("O estoque mínimo atual é: %d\n", pecas[posicao].estoque_min);
+    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+        novaPeca->estoque_min = lerInt("Digite o novo estoque mínimo: ");
+    } else {
+        novaPeca->estoque_min = pecas[posicao].estoque_min;
+    }
+
+    // Atualiza a peça no sistema
+    updatePeca(pecas, novaPeca);
+
+    printf("Peça editada com sucesso!\n");
+    free(novaPeca); // Libera a memória após editar
 }
 
-// Função que exclui uma peça
+// Função que apaga uma peça
 void apagarPeca(Peca *pecas) {
+    // Verifica se há peças cadastradas
     if (getTamanhoPecas() == 0) {
         printf("Nenhuma peça cadastrada\n");
         return;
@@ -172,18 +240,26 @@ void apagarPeca(Peca *pecas) {
     printf("\tPEÇAS:\n");
     mostrarTodasPecas(pecas); // Exibe todas as peças cadastradas
 
-    int codigo = lerInt("Digite o código da peça que você deseja apagar: ");
-    if (deletePeca(pecas, codigo) == TRUE) {
-        printf("Peça apagada com sucesso\n");
-    } else {
-        printf("Peça não existe\n");
+    // Solicita o código da peça a ser excluída
+    int codigo = lerInt("Digite o código da peça que você deseja excluir: ");
+    int posicao = showPeca(pecas, codigo);
+
+    // Se a peça não for encontrada, exibe uma mensagem
+    if (posicao == FALSE) {
+        printf("Peça não encontrada.\n");
+        return;
     }
+
+    // Apaga a peça do sistema
+    deletePeca(pecas, posicao);
+
+    printf("Peça excluída com sucesso!\n");
 }
 
-// Função que exibe todas as peças cadastradas
+// Função para listar todos as peças ativas
 void mostrarTodasPecas(Peca *pecas) {
     for (int i = 0; i < getTamanhoPecas(); i++) {
-        if (pecas[i].ativo != FALSE)  // Verifica se a peça está ativa
+        if (pecas[i].ativo != FALSE)
             printf("Peça: %s Codigo: %d\n", pecas[i].descricao, pecas[i].codigo);
     }
 }

@@ -16,13 +16,22 @@ int main(void)
 
     int opc = 0;
 
-    Oficina* oficina_atual = readOficina();
+    Oficina* oficina_atual = migraDadosOficina();
+    Cliente* cliente = NULL;
+        cliente =migraDadosCliente();
+    Veiculo* veiculo = migraDadosVeiculo();
+    Peca* pecas = migraDadosPeca();
+    Fornecedor* fornercedor = migraDadosFornecedor();
+    Servico* servico = migraDadosServicos();
+    Funcionario* funcionario = migraDadosFuncionario();
+
 
     while (opc != 7)
     {
-        //verifica se a oficina ex
-        if (oficina_atual != NULL)
-        {
+        if(getTipoArquivo() != MEM) oficina_atual = readOficina();
+        //verifica se a oficina existe oficina
+        //if (oficina_atual != NULL)
+        //{
             printf("\n===============SISTEMA GERENCIAL DE UMA OFICINA===============\n\n \t\tSeja bem vindo!! %s \n\n",
                    oficina_atual->nome);
             opc = lerInt(
@@ -52,30 +61,24 @@ int main(void)
                 switch (cadastros)
                 {
                 case 1:
-                    Cliente* cliente = migraDadosCliente();
                     menuCliente(&cliente);
                     break;
                 case 2:
-                    /* code */
-                    Veiculo* veiculo = migraDadosVeiculo();
-                //menuVeiculo(&veiculo);
+
+                menuVeiculo(&veiculo);
                     break;
                 case 3:
                     /* para  pecas preciso passar fornecedor e pecas */
-                    Peca* pecas = migraDadosPeca();
-                    Fornecedor* fornercedor = migraDadosFornecedor();
+
                     menuPecas(&pecas,&fornercedor);
                     break;
                 case 4:
-            
                     menuFornecedor(&fornercedor);
                     break;
                 case 5:
-                    Servico* servico = migraDadosServicos();
                     menuServicos(&servico);
                     break;
-                case 6:
-                    Funcionario* funcionario = migraDadosFuncionario();
+                    case 6:
                     menuFuncionario(&funcionario);
                     break;
                 default:
@@ -93,12 +96,12 @@ int main(void)
             case 5:
                 break;
             }
-        }
-        else
+        //}
+        /*else
         {
             Oficina* oficina_nova = migraDadosOficina();
             menuOficina(&oficina_nova);
-        }
+        }*/
     }
 
     return 0;

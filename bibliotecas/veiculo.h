@@ -50,7 +50,7 @@ int deleteVeiculo(Veiculo* veiculos, int id);
 
 //View Veículos
 
-void menuVeiculo();
+void menuVeiculo(Veiculo **veiculos);
 
 void novoVeiculo(Veiculo **veiculos);
 

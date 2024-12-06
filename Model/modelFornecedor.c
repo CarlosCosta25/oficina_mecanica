@@ -17,15 +17,12 @@ void setTamanhoFornecedores() {
     qtdFornecedores++;
 }
 
-/**
- * Função para migrar dados de fornecedores entre diferentes formatos de armazenamento (TXT, BIN ou MEM).
- * Retorna um ponteiro para os dados migrados ou NULL se não for necessário migrar.
- */
+// Função para migrar os dados dos fornecedores entre formatos de arquivos
 Fornecedor *migraDadosFornecedor() {
     Fornecedor *fornecedores = NULL;
     FILE *buffer;
 
-    // Caso o tipo de arquivo seja TXT
+    // Migração de binário para texto
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/fornecedores.bin", "rb");
         if (buffer != NULL) {
@@ -39,7 +36,7 @@ Fornecedor *migraDadosFornecedor() {
         }
     }
 
-    // Caso o tipo de arquivo seja BIN
+    // Migração de texto para binário
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/fornecedores.txt", "r");
         if (buffer != NULL) {
@@ -52,8 +49,9 @@ Fornecedor *migraDadosFornecedor() {
             return NULL;
         }
     }
+
+    // Migração de arquivos para memória
     if (getTipoArquivo() == MEM) {
-        // Caso o tipo de armazenamento seja MEM
         buffer = fopen("../bd/fornecedores.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -77,22 +75,21 @@ Fornecedor *migraDadosFornecedor() {
     return NULL;
 }
 
-/**
- * Salva os dados de fornecedores no formato especificado (TXT ou BIN).
- */
+// Função para salvar fornecedores no formato especificado
 void setFornecedores(Fornecedor *fornecedores) {
     FILE *buffer;
 
     if (getTipoArquivo() == TXT) {
-        buffer = fopen("../bd/fornecedores.txt", "w"); // Abre para escrita no TXT
+        buffer = fopen("../bd/fornecedores.txt", "w");
         if (buffer != NULL) {
             escrever_arquivo_txt_fornecedor(buffer, fornecedores);
             fclose(buffer);
             return;
         }
     }
+
     if (getTipoArquivo() == BIN) {
-        buffer = fopen("../bd/fornecedores.bin", "wb"); // Abre para escrita no BIN
+        buffer = fopen("../bd/fornecedores.bin", "wb");
         if (buffer != NULL) {
             escrever_arquivo_bin_fornecedor(buffer, fornecedores);
             fclose(buffer);
@@ -100,10 +97,7 @@ void setFornecedores(Fornecedor *fornecedores) {
     }
 }
 
-/**
- * Lê os dados de fornecedores do formato especificado (TXT ou BIN).
- * Retorna um ponteiro para o array de fornecedores.
- */
+// Função para ler fornecedores no formato especificado
 Fornecedor *getFornecedores() {
     FILE *buffer;
     Fornecedor *fornecedores = NULL;
@@ -111,28 +105,29 @@ Fornecedor *getFornecedores() {
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/fornecedores.txt", "r");
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo fornecedores.txt!\n");
+
             return NULL;
         }
         fornecedores = ler_arquivo_txt_fornecedor(buffer);
     }
+
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/fornecedores.bin", "rb");
         if (buffer == NULL) {
-            printf("Erro na abertura do arquivo fornecedores.bin!\n");
+
             return NULL;
         }
         fornecedores = ler_arquivo_bin_fornecedor(buffer);
     }
+
     if (getTipoArquivo() == MEM) {
-        return NULL; // Não há manipulação de dados diretamente na memória
+        return NULL;
     }
+
     return fornecedores;
 }
 
-/**
- * Lê os fornecedores de um arquivo TXT e retorna um array dinâmico de `Fornecedor`.
- */
+// Função para ler fornecedores de um arquivo TXT
 Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer) {
     int numFornecedores = 0;
     Fornecedor *fornecedores = NULL;
@@ -140,39 +135,53 @@ Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer) {
     int i = 0;
     int isPrimeiro = TRUE;
 
-    // Processa cada linha do arquivo
     while (fgets(Linha, sizeof(Linha), buffer) != NULL) {
-        if (isPrimeiro) {
-            fornecedores = malloc(sizeof(Fornecedor));
+        if (isPrimeiro == TRUE) {
+            fornecedores = malloc(sizeof(Fornecedor) * (numFornecedores + 1));
             isPrimeiro = FALSE;
         } else {
             fornecedores = realloc(fornecedores, (numFornecedores + 1) * sizeof(Fornecedor));
         }
-
-        // Lógica para extrair e atribuir dados baseados na estrutura
-        if (!equals("<registro>\n", Linha) && !equals("</registro>\n", Linha)) {
+        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
             switch (i) {
-                case 0: fornecedores[numFornecedores].codigo = atoi(removeTags(Linha)); i++; break;
-                case 1: strcpy(fornecedores[numFornecedores].nome_fantasia, removeTags(Linha)); i++; break;
-                case 2: strcpy(fornecedores[numFornecedores].razao_social, removeTags(Linha)); i++; break;
-                case 3: fornecedores[numFornecedores].incricao_estadual = atoi(removeTags(Linha)); i++; break;
-                case 4: strcpy(fornecedores[numFornecedores].cnpj, removeTags(Linha)); i++; break;
-                case 5: strcpy(fornecedores[numFornecedores].endereco, removeTags(Linha)); i++; break;
-                case 6: strcpy(fornecedores[numFornecedores].telefone, removeTags(Linha)); i++; break;
-                case 7: strcpy(fornecedores[numFornecedores].email, removeTags(Linha)); i++; break;
+                case 0:
+                    fornecedores[numFornecedores].codigo = atoi(removeTags(Linha));
+                    break;
+                case 1:
+                    strcpy(fornecedores[numFornecedores].nome_fantasia, removeTags(Linha));
+                    break;
+                case 2:
+                    strcpy(fornecedores[numFornecedores].razao_social, removeTags(Linha));
+                    break;
+                case 3:
+                    fornecedores[numFornecedores].incricao_estadual = atoi(removeTags(Linha));
+                    break;
+                case 4:
+                    strcpy(fornecedores[numFornecedores].cnpj, removeTags(Linha));
+                    break;
+                case 5:
+                    strcpy(fornecedores[numFornecedores].endereco, removeTags(Linha));
+                    break;
+                case 6:
+                    strcpy(fornecedores[numFornecedores].telefone, removeTags(Linha));
+                    break;
+                case 7:
+                    strcpy(fornecedores[numFornecedores].email, removeTags(Linha));
+                    break;
                 case 8:
                     fornecedores[numFornecedores].ativo = atoi(removeTags(Linha));
-                    i = 0;
+                    i = -1;
                     numFornecedores++;
                     break;
             }
+            i++;
         }
     }
     qtdFornecedores = numFornecedores;
     return fornecedores;
 }
 
-// Escreve fornecedores em um arquivo de texto
+// Função para escrever fornecedores em um arquivo TXT
 void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
     for (int i = 0; i < getTamanhoFornecedores(); i++) {
         fprintf(buffer,
@@ -199,20 +208,19 @@ void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
     }
 }
 
-// Lê fornecedores de um arquivo binário
+// Função para ler fornecedores de um arquivo BIN
 Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer) {
-    Fornecedor *fornecedores = malloc(sizeof(Fornecedor));
     int i = 0;
-
+    Fornecedor *fornecedores = malloc(sizeof(Fornecedor) * (getTamanhoFornecedores() + 1));
     while (fread(&fornecedores[i], sizeof(Fornecedor), 1, buffer)) {
         i++;
-        fornecedores = realloc(fornecedores, (i + 1) * sizeof(Fornecedor));
+        setTamanhoFornecedores();
+        fornecedores = realloc(fornecedores, (getTamanhoFornecedores() + 1) * sizeof(Fornecedor));
     }
-    qtdFornecedores = i;
     return fornecedores;
 }
 
-// Escreve fornecedores em um arquivo binário
+// Função para escrever fornecedores em um arquivo BIN
 void escrever_arquivo_bin_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
     for (int i = 0; i < getTamanhoFornecedores(); i++) {
         fwrite(&fornecedores[i], sizeof(Fornecedor), 1, buffer);

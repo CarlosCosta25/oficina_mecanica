@@ -4,10 +4,12 @@
 #include "../bibliotecas/fornecedor.h"
 #include "../bibliotecas/utils.h"
 
+// Obtém a lista de fornecedores a partir do armazenamento
 Fornecedor* readFornecedores() {
-    return  getFornecedores();
+    return getFornecedores();
 }
 
+// Cria um novo fornecedor e adiciona à lista
 int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor) {
     int tamanhoAtual = getTamanhoFornecedores();
 
@@ -58,14 +60,13 @@ int showFornecedor(Fornecedor *fornecedores, int codigo) {
     return posicao;
 }
 
-// Função para atualizar os dados de um fornecedor existente
+// Atualiza os dados de um fornecedor existente
 int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
+    int posicao = showFornecedor(fornecedores, fornecedor->codigo); // Busca a posição do fornecedor
 
-    int posicao = showFornecedor(fornecedores, fornecedor->codigo);
+    if (posicao == FALSE) return FALSE; // Retorna falso se não encontrar o fornecedor
 
-    if (posicao == FALSE) return FALSE; // Retorna FALSE se o fornecedor não for encontrado ou estiver inativo
-
-    // Atualiza os campos necessários
+    // Atualiza os dados do fornecedor
     fornecedores[posicao].codigo = fornecedor->codigo;
     strcpy(fornecedores[posicao].nome_fantasia, fornecedor->nome_fantasia);
     strcpy(fornecedores[posicao].razao_social, fornecedor->razao_social);
@@ -80,7 +81,7 @@ int updateFornecedor(Fornecedor *fornecedores, Fornecedor *fornecedor) {
     return TRUE;
 }
 
-// Função para deletar (ou desativar) um fornecedor
+// Remove um fornecedor (desativando-o)
 int deleteFornecedor(Fornecedor* fornecedores, int codigo) {
     int posicao = showFornecedor(fornecedores, codigo);
 
@@ -91,14 +92,16 @@ int deleteFornecedor(Fornecedor* fornecedores, int codigo) {
     return TRUE;
 }
 
-// Função para gerar um novo ID exclusivo para um fornecedor
+// Gera um novo ID para o próximo fornecedor
 int buscaNovoIDFornecedor(Fornecedor * fornecedores) {
-    int maior = 1;
-    if(getTamanhoFornecedores() == 0 ) return maior;
-    for(int i = 0; i < getTamanhoFornecedores(); i++) {
-        if(maior <= fornecedores[i].codigo) {
-            maior = fornecedores[i].codigo+1;
+    int maior = 1; // ID inicial é 1
+    if (getTamanhoFornecedores() == 0) return maior; // Retorna 1 se a lista estiver vazia
+
+    // Itera pelos fornecedores para encontrar o maior ID
+    for (int i = 0; i < getTamanhoFornecedores(); i++) {
+        if (maior <= fornecedores[i].codigo) {
+            maior = fornecedores[i].codigo + 1; // Incrementa o ID para o próximo disponível
         }
     }
-    return maior;
+    return maior; // Retorna o novo ID gerado
 }

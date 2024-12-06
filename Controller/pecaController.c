@@ -4,26 +4,24 @@
 #include "../bibliotecas/peca.h"
 #include "../bibliotecas/utils.h"
 
-// Função para obter a lista de peças existentes
+// Função para ler as peças do sistema
 Peca* readPecas() {
-    return getPecas(); // Retorna o array de peças do sistema, carregado a partir de uma fonte externa
+    return getPecas();
 }
 
-// Função para adicionar uma nova peça à lista de peças
+// Função para criar uma nova peça
 int createPeca(Peca **pecas, Peca *peca) {
     int tamanhoAtual = getTamanhoPecas(); // Obtém o tamanho atual do array de peças
+    Peca *novoPecas = realloc(*pecas, (tamanhoAtual + 1) * sizeof(Peca)); // Realoca memória para mais uma peça
 
-    // Realoca memória para incluir a nova peça
-    Peca *novoPecas = realloc(*pecas, (tamanhoAtual + 1) * sizeof(Peca));
-    if (novoPecas == NULL) { // Verifica se a realocação falhou
+    if (novoPecas == NULL) { // Se a realocação falhar
         printf("Erro ao alocar mais memória para peças.\n");
-        return FALSE; // Retorna falha
+        return FALSE; // Retorna 0 indicando falha
     }
-    *pecas = novoPecas; // Atualiza o ponteiro para o array realocado
+    *pecas = novoPecas; // Atualiza o ponteiro para o array de peças
     int index = tamanhoAtual; // Define o índice da nova peça
-
-    // Preenche os dados da nova peça
-    (*pecas)[index].codigo = buscaNovoIDPeca(*pecas); // Gera um novo ID exclusivo para a peça
+    // Preenche os campos da nova peça
+    (*pecas)[index].codigo = buscaNovoIDPeca(*pecas);
     strcpy((*pecas)[index].descricao, peca->descricao);
     strcpy((*pecas)[index].fabricante, peca->fabricante);
     (*pecas)[index].fornecedor = peca->fornecedor;
@@ -31,42 +29,40 @@ int createPeca(Peca **pecas, Peca *peca) {
     (*pecas)[index].preco_venda = peca->preco_venda;
     (*pecas)[index].estoque = peca->estoque;
     (*pecas)[index].estoque_min = peca->estoque_min;
-    (*pecas)[index].ativo = 1; // Marca a peça como ativa
+    (*pecas)[index].ativo = 1; // Marca a peça como ativa ao ser criada
+    setTamanhoPecas(); // Atualiza o tamanho das peças
 
-    setTamanhoPecas(); // Atualiza o tamanho total do array de peças no sistema
+    if (getTipoArquivo() != MEM) setPecas(*pecas); // Se não estiver no modo MEM, grava as peças no arquivo
 
-    // Salva as peças no armazenamento persistente, se aplicável
-    if (getTipoArquivo() != MEM) setPecas(*pecas);
-
-    return TRUE; // Retorna sucesso
+    return TRUE; // Retorna verdadeiro indicando sucesso
 }
 
-// Função para buscar o índice de uma peça pelo código
+// Função para mostrar uma peça, dado seu código
 int showPeca(Peca *pecas, int codigo) {
-    if (pecas == NULL) return FALSE; // Retorna falha se o array de peças for nulo
+    if (pecas == NULL) return FALSE; // Se o array de peças for nulo, retorna falso
 
     int posicao = 0;
     int tamanho = getTamanhoPecas(); // Obtém o tamanho do array de peças
 
-    // Busca a peça com o código especificado
+    // Procura a peça pelo código dentro do array
     while (posicao < tamanho && pecas[posicao].codigo != codigo) {
         posicao++;
     }
 
-    // Verifica se a peça foi encontrada e está ativa
+    // Verifica se a peça foi encontrada e se está ativa
     if (posicao == tamanho || pecas[posicao].ativo == FALSE)
-        return FALSE; // Retorna falha se não encontrou ou está inativa
+        return FALSE; // Retorna falso se a peça não foi encontrada ou está inativa
 
-    return posicao; // Retorna o índice da peça
+    return posicao; // Retorna a posição da peça encontrada
 }
 
-// Função para atualizar os dados de uma peça existente
+// Função para atualizar os dados de uma peça
 int updatePeca(Peca *pecas, Peca *peca) {
-    int posicao = showPeca(pecas, peca->codigo); // Busca a peça pelo código
+    int posicao = showPeca(pecas, peca->codigo); // Busca a peça a ser atualizada
 
-    if (posicao == FALSE) return FALSE; // Retorna falha se a peça não foi encontrada
+    if (posicao == FALSE) return FALSE; // Se a peça não foi encontrada, retorna falso
 
-    // Atualiza os campos da peça
+    // Atualiza os campos da peça com os novos valores
     pecas[posicao].codigo = peca->codigo;
     strcpy(pecas[posicao].descricao, peca->descricao);
     strcpy(pecas[posicao].fabricante, peca->fabricante);
@@ -75,34 +71,34 @@ int updatePeca(Peca *pecas, Peca *peca) {
     pecas[posicao].preco_venda = peca->preco_venda;
     pecas[posicao].estoque = peca->estoque;
     pecas[posicao].estoque_min = peca->estoque_min;
-    pecas[posicao].ativo = peca->ativo; // Atualiza o status ativo/inativo
+    pecas[posicao].ativo = peca->ativo; // Atualiza o campo ativo
 
-    // Salva as peças no armazenamento persistente, se aplicável
-    if (getTipoArquivo() != MEM) setPecas(pecas);
-    return TRUE; // Retorna sucesso
+    if (getTipoArquivo() != MEM) setPecas(pecas); // Se não estiver no modo MEM, grava as peças no arquivo
+    return TRUE; // Retorna verdadeiro indicando sucesso
 }
 
-// Função para marcar uma peça como inativa
+// Função para excluir uma peça (marcando-a como inativa)
 int deletePeca(Peca* pecas, int codigo) {
-    int posicao = showPeca(pecas, codigo); // Busca a peça pelo código
+    int posicao = showPeca(pecas, codigo); // Busca a peça a ser excluída
 
-    if (posicao == FALSE) return FALSE; // Retorna falha se a peça não foi encontrada ou está inativa
+    if (posicao == FALSE) return FALSE; // Se a peça não for encontrada, retorna falso
 
-    pecas[posicao].ativo = FALSE; // Marca a peça como inativa
-    if (getTipoArquivo() != MEM) setPecas(pecas); // Salva as alterações, se aplicável
-    return TRUE; // Retorna sucesso
+    pecas[posicao].ativo = FALSE; // Marca a peça como inativa (não exclui do array)
+    if (getTipoArquivo() != MEM) setPecas(pecas); // Se não estiver no modo MEM, grava as peças no arquivo
+    return TRUE; // Retorna verdadeiro indicando sucesso
 }
 
-// Função para gerar um novo ID único para uma peça
-int buscaNovoIDPeca(Peca *pecas) {
-    int maior = 1; // Inicia com o ID mínimo
-    if (getTamanhoPecas() == 0) return maior; // Retorna 1 se não há peças
+// Função para buscar o próximo ID disponível para uma nova peça
+int buscaNovoIDPeca(Peca * pecas) {
+    int maior = 1; // Inicia com o valor mínimo do código
 
-    // Itera pelas peças para encontrar o maior ID
+    if (getTamanhoPecas() == 0) return maior; // Se não houver peças, o ID será 1
+
+    // Itera sobre as peças para encontrar o maior código
     for (int i = 0; i < getTamanhoPecas(); i++) {
         if (maior <= pecas[i].codigo) {
-            maior = pecas[i].codigo + 1; // Atualiza o maior ID
+            maior = pecas[i].codigo + 1; // Atualiza o maior código encontrado
         }
     }
-    return maior; // Retorna o novo ID único
+    return maior; // Retorna o próximo código disponível
 }

@@ -4,38 +4,44 @@
 #include "../bibliotecas/utils.h"
 #include "../bibliotecas/servico.h"
 
-// Função principal do menu de serviços
+// Função que gerencia o menu principal para operações com serviços
 void menuServicos(Servico **servicos) {
     if (getTipoArquivo() != 3) {
-        *servicos = readServicos(); // Carrega os serviços do arquivo
+        *servicos = readServicos(); // Se o tipo de armazenamento não for memória, lê os clientes do armazenamento
     }
     int opcao = -1;
-    while (opcao != 0) {  // Loop até o usuário optar por sair
-        printf("==== MENU SERVIÇOS ====\n");
-        opcao = lerInt("Digite a opção desejada:\n"
-            "1- Cadastrar novo serviço\n"
-            "2- Ver serviço\n"
-            "3- Editar serviço\n"
-            "4- Excluir serviço\n"
-            "0- Sair\n");
+    while (opcao != 0) {
+        printf("\t==== MENU FORNECEDOR ====\n");
+        opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
+            "\t\t\t1- CADASTRAR NOVO FORNECEDOR\n"
+            "\t\t\t2- VER FORNECEDORES\n"
+            "\t\t\t3- EDITAR FORNECEDOR\n"
+            "\t\t\t4- EXCLUIR FORNECEDOR\n"
+            "\t\t\t0- SAIR\n"
+            "=>");
 
-        // Verifica qual opção o usuário escolheu e executa a ação correspondente
         switch (opcao) {
             case 1:
-                novoServico(servicos);  // Chama a função para cadastrar um novo serviço
-                if (getTipoArquivo() != MEM) *servicos = readServicos();  // Atualiza se não estiver em memória
+                novoServico(servicos); // Função para cadastrar um novo serviço
+                if (getTipoArquivo() != MEM) *servicos = readServicos();
+            // Atualiza os serviços se não estiver em memória
+                opcao = -1;
                 break;
 
             case 2:
-                mostrarServico(*servicos);  // Chama a função para exibir um serviço
+                mostrarServico(*servicos); // Função para exibir um serviço
+                opcao = -1;
                 break;
-
             case 3:
-                editarServico(*servicos);  // Chama a função para editar um serviço
+                editarServico(*servicos); // Função para editar um serviço
+                opcao = -1;
                 break;
-
             case 4:
-                apagarServico(*servicos);  // Chama a função para excluir um serviço
+                apagarServico(*servicos); // Função para excluir um serviço
+                opcao = -1;
+                break;
+            default: // Opção inválida
+                printf("Opção inválida. Tente novamente.\n");
                 break;
         }
     }
@@ -43,13 +49,13 @@ void menuServicos(Servico **servicos) {
 
 // Função para cadastrar um novo serviço
 void novoServico(Servico **servicos) {
-    Servico *servico = malloc(sizeof(Servico));  // Aloca memória para um novo serviço
+    Servico *servico = malloc(sizeof(Servico));
     if (servico == NULL) {
         printf("Erro ao alocar memória para o novo serviço!\n");
         return;
     }
 
-    // Solicita ao usuário os dados do serviço
+    // Solicita a descrição e preço do serviço
     strcpy(servico->descricao, lerString("Digite a descrição do serviço: "));
     servico->preco = lerFloat("Digite o preço do serviço: ");
     servico->comicao = lerFloat("Digite a comissão sobre o serviço: ");
@@ -63,25 +69,23 @@ void novoServico(Servico **servicos) {
 
     printf("Tamanho dos serviços: %d\n", getTamanhoServicos());
 
-    free(servico);  // Libera a memória após o cadastro
+    free(servico); // Libera a memória do serviço após o cadastro
 }
 
-// Função para mostrar os dados de um serviço específico
+// Função para listar e exibir detalhes de um serviço
 void mostrarServico(Servico *servicos) {
     if (getTamanhoServicos() == 0) {
         printf("Nenhum serviço cadastrado até o momento\n");
         return;
     }
 
-    // Exibe todos os serviços cadastrados
     printf("\tSERVIÇOS:\n");
     mostrarTodosServicos(servicos);
 
     int codigo = lerInt("Digite o código do serviço que você deseja ver: ");
-    int posicao = showServico(servicos, codigo);  // Procura o serviço pelo código
+    int posicao = showServico(servicos, codigo); // Assume que showServico foi implementada
 
     if (posicao != FALSE) {
-        // Exibe as informações do serviço encontrado
         printf("Código: %d\n"
                "Descrição: %s\n"
                "Preço: %.2f\n"
@@ -89,30 +93,32 @@ void mostrarServico(Servico *servicos) {
                servicos[posicao].codigo,
                servicos[posicao].descricao,
                servicos[posicao].preco,
-               servicos[posicao].comicao);
+               servicos[posicao].comicao
+        ); // Exibe as informações do serviço
     } else {
         printf("Serviço não encontrado!\n");
     }
 }
 
-// Função para editar um serviço
+// Função para editar os dados de um cliente
 void editarServico(Servico *servicos) {
     if (getTamanhoServicos() == 0) {
         printf("Nenhum serviço cadastrado\n");
         return;
     }
 
-    Servico *servico = malloc(sizeof(Servico));  // Aloca memória para um serviço temporário
+    Servico *servico = malloc(sizeof(Servico));
     printf("\tSERVIÇOS:\n");
     mostrarTodosServicos(servicos);
-
     if (servico == NULL) {
         printf("Erro ao alocar memória para a edição do serviço\n");
         return;
     }
 
     servico->codigo = lerInt("Digite o código do serviço que você deseja editar: ");
-    int posicao = showServico(servicos, servico->codigo);  // Busca o serviço
+
+    // Procurar o serviço
+    int posicao = showServico(servicos, servico->codigo);
 
     if (posicao == FALSE) {
         printf("Serviço não encontrado.\n");
@@ -120,37 +126,40 @@ void editarServico(Servico *servicos) {
         return;
     }
 
-    // Permite que o usuário edite a descrição, preço e comissão do serviço
-    // Para cada campo, o usuário é questionado se deseja editar ou manter o valor atual
+    // Edição do campo `descricao`
     printf("A descrição do serviço é: %s\n", servicos[posicao].descricao);
-    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+    int opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
         strcpy(servico->descricao, lerString("Digite a nova descrição do serviço: "));
     } else {
         strcpy(servico->descricao, servicos[posicao].descricao);
     }
 
+    // Edição do campo `preco`
     printf("O preço do serviço é: %.2f\n", servicos[posicao].preco);
-    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
         servico->preco = lerFloat("Digite o novo preço do serviço: ");
     } else {
         servico->preco = servicos[posicao].preco;
     }
 
+    // Edição do campo `comicao`
     printf("A comissão do serviço é: %.2f\n", servicos[posicao].comicao);
-    if (lerInt("Deseja editar? (1 - Sim, 0 - Não): ") == TRUE) {
+    opcao = lerInt("Deseja editar? (1 - Sim, 0 - Não): ");
+    if (opcao == TRUE) {
         servico->comicao = lerFloat("Digite a nova comissão do serviço: ");
     } else {
         servico->comicao = servicos[posicao].comicao;
     }
 
-    // Atualiza os dados do serviço no sistema
     if (updateServico(servicos, servico) == FALSE) {
         printf("Erro na edição dos dados do serviço\n");
     } else {
         printf("Serviço editado com sucesso!\n");
     }
 
-    free(servico);  // Libera a memória após a edição
+    free(servico); // Libera a memória alocada
 }
 
 // Função para excluir um serviço
@@ -169,10 +178,10 @@ void apagarServico(Servico *servicos) {
     }
 }
 
-// Função para exibir todos os serviços cadastrados
+// Função para exibir todos os serviços
 void mostrarTodosServicos(Servico *servicos) {
     for (int i = 0; i < getTamanhoServicos(); i++) {
-        if (servicos[i].ativo != FALSE)  // Exibe apenas os serviços ativos
+        if (servicos[i].ativo != FALSE)
             printf("Serviço: %s Codigo: %d\n", servicos[i].descricao, servicos[i].codigo);
     }
 }

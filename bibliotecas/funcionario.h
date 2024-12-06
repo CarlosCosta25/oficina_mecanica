@@ -50,7 +50,7 @@ int deleteFuncionario(Funcionario* funcionarios, int id);
 
 //View Funcionario
 
-void menuFuncionario();
+void menuFuncionario(Funcionario ** funcionarios);
 
 void novoFuncionario(Funcionario **funcionarios);
 

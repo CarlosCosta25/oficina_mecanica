@@ -4,36 +4,34 @@
 #include "../bibliotecas/oficina.h"
 #include "../bibliotecas/utils.h"
 
-// Função para ler os dados da oficina do sistema
+// Função para ler a oficina, retornando um ponteiro para a oficina atual
 Oficina *readOficina() {
-    return getOficina(); // Retorna os dados da oficina através de uma função externa
+    return getOficina();  // Retorna a oficina obtida pela função getOficina
 }
 
-// Função para criar uma nova oficina e salvar os dados no sistema
+// Função para criar uma nova oficina, associando um novo objeto de oficina ao ponteiro
 int createOficina(Oficina **oficina, Oficina *oficina_view) {
-    *oficina = oficina_view; // Atualiza o ponteiro da oficina com os dados fornecidos
+    *oficina = oficina_view;  // Atribui o valor de oficina_view ao ponteiro oficina
 
-    // Salva os dados da oficina se o tipo de armazenamento não for apenas em memória
+    // Se o tipo de arquivo não for de memória (MEM), salva a oficina no arquivo
     if (getTipoArquivo() != MEM)
-        setOficina(*oficina);
-
-    return TRUE; // Retorna sucesso
+        setOficina(*oficina);  // Salva a oficina no arquivo
+    return TRUE;  // Retorna verdadeiro, indicando sucesso
 }
 
-// Função para atualizar os dados de uma oficina existente
+// Função para atualizar a oficina, associando um novo objeto de oficina ao ponteiro
 int updateOficina(Oficina **oficina, Oficina *oficina_view) {
-    *oficina = oficina_view; // Atualiza o ponteiro da oficina com os novos dados
+    *oficina = oficina_view;  // Atribui o valor de oficina_view ao ponteiro oficina
 
-    // Salva os dados atualizados se o tipo de armazenamento não for apenas em memória
+    // Se o tipo de arquivo não for de memória (MEM), atualiza a oficina no arquivo
     if (getTipoArquivo() != MEM)
-        setOficina(*oficina);
-
-    return TRUE; // Retorna sucesso
+        setOficina(*oficina);  // Atualiza a oficina no arquivo
+    return TRUE;  // Retorna verdadeiro, indicando sucesso
 }
 
-// Função para deletar (remover) a oficina do sistema
+// Função para excluir a oficina, removendo-a do sistema e retornando NULL
 Oficina *deleteOficina() {
-    removeOficina();        // Remove os dados da oficina armazenados no sistema
-    delete_arq_oficina();   // Exclui o arquivo relacionado à oficina, se existir
-    return NULL;            // Retorna NULL indicando que a oficina foi removida
+    removeOficina();  // Remove a oficina atual
+    delete_arq_oficina();  // Deleta os dados da oficina no arquivo
+    return NULL;  // Retorna NULL, indicando que a oficina foi excluída
 }

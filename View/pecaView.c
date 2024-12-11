@@ -70,7 +70,7 @@ void novaPeca(Peca **pecas, Fornecedor *fornecedores) {
     peca->fornecedor = lerInt("Digite o código do fornecedor: ");
     // Verifica se o fornecedor existe
     if (showFornecedor(fornecedores, peca->fornecedor) == FALSE) {
-        printf("Fornecedor não existe, por favor tente novamente");
+        printf("Fornecedor não existe, por favor tente novamente\n");
         free(peca); // Libera a memória caso o fornecedor não seja encontrado
         return;
     }

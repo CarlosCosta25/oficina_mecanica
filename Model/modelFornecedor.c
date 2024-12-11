@@ -217,6 +217,7 @@ Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer) {
         setTamanhoFornecedores();
         fornecedores = realloc(fornecedores, (getTamanhoFornecedores() + 1) * sizeof(Fornecedor));
     }
+    //realloc(fornecedores, (getTamanhoFornecedores()) * sizeof(Fornecedor));
     return fornecedores;
 }
 

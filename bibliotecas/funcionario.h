@@ -1,66 +1,45 @@
-
 #ifndef FUNCIONARIO_H
 #define FUNCIONARIO_H
 
-/*
-o Funcionários: Este cadastro contém os dados dos funcionários da oficina.
-▪ Campos:
-➢ Nome
-➢ CPF
-➢ Cargo
-➢ Salário
-*/
 typedef struct {
-    int codigo;
-    char nome[100];
-    char cpf[11];
-    char endereco[150];
-    char telefone[15];
-    char cargo[100];
-    float salario;
-    int ativo;
+    int codigo;                // Código identificador do funcionário
+    char nome[100];            // Nome completo do funcionário
+    char cpf[11];              // CPF do funcionário (11 dígitos, sem formatação)
+    char endereco[150];        // Endereço residencial do funcionário
+    char telefone[15];         // Telefone de contato do funcionário
+    char cargo[100];           // Cargo ocupado pelo funcionário
+    float salario;             // Salário do funcionário
+    int ativo;                 // Indicador de ativo (1 para ativo, -1 para inativo)
 } Funcionario;
 
 // Model Funcionario
-int getTamanhoFuncionarios();
 
-void setTamanhoFuncionarios();
+int getTamanhoFuncionarios();                          // Retorna a quantidade de funcionários cadastrados
+void setTamanhoFuncionarios();                         // Incrementa a quantidade de funcionários cadastrados
+Funcionario* migraDadosFuncionario();                 // Migra os dados dos funcionários entre diferentes formatos de arquivo
+void setFuncionarios(Funcionario *funcionario);        // Atualiza a lista de funcionários cadastrados
+Funcionario* getFuncionarios();                       // Retorna todos os funcionários cadastrados
+Funcionario* ler_arquivo_txt_funcionario(FILE *buffer); // Lê os dados de funcionários de um arquivo de texto
+void escrever_arquivo_txt_funcionario(FILE *buffer, Funcionario *funcionarios); // Escreve os dados de funcionários em um arquivo de texto
+Funcionario* ler_arquivo_bin_funcionario(FILE *buffer); // Lê os dados de funcionários de um arquivo binário
+void escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios); // Escreve os dados de funcionários em um arquivo binário
 
-Funcionario* migraDadosFuncionario();
+// Controller Funcionario
 
-void setFuncionarios(Funcionario *funcionario);
+Funcionario* readFuncionarios();                      // Retorna a lista de funcionários cadastrados
+int createFuncionario(Funcionario **funcionarios, Funcionario *funcionario); // Cadastra um novo funcionário
+int showFuncionario(Funcionario *funcionarios, int id); // Exibe as informações de um funcionário pelo ID
+int updateFuncionario(Funcionario *funcionarios, Funcionario *funcionario); // Atualiza os dados de um funcionário
+int deleteFuncionario(Funcionario *funcionarios, int id); // Remove um funcionário pelo ID
 
-Funcionario* getFuncionarios();
+// View Funcionario
 
-Funcionario *ler_arquivo_txt_funcionario(FILE *buffer);
-void escrever_arquivo_txt_funcionario(FILE *buffer, Funcionario *funcionarios);
-Funcionario *ler_arquivo_bin_funcionario(FILE *buffer);
-void escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios);
+void menuFuncionario(Funcionario **funcionarios);     // Exibe o menu para manipulação dos funcionários
+void novoFuncionario(Funcionario **funcionarios);     // Interage com o usuário para cadastrar um novo funcionário
+void mostrarFuncionario(Funcionario *funcionarios);   // Mostra as informações de um funcionário específico
+void apagarFuncionario(Funcionario *funcionarios);    // Remove um funcionário
+void editarFuncionario(Funcionario *funcionarios);    // Permite editar as informações de um funcionário
+int buscaNovoIDFuncionario(Funcionario *funcionarios); // Busca um novo ID válido para cadastro de um funcionário
+void mostrarTodosFuncionarios(Funcionario *funcionarios); // Exibe todos os funcionários cadastrados
 
-//Controller Funcionario
-Funcionario* readFuncionarios();
-
-int createFuncionario(Funcionario ** funcionarios, Funcionario *funcionario);
-
-int showFuncionario(Funcionario * funcionarios, int id);
-
-int  updateFuncionario(Funcionario *funcionarios,Funcionario * funcionario);
-
-int deleteFuncionario(Funcionario* funcionarios, int id);
-
-//View Funcionario
-
-void menuFuncionario(Funcionario ** funcionarios);
-
-void novoFuncionario(Funcionario **funcionarios);
-
-void mostrarFuncionario(Funcionario *funcionarios);
-
-void apagarFuncionario(Funcionario *funcionarios);
-
-void editarFuncionario(Funcionario * funcionarios);
-
-int buscaNovoIDFuncionario(Funcionario * funcionarios);
-
-void mostrarTodosFuncionarios(Funcionario *funcionarios);
-#endif //FUNCIONARIO_H
+#endif // FUNCIONARIO_H

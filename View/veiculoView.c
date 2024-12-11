@@ -40,8 +40,6 @@ void menuVeiculo(Veiculo **veiculos) {
         }
     }
     // Libera a memória alocada para os veículos e define como NULL
-    free(veiculos);
-    veiculos = NULL;
 }
 
 // Função para cadastrar um novo veículo

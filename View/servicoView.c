@@ -11,12 +11,12 @@ void menuServicos(Servico **servicos) {
     }
     int opcao = -1;
     while (opcao != 0) {
-        printf("\t==== MENU FORNECEDOR ====\n");
+        printf("\t==== MENU SERVIÇO ====\n");
         opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
-            "\t\t\t1- CADASTRAR NOVO FORNECEDOR\n"
-            "\t\t\t2- VER FORNECEDORES\n"
-            "\t\t\t3- EDITAR FORNECEDOR\n"
-            "\t\t\t4- EXCLUIR FORNECEDOR\n"
+            "\t\t\t1- CADASTRAR NOVO SERVIÇO\n"
+            "\t\t\t2- VER SERVIÇO\n"
+            "\t\t\t3- EDITAR SERVIÇO\n"
+            "\t\t\t4- EXCLUIR SERVIÇO\n"
             "\t\t\t0- SAIR\n"
             "=>");
 
@@ -66,8 +66,6 @@ void novoServico(Servico **servicos) {
     } else {
         printf("Erro no cadastro do serviço!\n");
     }
-
-    printf("Tamanho dos serviços: %d\n", getTamanhoServicos());
 
     free(servico); // Libera a memória do serviço após o cadastro
 }

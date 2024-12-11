@@ -12,10 +12,10 @@ void menuCliente(Cliente **clientes) {
     while (opcao != 0) {
         printf("\t==== MENU CLIENTE ====\n");
         opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
-            "\t\t\t1- CADASTRAR NOVA TRANSAÇÃO\n"
-            "\t\t\t2- VER TRANSAÇÕES\n"
-            "\t\t\t3- EDITAR TRANSAÇÃO\n"
-            "\t\t\t4- EXCLUIR TRANSAÇÃO\n"
+            "\t\t\t1- CADASTRAR NOVO CLIENTE\n"
+            "\t\t\t2- VER CLIENTE\n"
+            "\t\t\t3- EDITAR CLIENTE\n"
+            "\t\t\t4- EXCLUIR CLIENTE\n"
             "\t\t\t0- SAIR\n"
             "=>");
         switch (opcao) {
@@ -56,7 +56,6 @@ void novoCliente(Cliente **clientes) {
     } else {
         printf("Erro no cadastro do cliente!\n");
     }
-    printf("Tamnho do cliente %d\n", getTamanhoClientes());
 
     free(cliente); // Libera a memória do cliente após o cadastro
 }

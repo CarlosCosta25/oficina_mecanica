@@ -38,8 +38,6 @@ void menuFuncionario(Funcionario ** funcionarios) {
                 break;
         }
     }
-    free(funcionarios);
-    funcionarios = NULL;
 }
 
 // Função para cadastrar um novo funcionário
@@ -60,7 +58,6 @@ void novoFuncionario(Funcionario **funcionarios) {
     } else {
         printf("Erro no cadastro do funcionario!\n");
     }
-    printf("Tamanho do funcionário %d\n", getTamanhoFuncionarios());
 
     free(funcionario); // Libera a memória do funcionario após o cadastro
 }

@@ -3,97 +3,111 @@
 #include <string.h>
 #include "../bibliotecas/veiculo.h"
 #include "../bibliotecas/utils.h"
-
+// Função para ler todos os veículos cadastrados
 Veiculo* readVeiculos() {
-    Veiculo * veiculos = NULL;
-    veiculos = getVeiculos();
-        return veiculos;
-    }
+    Veiculo *veiculos = NULL;
+    veiculos = getVeiculos(); // Obtém a lista de veículos de um arquivo ou memória
+    return veiculos;          // Retorna o ponteiro para a lista de veículos
+}
 
+// Função para criar um novo veículo
 int createVeiculo(Veiculo **veiculos, Veiculo *veiculo) {
-    int tamanhoAtual = getTamanhoVeiculos();
+    int tamanhoAtual = getTamanhoVeiculos(); // Obtém o tamanho atual da lista de veículos
 
-    // Realoca a memória para acomodar um novo veiculo
-    //Veiculo *novoVeiculos = realloc(*veiculos, (tamanhoAtual + 1) * sizeof(Veiculo));
+    // Realoca a memória para incluir o novo veículo
     Veiculo *novoVeiculos = realloc(*veiculos, (tamanhoAtual + 1) * sizeof(Veiculo));
     if (novoVeiculos == NULL) {
         printf("Erro ao alocar memória para Veículos.\n");
-        return FALSE; // Retorna false indicando falha
+        return FALSE; // Retorna FALSE indicando falha
     }
 
-    *veiculos = novoVeiculos; // Atualiza o ponteiro de veiculos com o novo endereço
-    int index = tamanhoAtual; // Novo índice é o tamanho atual
+    *veiculos = novoVeiculos; // Atualiza o ponteiro da lista de veículos
+    int index = tamanhoAtual; // Define o índice do novo veículo como o último da lista
 
     // Preenche os dados do novo veículo no array
-    (*veiculos)[index].codigo = buscaNovoIDVeiculo(*veiculos);
-    strcpy((*veiculos)[index].placa, veiculo->placa);
-    strcpy((*veiculos)[index].modelo, veiculo->modelo);
-    strcpy((*veiculos)[index].marca, veiculo->marca);
-    (*veiculos)[index].anofabricacao = veiculo->anofabricacao; //Conferir essa linha
-    strcpy((*veiculos)[index].chassi, veiculo->chassi);
-    (*veiculos)[index].ativo = 1; // Veiculo ativo ao ser criado
+    (*veiculos)[index].codigo = buscaNovoIDVeiculo(*veiculos); // Gera um novo ID único
+    strcpy((*veiculos)[index].placa, veiculo->placa);          // Copia a placa do veículo
+    strcpy((*veiculos)[index].modelo, veiculo->modelo);        // Copia o modelo do veículo
+    strcpy((*veiculos)[index].marca, veiculo->marca);          // Copia a marca do veículo
+    (*veiculos)[index].anofabricacao = veiculo->anofabricacao; // Copia o ano de fabricação
+    strcpy((*veiculos)[index].chassi, veiculo->chassi);        // Copia o chassi do veículo
+    (*veiculos)[index].ativo = 1;                              // Marca o veículo como ativo
 
-    setTamanhoVeiculos(); // Atualiza o tamanho dos veiculos
+    setTamanhoVeiculos(); // Incrementa o tamanho da lista de veículos
 
-    // Salva veiculos se o tipo de arquivo não for memória
+    // Salva os veículos no arquivo se o tipo de armazenamento não for memória
     if (getTipoArquivo() != MEM) setVeiculos(*veiculos);
 
-    return TRUE;
+    return TRUE; // Retorna TRUE indicando sucesso
 }
 
+// Função para localizar um veículo pelo código
 int showVeiculo(Veiculo *veiculos, int codigo) {
-    if (veiculos == NULL) return FALSE;
+    if (veiculos == NULL) return FALSE; // Retorna FALSE se a lista de veículos for nula
 
     int posicao = 0;
-    int tamanho = getTamanhoVeiculos();
+    int tamanho = getTamanhoVeiculos(); // Obtém o tamanho atual da lista de veículos
 
-    // Procura o veiculo com o código especificado dentro do limite do array
+    // Procura o veículo com o código especificado
     while (posicao < tamanho && veiculos[posicao].codigo != codigo) {
         posicao++;
     }
 
-    // Verifica se o veiculo foi encontrado e se está ativo
+    // Verifica se o veículo foi encontrado e se está ativo
     if (posicao == tamanho || veiculos[posicao].ativo == FALSE)
         return FALSE;
 
-    return posicao;
+    return posicao; // Retorna a posição do veículo encontrado
 }
+
+// Função para atualizar os dados de um veículo existente
 int updateVeiculo(Veiculo *veiculos, Veiculo *veiculo) {
+    int posicao = showVeiculo(veiculos, veiculo->codigo); // Localiza o veículo pelo código
 
-    int posicao = showVeiculo(veiculos, veiculo->codigo);
+    if (posicao == FALSE) return FALSE; // Retorna FALSE se o veículo não for encontrado
 
-    if (posicao == FALSE) return FALSE;
-
-    // Atualiza os campos necessários
+    // Atualiza os campos do veículo
     veiculos[posicao].codigo = veiculo->codigo;
     strcpy(veiculos[posicao].placa, veiculo->placa);
     strcpy(veiculos[posicao].modelo, veiculo->modelo);
     strcpy(veiculos[posicao].marca, veiculo->marca);
     veiculos[posicao].anofabricacao = veiculo->anofabricacao;
     strcpy(veiculos[posicao].chassi, veiculo->chassi);
-    veiculos[posicao].ativo = veiculo->ativo; // Atualiza o campo ativo
+    veiculos[posicao].ativo = veiculo->ativo;
 
+    // Salva os veículos no arquivo se o tipo de armazenamento não for memória
     if (getTipoArquivo() != MEM) setVeiculos(veiculos);
-    return TRUE;
+
+    return TRUE; // Retorna TRUE indicando sucesso
 }
 
+// Função para excluir (ou desativar) um veículo
 int deleteVeiculo(Veiculo* veiculos, int codigo) {
-    int posicao = showVeiculo(veiculos, codigo);
+    int posicao = showVeiculo(veiculos, codigo); // Localiza o veículo pelo código
 
-    if (posicao == FALSE) return FALSE; // Verifica se o veiculo existe e está ativo
+    if (posicao == FALSE) return FALSE; // Retorna FALSE se o veículo não for encontrado
 
-    veiculos[posicao].ativo = FALSE; // Marca o veiculo como inativo
+    veiculos[posicao].ativo = FALSE; // Marca o veículo como inativo
+
+    // Salva os veículos no arquivo se o tipo de armazenamento não for memória
     if (getTipoArquivo() != MEM) setVeiculos(veiculos);
-    return TRUE;
+
+    return TRUE; // Retorna TRUE indicando sucesso
 }
 
-int buscaNovoIDVeiculo(Veiculo * veiculos) {
+// Função para gerar um novo ID exclusivo para um novo veículo
+int buscaNovoIDVeiculo(Veiculo *veiculos) {
     int maior = 1;
-    if(getTamanhoVeiculos() == 0 ) return maior;
-    for(int i = 0; i < getTamanhoVeiculos(); i++) {
-        if(maior <= veiculos[i].codigo) {
-            maior = veiculos[i].codigo+1;
+
+    // Retorna 1 se não houver veículos cadastrados
+    if (getTamanhoVeiculos() == 0) return maior;
+
+    // Percorre a lista de veículos para encontrar o maior ID existente
+    for (int i = 0; i < getTamanhoVeiculos(); i++) {
+        if (maior <= veiculos[i].codigo) {
+            maior = veiculos[i].codigo + 1; // Define o próximo ID como o maior + 1
         }
     }
-        return maior;
+
+    return maior; // Retorna o novo ID gerado
 }

@@ -1,66 +1,41 @@
 #ifndef VEICULO_H
 #define VEICULO_H
 
-/*
-o Veículos: Este cadastro contém os dados dos veículos dos clientes.
-▪ Campos:
-➢ Placa
-➢ Modelo
-➢ Marca
-➢ Ano de Fabricação
-➢ Chassi
-
-*/
 typedef struct {
-    int codigo;
-    char placa[7];
-    char modelo[20];
-    char marca[20];
-    int anofabricacao;
-    char chassi[17];
-    int ativo;
+    int codigo;            // Código identificador do veículo
+    char placa[7];         // Placa do veículo (formato padrão de 7 caracteres)
+    char modelo[20];       // Nome do modelo do veículo
+    char marca[20];        // Nome da marca do veículo
+    int anofabricacao;     // Ano de fabricação do veículo
+    char chassi[17];       // Código do chassi do veículo
+    int ativo;             // Indicador de ativo (1 para ativo, -1 para inativo)
 } Veiculo;
 
-// Model Veiculos
-int getTamanhoVeiculos();
+// Model Veículos
+int getTamanhoVeiculos();                         // Retorna a quantidade de veículos cadastrados
+void setTamanhoVeiculos();                        // Incrementa a quantidade de veículos cadastrados
+Veiculo* migraDadosVeiculo();                     // Migra os dados dos veículos entre diferentes formatos de arquivo
+void setVeiculos(Veiculo *veiculo);               // Atualiza a lista de veículos cadastrados
+Veiculo* getVeiculos();                           // Retorna todos os veículos cadastrados
+Veiculo* ler_arquivo_txt_veiculo(FILE *buffer);   // Lê os dados dos veículos de um arquivo de texto
+void escrever_arquivo_txt_veiculo(FILE *buffer, Veiculo *veiculos);  // Escreve os dados dos veículos em um arquivo de texto
+Veiculo* ler_arquivo_bin_veiculo(FILE *buffer);   // Lê os dados dos veículos de um arquivo binário
+void* escrever_arquivo_bin_veiculo(FILE *buffer, Veiculo *veiculos); // Escreve os dados dos veículos em um arquivo binário
 
-void setTamanhoVeiculos();
+// Controller Veículos
+Veiculo* readVeiculos();                          // Retorna a lista de veículos cadastrados
+int createVeiculo(Veiculo **veiculos, Veiculo *veiculo);  // Cria um novo veículo
+int showVeiculo(Veiculo *veiculos, int id);       // Exibe as informações de um veículo
+int updateVeiculo(Veiculo *veiculos, Veiculo *veiculo);   // Atualiza os dados de um veículo
+int deleteVeiculo(Veiculo *veiculos, int id);     // Remove um veículo pelo ID
 
-Veiculo* migraDadosVeiculo();
+// View Veículos
+void menuVeiculo(Veiculo **veiculos);             // Exibe o menu para manipulação dos veículos
+void novoVeiculo(Veiculo **veiculos);             // Interage com o usuário para cadastrar um novo veículo
+void mostrarVeiculo(Veiculo *veiculos);           // Mostra as informações de um veículo específico
+void apagarVeiculo(Veiculo *veiculos);            // Remove um veículo
+void editarVeiculo(Veiculo *veiculos);            // Permite editar as informações de um veículo
+int buscaNovoIDVeiculo(Veiculo *veiculos);        // Busca um novo ID válido para cadastro de um novo veículo
+void mostrarTodosVeiculos(Veiculo *veiculos);     // Exibe todos os veículos cadastrados
 
-void setVeiculos(Veiculo *veiculo);
-
-Veiculo* getVeiculos();
-
-Veiculo *ler_arquivo_txt_veiculo(FILE *buffer);
-void escrever_arquivo_txt_veiculo(FILE *buffer, Veiculo *veiculos);
-Veiculo *ler_arquivo_bin_veiculo(FILE *buffer);
-void *escrever_arquivo_bin_veiculo(FILE *buffer, Veiculo *veiculos);
-
-//Controller Veículos
-Veiculo* readVeiculos();
-
-int createVeiculo(Veiculo ** veiculos, Veiculo *veiculo);
-
-int showVeiculo(Veiculo * veiculos, int id);
-
-int  updateVeiculo(Veiculo *veiculos,Veiculo * veiculo);
-
-int deleteVeiculo(Veiculo* veiculos, int id);
-
-//View Veículos
-
-void menuVeiculo(Veiculo **veiculos);
-
-void novoVeiculo(Veiculo **veiculos);
-
-void mostrarVeiculo(Veiculo *veiculos);
-
-void apagarVeiculo(Veiculo *veiculos);
-
-void editarVeiculo(Veiculo * veiculos);
-
-int buscaNovoIDVeiculo(Veiculo * veiculos);
-
-void mostrarTodosVeiculos(Veiculo *veiculo);
 #endif //VEICULO_H

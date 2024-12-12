@@ -210,16 +210,22 @@ void escrever_arquivo_txt_fornecedor(FILE *buffer, Fornecedor *fornecedores) {
 
 // Função para ler fornecedores de um arquivo BIN
 Fornecedor *ler_arquivo_bin_fornecedor(FILE *buffer) {
-    int i = 0;
-    Fornecedor *fornecedores = malloc(sizeof(Fornecedor) * (getTamanhoFornecedores() + 1));
-    while (fread(&fornecedores[i], sizeof(Fornecedor), 1, buffer)) {
-        i++;
-        setTamanhoFornecedores();
-        fornecedores = realloc(fornecedores, (getTamanhoFornecedores() + 1) * sizeof(Fornecedor));
+    qtdFornecedores = 0; // Inicializa a quantidade de fornecedores
+    fseek(buffer, 0, SEEK_END); // Move o ponteiro até o fim do arquivo
+    qtdFornecedores = (int) ftell(buffer) / sizeof(Fornecedor); // Calcula a quantidade de fornecedores
+    fseek(buffer, 0, SEEK_SET); // Volta o ponteiro para o início do arquivo
+
+    Fornecedor *fornecedores = malloc(sizeof(Fornecedor) * qtdFornecedores); // Aloca a quantidade exata de fornecedores
+
+    if (fornecedores == NULL) { // Verifica se a alocação foi bem-sucedida
+        printf("Erro ao alocar memória para os fornecedores.\n");
+        return NULL;
     }
-    //realloc(fornecedores, (getTamanhoFornecedores()) * sizeof(Fornecedor));
+
+    fread(fornecedores, sizeof(Fornecedor), qtdFornecedores, buffer); // Lê todos os fornecedores do arquivo e insere no vetor de fornecedores
     return fornecedores;
 }
+
 
 // Função para escrever fornecedores em um arquivo BIN
 void escrever_arquivo_bin_fornecedor(FILE *buffer, Fornecedor *fornecedores) {

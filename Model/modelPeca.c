@@ -233,21 +233,22 @@ void escrever_arquivo_txt_peca(FILE *buffer, Peca *pecas) {
 
 // Função para ler as peças de um arquivo binário
 Peca *ler_arquivo_bin_peca(FILE *buffer) {
-    qtdPecas = 0;
-    int tam = getTamanhoPecas(); // Obtém o tamanho inicial das peças
-    int isPrimeiro = TRUE;
+    qtdPecas = 0; // Inicializa a quantidade de peças
+    fseek(buffer, 0, SEEK_END); // Move o ponteiro até o fim do arquivo
+    qtdPecas = (int) ftell(buffer) / sizeof(Peca); // Calcula a quantidade de peças
+    fseek(buffer, 0, SEEK_SET); // Volta o ponteiro para o início do arquivo
 
-    Peca *pecas = malloc(sizeof(Peca) * (tam + 1)); // Aloca memória para as peças
-    if (pecas == NULL) printf("Erro ao alocar a memoria\n");
-    int i = 0;
-    while (fread(&pecas[i], sizeof(Peca), 1, buffer)) { // Lê as peças do arquivo binário
-        if (pecas == NULL) printf("Erro ao realocar a memoria\n");
-        i++;
-        setTamanhoPecas(); // Incrementa a quantidade de peças
-        pecas = realloc(pecas, (getTamanhoPecas() + 1) * sizeof(Peca)); // Realoca a memória para mais peças
+    Peca *pecas = malloc(sizeof(Peca) * qtdPecas); // Aloca a quantidade exata de peças
+
+    if (pecas == NULL) { // Verifica se a alocação foi bem-sucedida
+        printf("Erro ao alocar memória para as peças.\n");
+        return NULL;
     }
-    return pecas; // Retorna as peças lidas
+
+    fread(pecas, sizeof(Peca), qtdPecas, buffer); // Lê todas as peças do arquivo e insere no vetor de peças
+    return pecas; // Retorna o vetor de peças
 }
+
 
 // Função para escrever as peças em um arquivo binário
 void escrever_arquivo_bin_peca(FILE *buffer, Peca *pecas) {

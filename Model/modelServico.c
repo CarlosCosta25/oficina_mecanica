@@ -206,28 +206,22 @@ void escrever_arquivo_txt_servico(FILE *buffer, Servico *servicos) {
  * Lê os serviço de um arquivo BIN e retorna um array dinâmico de `Serviço`.
  */
 Servico *ler_arquivo_bin_servico(FILE *buffer) {
-    qtdServicos = 0;
-    int tam = getTamanhoServicos();
-    int isPrimeiro = TRUE;
+    qtdServicos = 0; // Inicializa a quantidade de serviços
+    fseek(buffer, 0, SEEK_END); // Move o ponteiro até o fim do arquivo
+    qtdServicos = (int) ftell(buffer) / sizeof(Servico); // Calcula a quantidade de serviços
+    fseek(buffer, 0, SEEK_SET); // Volta o ponteiro para o início do arquivo
 
-    Servico *servicos = malloc(sizeof(Servico) * (tam + 1));
-    if (servicos == NULL) {
-        printf("Erro ao alocar memória\n");
+    Servico *servicos = malloc(sizeof(Servico) * qtdServicos); // Aloca a quantidade exata de serviços
+
+    if (servicos == NULL) { // Verifica se a alocação foi bem-sucedida
+        printf("Erro ao alocar memória para os serviços.\n");
         return NULL;
     }
 
-    int i = 0;
-    while (fread(&servicos[i], sizeof(Servico), 1, buffer)) {
-        i++;
-        setTamanhoServicos();
-        servicos = realloc(servicos, (getTamanhoServicos() + 1) * sizeof(Servico));
-        if (servicos == NULL) {
-            printf("Erro ao realocar memória\n");
-            return NULL;
-        }
-    }
-    return servicos;
+    fread(servicos, sizeof(Servico), qtdServicos, buffer); // Lê todos os serviços do arquivo e insere no vetor de serviços
+    return servicos; // Retorna o vetor de serviços
 }
+
 
 /**
  * Escreve os dados de serviços em um arquivo BIN.

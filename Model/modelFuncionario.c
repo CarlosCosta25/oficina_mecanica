@@ -232,12 +232,22 @@ void escrever_arquivo_txt_funcionario(FILE *buffer, Funcionario *funcionarios) {
 
 // Função para ler dados de funcionários de um arquivo BIN
 Funcionario *ler_arquivo_bin_funcionario(FILE *buffer) {
-    Funcionario *funcionarios = malloc(sizeof(Funcionario) * (getTamanhoFuncionarios() + 1)); // Aloca memória para os funcionários
-    for (int i = 0; i < getTamanhoFuncionarios(); i++) {
-        fread(&funcionarios[i], sizeof(Funcionario), 1, buffer); // Lê os dados dos funcionários do arquivo BIN
+    qtdFuncionarios = 0; // Inicializa a quantidade de funcionários
+    fseek(buffer, 0, SEEK_END); // Move o ponteiro até o fim do arquivo
+    qtdFuncionarios = (int) ftell(buffer) / sizeof(Funcionario); // Calcula a quantidade de funcionários
+    fseek(buffer, 0, SEEK_SET); // Volta o ponteiro para o início do arquivo
+
+    Funcionario *funcionarios = malloc(sizeof(Funcionario) * qtdFuncionarios); // Aloca a quantidade exata de funcionários
+
+    if (funcionarios == NULL) { // Verifica se a alocação foi bem-sucedida
+        printf("Erro ao alocar memória para os funcionários.\n");
+        return NULL;
     }
+
+    fread(funcionarios, sizeof(Funcionario), qtdFuncionarios, buffer); // Lê todos os funcionários do arquivo e insere no vetor de funcionários
     return funcionarios;
 }
+
 
 // Função para escrever dados de funcionários no arquivo BIN
 void escrever_arquivo_bin_funcionario(FILE *buffer, Funcionario *funcionarios) {

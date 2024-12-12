@@ -220,15 +220,22 @@ void escrever_arquivo_txt_veiculo(FILE *buffer, Veiculo *veiculos) {
 
 // Função para ler veículos de um arquivo BIN
 Veiculo *ler_arquivo_bin_veiculo(FILE *buffer) {
-    Veiculo *veiculos = malloc(sizeof(Veiculo) * (getTamanhoVeiculos() + 1));
-    int i = 0;
-    while (fread(&veiculos[i], sizeof(Veiculo), 1, buffer)) {
-        i++;
-        setTamanhoVeiculos();
-        veiculos = realloc(veiculos, (getTamanhoVeiculos() + 1) * sizeof(Veiculo));
+    qtdVeiculos = 0; // Inicializa a quantidade de veículos
+    fseek(buffer, 0, SEEK_END); // Move o ponteiro até o fim do arquivo
+    qtdVeiculos = (int) ftell(buffer) / sizeof(Veiculo); // Calcula a quantidade de veículos
+    fseek(buffer, 0, SEEK_SET); // Volta o ponteiro para o início do arquivo
+
+    Veiculo *veiculos = malloc(sizeof(Veiculo) * qtdVeiculos); // Aloca a quantidade exata de veículos
+
+    if (veiculos == NULL) { // Verifica se a alocação foi bem-sucedida
+        printf("Erro ao alocar memória para os veículos.\n");
+        return NULL;
     }
-    return veiculos;
+
+    fread(veiculos, sizeof(Veiculo), qtdVeiculos, buffer); // Lê todos os veículos do arquivo e insere no vetor de veículos
+    return veiculos; // Retorna o vetor de veículos
 }
+
 
 // Função para escrever veículos em um arquivo BIN
 void *escrever_arquivo_bin_veiculo(FILE *buffer, Veiculo *veiculos) {

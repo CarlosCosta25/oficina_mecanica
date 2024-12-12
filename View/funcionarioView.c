@@ -48,7 +48,6 @@ void novoFuncionario(Funcionario **funcionarios) {
     strcpy(funcionario->cpf, lerString("Digite o cpf do funcionário: "));
     strcpy(funcionario->endereco, lerString("Digite o endereço do funcionário: "));
     strcpy(funcionario->telefone, lerString("Digite o telefone do funcionário: "));
-    strcpy(funcionario->endereco, lerString("Digite o endereço do funcionário: "));
     strcpy(funcionario->cargo, lerString("Digite o cargo do funcionário: "));
     funcionario->salario = atoi(lerString("Digite o salário do funcionário: "));
     funcionario->ativo = 1; // Define o funcionario como ativo

@@ -205,8 +205,22 @@ void escrever_arquivo_txt_cliente(FILE *buffer, Cliente *clientes) {
         }
     }
 }
+Cliente * ler_arquivo_bin_cliente( FILE *buffer){
+     qtdClientes = 0;
+    fseek(buffer,0,SEEK_END);// move o ponteiro até fim do arquivo
+    qtdClientes = (int) ftell(buffer)/sizeof(Cliente); //pega a quantidade de clientes
+    fseek(buffer,0,SEEK_SET); //volta o ponteiro para o inicio da arquivo
+    Cliente * clientes = malloc(sizeof(Cliente) * qtdClientes); //aloca a qtd exata de clientes
 
-Cliente *ler_arquivo_bin_cliente(FILE *buffer) {
+    if (clientes == NULL) { // Verifica se a alocação foi bem-sucedida
+        printf("Erro ao alocar memória para os clientes.\n");
+        return NULL;
+    }
+
+    fread(clientes,sizeof(Cliente),qtdClientes,buffer); // le todos os clientes do arquivo e insere no vetor de clientes
+    return clientes;
+}
+/*Cliente *ler_arquivo_bin_cliente(FILE *buffer) {
     qtdClientes = 0;
     Cliente *clientes = malloc(sizeof(Cliente) * (getTamanhoClientes() + 1));
     int i = 0;
@@ -216,7 +230,7 @@ Cliente *ler_arquivo_bin_cliente(FILE *buffer) {
         clientes = realloc(clientes, (getTamanhoClientes() + 1) * sizeof(Cliente));
     }
     return clientes;
-}
+}*/
 
 void *escrever_arquivo_bin_cliente(FILE *buffer, Cliente *clientes) {
     for (int i = 0; i < getTamanhoClientes(); i++) {

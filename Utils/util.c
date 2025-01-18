@@ -92,6 +92,27 @@ void setTipoArquivo(int Arquivo){//muda o tipo de arquivo que vai ser trabalhado
 int getTipoArquivo() {// retorna o tipo de arquivo que vai ser trabalhado durante a execução do programa
     return tipoArquivo;
 }
+// retorna a partir da data atual, mais 30 dias
+time_t addtrintaDias(time_t dataAtual) {
+    return dataAtual + (30 * 24 * 3600);
+}
+//mostra a data já formatada
+void printData(time_t data) {
+    struct tm *info;
+    info = localtime(&data);
+    printf("%d/%d/%d\n", info->tm_mday, info->tm_mon + 1, info->tm_year + 1900);
+}
+//converte a data para o formato time_t
+time_t converteData(int dia, int mes, int ano) {
+    struct tm data;
+    data.tm_mday = dia;
+    data.tm_mon = mes - 1;
+    data.tm_year = ano - 1900;
+    data.tm_hour = 0;
+    data.tm_min = 0;
+    data.tm_sec = 0;
+    return mktime(&data);
+}
 
 
 

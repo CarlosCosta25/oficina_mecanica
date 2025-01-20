@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.29)
+cmake_minimum_required(VERSION 3.30)
 project(trabalho C)
 
 set(CMAKE_C_STANDARD 11)
@@ -37,4 +37,8 @@ add_executable(trabalho main.c
         bibliotecas/servico.h
         Controller/servicoController.c
         Model/modelServico.c
-        View/servicoView.c)
+        View/servicoView.c
+        View/estoqueView.c
+        Model/modelEstoque.c
+        Controller/estoqueController.c
+        bibliotecas/estoque.h)

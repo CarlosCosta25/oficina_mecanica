@@ -24,8 +24,8 @@ char* lerString(char* msg) {
     printf("%s", msg);
     char* valor = malloc(sizeof(char) * 100);
     setbuf(stdin, NULL);
-    gets(valor);
-    //fgets(valor, sizeof(valor), stdin);
+    //fgets(valor);
+    fgets(valor, sizeof(valor), stdin);
     setbuf(stdin, NULL);
     return valor;
 }

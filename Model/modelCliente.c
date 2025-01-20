@@ -24,7 +24,7 @@ Cliente *migraDadosCliente() {
         buffer = fopen("../bd/clientes.bin", "rb");
         if (buffer != NULL) {
             fclose(buffer);
-            free(buffer);
+            //free(buffer);
             setTipoArquivo(BIN); // muda o tipo de arquivo para bin
             clientes = getClientes();
             setTipoArquivo(TXT);// volta para o arquivo txt
@@ -34,8 +34,8 @@ Cliente *migraDadosCliente() {
             remove("../bd/clientes.bin");
             return NULL;
         }
-        fclose(buffer);
-        free(buffer);
+       // fclose(buffer);
+        //free(buffer);
     }
     if (getTipoArquivo() == BIN) {
         //se o usuario deseja gravar em binario

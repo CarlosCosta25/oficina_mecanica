@@ -65,38 +65,6 @@ void novoFornecedor(Fornecedor **fornecedores) {
 }
 
 
-void mostrarFornecedor(Fornecedor *fornecedores) {
-    if (getTamanhoFornecedores() == 0) {
-        printf("Nenhum fornecedor cadastrado até o momento\n");
-        return;
-    }
-
-    printf("\tFORNECEDORES:\n");
-    mostrarTodosFornecedores(fornecedores);
-
-    int codigo = lerInt("Digite o código do fornecedor que você deseja ver: ");
-    int posicao = showFornecedor(fornecedores, codigo); // Assume que showFornecedor foi implementado
-
-    if (posicao != FALSE) {
-        printf("Código: %d\n"
-               "Nome Fantasia: %s\n"
-               "Razão Social: %s\n"
-               "Endereço: %s\n"
-               "CNPJ: %s\n"
-               "Telefone: %s\n"
-               "E-mail: %s\n",
-               fornecedores[posicao].codigo,
-               fornecedores[posicao].nome_fantasia,
-               fornecedores[posicao].razao_social,
-               fornecedores[posicao].endereco,
-               fornecedores[posicao].cnpj,
-               fornecedores[posicao].telefone,
-               fornecedores[posicao].email
-        ); // Exibe as informações do fornecedor
-    } else {
-        printf("Fornecedor não encontrado!\n");
-    }
-}
 
 void editarFornecedor(Fornecedor *fornecedores) {
     if (getTamanhoFornecedores() == 0) {
@@ -218,4 +186,21 @@ void mostrarTodosFornecedores(Fornecedor * fornecedores) {
     }
 }
 
+int buscarOuCadastrarFornecedor(Fornecedor **fornecedores, char *nomeFantasia, char *cnpj) {
+    // Busca o fornecedor existente
+    for (int i = 0; i < getTamanhoFornecedores(); i++) {
+        if (strcmp((*fornecedores)[i].nome_fantasia, nomeFantasia) == 0 ||
+            strcmp((*fornecedores)[i].cnpj, cnpj) == 0) {
+            printf("Fornecedor já cadastrado: %s (Código: %d)\n", (*fornecedores)[i].nome_fantasia, (*fornecedores)[i].codigo);
+            return (*fornecedores)[i].codigo;
+            }
+    }
+
+    // Caso não encontre, cadastra um novo fornecedor
+    printf("Fornecedor não encontrado. Vamos cadastrá-lo.\n");
+    novoFornecedor(fornecedores); // Chama sua função existente para registrar o fornecedor
+
+    // Retorna o código do fornecedor recém-cadastrado
+    return (*fornecedores)[getTamanhoFornecedores() - 1].codigo;
+}
 

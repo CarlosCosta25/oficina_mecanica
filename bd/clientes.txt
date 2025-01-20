@@ -1,9 +1,9 @@
 <registro>
-<codigo>1</codigo>
-<nome>joao</nome>
-<cpf_cnpj>fidf</cpf_cnpj>
-<endereco>fdfgg</endereco>
-<telefone>gfghg</telefone>
-<email>hghf</email>
-<ativo>1</ativo>
+<codigo>0</codigo>
+<nome></nome>
+<cpf_cnpj></cpf_cnpj>
+<endereco></endereco>
+<telefone></telefone>
+<email></email>
+<ativo>0</ativo>
 </registro>

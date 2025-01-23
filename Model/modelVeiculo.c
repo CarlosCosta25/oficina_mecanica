@@ -156,24 +156,25 @@ Veiculo *ler_arquivo_txt_veiculo(FILE *buffer) {
                     veiculos[numVeiculos].codigo = atoi(removeTags(Linha));
                 i++;
                 break;
+
                 case 1:
-                    strcpy(veiculos[numVeiculos].placa, removeTags(Linha));
-                i++;
-                break;
-                case 2:
                     strcpy(veiculos[numVeiculos].modelo, removeTags(Linha));
                 i++;
                 break;
-                case 3:
+                case 2:
                     strcpy(veiculos[numVeiculos].marca, removeTags(Linha));
                 i++;
                 break;
-                case 4:
+                case 3:
                     veiculos[numVeiculos].anofabricacao = atoi(removeTags(Linha));
                 i++;
                 break;
-                case 5:
+                case 4:
                     strcpy(veiculos[numVeiculos].chassi, removeTags(Linha));
+                i++;
+                break;
+                case 5:
+                    strcpy(veiculos[numVeiculos].placa, removeTags(Linha));
                 i++;
                 break;
                 case 6:
@@ -197,19 +198,19 @@ void escrever_arquivo_txt_veiculo(FILE *buffer, Veiculo *veiculos) {
         int escrevendo = fprintf(buffer,
                                  "<registro>\n"
                                  "<codigo>%d</codigo>\n"
-                                 "<placa>%s</placa>\n"
                                  "<modelo>%s</modelo>\n"
                                  "<marca>%s</marca>\n"
                                  "<anofabricacao>%d</anofabricacao>\n"
                                  "<chassi>%s</chassi>\n"
+                                 "<placa>%s</placa>\n"
                                  "<ativo>%d</ativo>\n"
                                  "</registro>\n",
                                  veiculos[i].codigo,
-                                 veiculos[i].placa,
                                  veiculos[i].modelo,
                                  veiculos[i].marca,
                                  veiculos[i].anofabricacao,
                                  veiculos[i].chassi,
+                                 veiculos[i].placa,
                                  veiculos[i].ativo
         );
         if (escrevendo < 0) {

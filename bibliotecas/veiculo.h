@@ -3,11 +3,11 @@
 
 typedef struct {
     int codigo;            // Código identificador do veículo
-    char placa[7];         // Placa do veículo (formato padrão de 7 caracteres)
     char modelo[20];       // Nome do modelo do veículo
     char marca[20];        // Nome da marca do veículo
     int anofabricacao;     // Ano de fabricação do veículo
     char chassi[17];       // Código do chassi do veículo
+    char placa[8];         // Placa do veículo (formato padrão de 7 caracteres)
     int ativo;             // Indicador de ativo (1 para ativo, -1 para inativo)
 } Veiculo;
 

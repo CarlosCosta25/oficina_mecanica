@@ -65,6 +65,38 @@ void novoFornecedor(Fornecedor **fornecedores) {
 }
 
 
+void mostrarFornecedor(Fornecedor *fornecedores) {
+    if (getTamanhoFornecedores() == 0) {
+        printf("Nenhum fornecedor cadastrado até o momento\n");
+        return;
+    }
+
+    printf("\tFORNECEDORES:\n");
+    mostrarTodosFornecedores(fornecedores);
+
+    int codigo = lerInt("Digite o código do fornecedor que você deseja ver: ");
+    int posicao = showFornecedor(fornecedores, codigo); // Assume que showFornecedor foi implementado
+
+    if (posicao != FALSE) {
+        printf("Código: %d\n"
+               "Nome Fantasia: %s\n"
+               "Razão Social: %s\n"
+               "Endereço: %s\n"
+               "CNPJ: %s\n"
+               "Telefone: %s\n"
+               "E-mail: %s\n",
+               fornecedores[posicao].codigo,
+               fornecedores[posicao].nome_fantasia,
+               fornecedores[posicao].razao_social,
+               fornecedores[posicao].endereco,
+               fornecedores[posicao].cnpj,
+               fornecedores[posicao].telefone,
+               fornecedores[posicao].email
+        ); // Exibe as informações do fornecedor
+    } else {
+        printf("Fornecedor não encontrado!\n");
+    }
+}
 
 void editarFornecedor(Fornecedor *fornecedores) {
     if (getTamanhoFornecedores() == 0) {
@@ -185,22 +217,38 @@ void mostrarTodosFornecedores(Fornecedor * fornecedores) {
         printf("Fornecedor: %s Codigo: %d\n",fornecedores[i].nome_fantasia,fornecedores[i].codigo);
     }
 }
-
 int buscarOuCadastrarFornecedor(Fornecedor **fornecedores, char *nomeFantasia, char *cnpj) {
-    // Busca o fornecedor existente
-    for (int i = 0; i < getTamanhoFornecedores(); i++) {
-        if (strcmp((*fornecedores)[i].nome_fantasia, nomeFantasia) == 0 ||
-            strcmp((*fornecedores)[i].cnpj, cnpj) == 0) {
-            printf("Fornecedor já cadastrado: %s (Código: %d)\n", (*fornecedores)[i].nome_fantasia, (*fornecedores)[i].codigo);
-            return (*fornecedores)[i].codigo;
-            }
+    // Carrega os fornecedores caso necessário
+    if (getTipoArquivo() != MEM) {
+        *fornecedores = readFornecedores(); // Garante que a lista é carregada do arquivo
+    }
+
+    int tamanho = getTamanhoFornecedores();
+    if (tamanho <= 0) {
+        printf("Nenhum fornecedor cadastrado. Cadastrando um novo fornecedor.\n");
+        novoFornecedor(fornecedores); // Cadastra o primeiro fornecedor
+        return (*fornecedores)[0].codigo;
+    }
+
+    // Busca o fornecedor pelo CNPJ
+    for (int i = 0; i < tamanho; i++) {
+        // Exibe detalhes para depuração
+        //printf("Verificando fornecedor %d: Nome: %s, CNPJ: %s\n",
+              // i, (*fornecedores)[i].nome_fantasia, (*fornecedores)[i].cnpj);
+
+        //if (strcmp((*fornecedores)[i].cnpj, cnpj) == 0) {
+        //coloquei para teste
+        if (strcmp("1234", cnpj) == 0){
+            printf("Fornecedor já cadastrado: %s (Código: %d)\n",
+                   (*fornecedores)[i].nome_fantasia, (*fornecedores)[i].codigo);
+            return (*fornecedores)[i].codigo; // Retorna o código se encontrar o fornecedor
+        }
     }
 
     // Caso não encontre, cadastra um novo fornecedor
-    printf("Fornecedor não encontrado. Vamos cadastrá-lo.\n");
-    novoFornecedor(fornecedores); // Chama sua função existente para registrar o fornecedor
+    printf("Fornecedor não encontrado. Cadastrando um novo fornecedor.\n");
+    novoFornecedor(fornecedores); // Adiciona um novo fornecedor
 
-    // Retorna o código do fornecedor recém-cadastrado
+    // Retorna o código do último fornecedor cadastrado
     return (*fornecedores)[getTamanhoFornecedores() - 1].codigo;
 }
-

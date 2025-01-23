@@ -15,7 +15,7 @@ void menuContasPagar(ContasPagar **contas, Transacao *transacoes, float *valor_e
             "\t\t\t1- VER CONTA A PAGAR\n"
             "\t\t\t2- VER CONTA PAGAS\n"
             "\t\t\t3- EXCLUIR CONTA\n"
-            "\t\t\t3- PAGAR CONTA\n"
+            "\t\t\t4- PAGAR CONTA\n"
             "\t\t\t0- SAIR\n"
             "=>");
 

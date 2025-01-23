@@ -192,3 +192,64 @@ void mostrarTodosClientes(Cliente *clientes) {
             printf("Cliente: %s Codigo: %d\n", clientes[i].nome, clientes[i].codigo);
     }
 }
+
+void filtrarClienteIDNome(Cliente *clientes) {
+    printf("\t==== FILTRO DE CLIENTE ====\n");
+    int opcao = lerInt("Você seja filtrar por Codigo ou por nome?\n"
+        "1 - Codigo\n"
+        "2 - Nome\n"
+        "=>");
+    if (opcao == 1) {
+        int id = lerInt("Qual o Codigo do cliente que você deseja filtrar?\n=>");
+        int posicao = showCliente(clientes, id);
+        if (posicao != FALSE) {
+            printf("Código: %d\n"
+                   "Nome: %s\n"
+                   "Endereço: %s\n"
+                   "CPF/CNPJ: %s\n"
+                   "Telefone: %s\n"
+                   "E-mail: %s\n",
+                   clientes[posicao].codigo,
+                   clientes[posicao].nome,
+                   clientes[posicao].endereco,
+                   clientes[posicao].cpf_cnpj,
+                   clientes[posicao].telefone,
+                   clientes[posicao].email
+            ); // Exibe se o cliente está ativo
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveClienteCSV(&clientes[posicao], 1);
+            }
+        } else {
+            printf("Codigo não encontrado\n");
+        }
+    } else if (opcao == 2) {
+        char *nome = lerString("Qual o nome do cliente que você deseja filtrar?\n=>");
+        int tamanho = 0;
+        Cliente *clientesFiltrados = filterClienteNome(clientes, nome, &tamanho);
+        if (clientesFiltrados != NULL) {
+            for (int i = 0; i < tamanho; i++) {
+                printf("Código: %d\n"
+                       "Nome: %s\n"
+                       "Endereço: %s\n"
+                       "CPF/CNPJ: %s\n"
+                       "Telefone: %s\n"
+                       "E-mail: %s\n",
+                       clientesFiltrados[i].codigo,
+                       clientesFiltrados[i].nome,
+                       clientesFiltrados[i].endereco,
+                       clientesFiltrados[i].cpf_cnpj,
+                       clientesFiltrados[i].telefone,
+                       clientesFiltrados[i].email
+                ); // Exibe se o cliente está ativo
+            }
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveClienteCSV(clientesFiltrados, tamanho);
+            }
+        } else {
+            printf("Nome não encontrado\n");
+        }
+    }
+    else {
+        printf("Opção inválida\n");
+    }
+}

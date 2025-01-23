@@ -15,4 +15,8 @@ int getTipoArquivo();// retorna o tipo de arquivo que vai ser trabalhado durante
 time_t addtrintaDias(time_t dataAtual); //retorna a partir da data atual, mais 30 dias
 void printData(time_t data); //mostra a data já formatada
 time_t converteData(int dia, int mes, int ano); //converte a data para o formato time_t
+char * transformaString(void *dado, char tipo);//trasforma qualquer tipo de dado em string Obs: DEVE-SE PASSAR NO TIPO O SEGUINTE: i ID, f FLOAT, d DATA
+char* concatenarStringPontoEVirgula(const char* str1, const char* str2);//concatena duas strings com ponto e virgula
+void escreverCSV(char ** dados, char * nomeArquivo,int tamanho);//escreve no arquivo csv
+int equalsString(char* s1, char* s2);//função que compara se duas strings são iguais
 #endif //UTILS_H

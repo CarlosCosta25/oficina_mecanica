@@ -113,6 +113,81 @@ time_t converteData(int dia, int mes, int ano) {
     data.tm_sec = 0;
     return mktime(&data);
 }
+//trasforma qualquer tipo de dado em string Obs: DEVE-SE PASSAR NO TIPO O SEGUINTE: i ID, f FLOAT, d DATA
+char * transformaString(void *dado, char tipo) {
+    if (dado == NULL) {
+        return NULL;  // Retorna NULL se o ponteiro for inválido
+    }
+
+    char *string = malloc(50); // Aloca espaço suficiente
+    if (string == NULL) {
+        return NULL; // Falha na alocação
+    }
+
+    // Tenta identificar o tipo pelo tamanho do dado
+    if (tipo == 'i') {
+        sprintf(string, "%d", *((int *)dado));
+        return string;
+
+    }
+    if (tipo == 'f') {
+        float dadoF = *((float *)dado);  // Correção: mantém como float
+        sprintf(string, "%.2f", dadoF);
+    }
+    if (tipo == 'd'){
+        sprintf(string, "%ld", *((long *)dado));
+    }
+
+    return string;
+}
+//concatena duas strings com ponto e virgula
+char* concatenarStringPontoEVirgula(const char* str1, const char* str2) {
+    // Calcula o tamanho total necessário para a string resultante
+    size_t tamanhoTotal = strlen(str1) + strlen(str2) + 2;  // +2 para o ';' e o terminador nulo '\0'
+
+    // Aloca memória para a string resultante
+    char* resultado = malloc(tamanhoTotal);
+
+    if (resultado == NULL) {
+        return NULL;  // Retorna NULL em caso de falha na alocação
+    }
+
+    // Copia a primeira string para o resultado
+    strcpy(resultado, str1);
+
+    // Adiciona o ponto e vírgula
+    strcat(resultado, ";");
+
+    // Concatena a segunda string
+    strcat(resultado, str2);
+
+    return resultado;
+}
+
+
+void escreverCSV(char ** dados, char * nomeArquivo,int tamanho) {
+        char nome[50] ="../relatorio/";
+    strcat(nome,nomeArquivo);
+    strcat(nome,".txt");
+    FILE *arquivo = fopen(nome, "w");
+    if (arquivo == NULL) {
+        printf("Erro ao abrir o arquivo\n");
+        return;
+    }
+    for(int i = 0; i < tamanho; i++){
+        fprintf(arquivo, "%s\n", dados[i]);
+    }
+    fclose(arquivo);
+
+}
+
+int equalsString(char* s1, char* s2) {
+    if (strlen(s1) != strlen(s2)) return FALSE;
+    for (int i = 0; i < strlen(s1); i++) {
+        if (s1[i] != s2[i]) return FALSE;
+    }
+    return TRUE;
+}
 
 
 

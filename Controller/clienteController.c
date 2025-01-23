@@ -106,3 +106,40 @@ int buscaNovoIDCliente(Cliente *clientes) {
     return maior; // Retorna o novo ID
 }
 
+int saveClienteCSV(Cliente * clientes, int tamanho) {
+    char ** string = malloc(sizeof(char) * tamanho);
+    for(int i = 0; i< tamanho; i++){
+        string[i] = malloc(sizeof(char) * 150);
+        string[i] = transformaString(&clientes[i].codigo, 'i');
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].nome);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].cpf_cnpj);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].telefone);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].email);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].endereco);
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&clientes[i].ativo, 'i'));
+
+    }
+    escreverCSV(string, "cliente", tamanho);
+    return TRUE;
+}
+Cliente * filterClienteNome(Cliente *clientes, char * nome, int *tamanho){
+    Cliente * clientesFiltrados = malloc(sizeof(Cliente));
+    int tamanhoTotal = getTamanhoClientes();
+
+    for(int i = 0; i < tamanhoTotal; i++){
+        if(equalsString(clientes[i].nome, nome)== TRUE){
+            *(tamanho) = *(tamanho) + 1;
+            clientesFiltrados = realloc(clientesFiltrados, (*tamanho) * sizeof(Cliente));
+            if(clientesFiltrados == NULL){
+                printf("Erro ao alocar memória para clientes filtrados.\n");
+                return NULL;
+            }
+            clientesFiltrados[*tamanho-1] = clientes[i];
+        }
+
+    }
+    if (*tamanho == 0) return NULL;
+
+    return clientesFiltrados;
+}
+

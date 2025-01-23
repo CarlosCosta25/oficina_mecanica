@@ -16,7 +16,6 @@
 int main(void) {
     setTipoArquivo(lerInt("Digite com qual tipo de dados vc deseja trabalhar: "));
 
-
     int opc = 0;
 
     Oficina *oficina_atual = migraDadosOficina();
@@ -32,6 +31,19 @@ int main(void) {
     ContasReceber *contas_receber = migraDadosContasReceber();
     float valor_em_caixa = 0;
     valor_em_caixa = migraDadosCaixa();
+
+    if(getTipoArquivo() != MEM) {
+        oficina_atual = readOficina();
+        cliente = readClientes();
+        veiculo = readVeiculos();
+        pecas = readPecas();
+        fornercedor = readFornecedores();
+        servico = readServicos();
+        funcionario = readFuncionarios();
+        transacoes = readTransacoes();
+        contas_pagar = readContasPagar();
+        contas_receber = readContasReceber();
+    }
 
 
     while (opc != 7) {
@@ -75,7 +87,7 @@ int main(void) {
                         case 3:
                             //para  pecas preciso passar fornecedor e pecas
 
-                            menuPecas(&pecas, &fornercedor);
+                            menuPecas(&pecas, fornercedor);
                             break;
                         case 4:
                             menuFornecedor(&fornercedor);
@@ -106,6 +118,7 @@ int main(void) {
                         "      \t\t\t 1- TRANSAÇÃO\n"
                         "      \t\t\t 2- CONTAS A PAGAR\n"
                         "      \t\t\t 3- CONTAS A RECEBER\n"
+                        "       \t\t\t 0 - SAIR\n"
                         "=>");
                     switch (cadastrosF) {
                         case 1:
@@ -120,6 +133,26 @@ int main(void) {
                     }
                     break;
                 case 5:
+                    int filtro = lerInt("\n=========MODULOS RELATORIOS==============\n"
+                        "\t DIGITE UMA OPÇÃO:\n"
+                        "      \t\t\t 1- CLIENTES\n"
+                        "      \t\t\t 2- VEICULOS\n"
+                        "      \t\t\t 3- PEÇAS\n"
+                        "      \t\t\t 4- FORNECEDORES\n"
+                        "      \t\t\t 5- SERVIÇOS\n"
+                        "      \t\t\t 6- FUNCIONARIOS\n"
+                        "      \t\t\t 7- OFICINA\n"
+                        "      \t\t\t 8- TRANSAÇÃO\n"
+                        "      \t\t\t 9- CONTAS A PAGAR\n"
+                        "      \t\t\t 10- CONTAS A RECEBER\n"
+                        "      \t\t\t 11- CAIXA\n"
+                        "      \t\t\t 0- VOLTAR\n"
+                        "=>");
+                switch (filtro) {
+                    case 1:
+                        filtrarClienteIDNome(cliente);
+                        break;
+                }
                     break;
             }
         } else {
@@ -127,6 +160,5 @@ int main(void) {
             menuOficina(&oficina_nova);
         }
     }
-
     return 0;
 }

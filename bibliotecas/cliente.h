@@ -41,6 +41,10 @@ int deleteCliente(Cliente* clientes, int id);
 
 int buscaNovoIDCliente(Cliente * clientes);
 
+Cliente *filterClienteNome(Cliente *clientes, char *nome, int *tamanho);
+
+int saveClienteCSV(Cliente * clientes, int tamanho);
+
 //View cliente
 
 void menuCliente(Cliente **clientes);
@@ -54,5 +58,7 @@ void apagarCliente(Cliente *clientes);
 void editarCLiente(Cliente * clientes);
 
 void mostrarTodosClientes(Cliente * clientes);
+
+void filtrarClienteIDNome(Cliente *clientes);
 
 #endif //CLIENTE_H

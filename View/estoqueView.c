@@ -7,6 +7,9 @@
 
 
 void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
+    char nomePeca[100];
+    int qtdPecas;
+    float precoCusto;
     int opcao;
 
     do {
@@ -42,10 +45,10 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
                 printf("Digite o valor total do imposto: ");
                 scanf("%f", &imposto);
 
+                int totalQtdPecas = 0;
+
                 do  {
-                    char nomePeca[100];
-                    int qtdPecas;
-                    float precoCusto;
+
 
                     printf("\n=== REGISTRANDO PEÇA ===\n");
                     printf("Digite o nome da peça: ");
@@ -62,9 +65,8 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
                     printf("Digite o preço de custo unitário da peça: ");
                     scanf("%f", &precoCusto);
 
-                    //aqui tenho que fazer o preco total que seria qtd da peça * preço de custo
-
-                    //aqui tenho que fazer um vetor que guarda a quantidade de peças
+                    float precoTotal = qtdPecas * precoCusto;
+                    totalQtdPecas += qtdPecas;
 
                     printf("A nota de entrada ainda possui peça?\n"
                            "1-Sim\n"
@@ -72,13 +74,16 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
                            "=> ");
                     scanf("%d", &continuar);
 
-
-
                 }while (continuar<2);
                 //logo abaixo fazer o imposto por produto, que seria a imposto/quantidade
+                float impostoPorPeca = imposto / totalQtdPecas;
                 //calcular frete por produto, que seria frete/quantidade
+                float fretePorPeca = frete / totalQtdPecas;
+                //calculando o lucro, o lucro aqui é por peça creio que estou fazendo algo errado
 
-            }
+                float lucro = (precoCusto + fretePorPeca + impostoPorPeca) * //aqui tem consultar oficina para ver a margem de lucro;
+                //acho que tenho que colcoar dentro do loop, alem disso acho que tenho seguir a estrutura mvc
+        }
             break;
 
         case 2:

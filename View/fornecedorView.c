@@ -247,6 +247,7 @@ int buscarOuCadastrarFornecedor(Fornecedor **fornecedores, char *nomeFantasia, c
 
     // Caso não encontre, cadastra um novo fornecedor
     printf("Fornecedor não encontrado. Cadastrando um novo fornecedor.\n");
+    printf("\n\n ===CADASTRO DE FORNECEDOR===\n");
     novoFornecedor(fornecedores); // Adiciona um novo fornecedor
 
     // Retorna o código do último fornecedor cadastrado

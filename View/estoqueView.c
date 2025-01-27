@@ -42,7 +42,7 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
                 printf("Digite o valor total do imposto: ");
                 scanf("%f", &imposto);
 
-                while (continuar) {
+                do  {
                     char nomePeca[100];
                     int qtdPecas;
                     float precoCusto;
@@ -53,7 +53,8 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
 
                     // Verifica se a peça já está cadastrada
                    // int codPeca = buscarOuCadastrarPeca(pecas, nomePeca, codFornecedor);
-                    int codigoPeca = buscarOuCadastrarPeca(&pecas, fornecedores, nomePeca, codFornecedor);
+
+                    int codPeca = buscarOuCadastrarPeca(&pecas, fornecedores, nomePeca, codFornecedor);
 
                     printf("Digite a quantidade da peça: ");
                     scanf("%d", &qtdPecas);
@@ -66,11 +67,14 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
                     //aqui tenho que fazer um vetor que guarda a quantidade de peças
 
                     printf("A nota de entrada ainda possui peça?\n"
-                           "");
+                           "1-Sim\n"
+                           "2-Não\n"
+                           "=> ");
+                    scanf("%d", &continuar);
 
 
 
-                }
+                }while (continuar<2);
                 //logo abaixo fazer o imposto por produto, que seria a imposto/quantidade
                 //calcular frete por produto, que seria frete/quantidade
 

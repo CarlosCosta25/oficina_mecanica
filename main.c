@@ -12,19 +12,20 @@
 
 int main(void)
 {
-    // Configuração inicial: tipo de arquivo (1 - TXT, 2 - BIN, 3 - MEM)
     setTipoArquivo(lerInt("Digite com qual tipo de dados você deseja trabalhar (1 - TXT, 2 - BIN, 3 - MEM): "));
 
     int opc = 0;
 
-    // Carrega os dados iniciais
     Oficina* oficina_atual = readOficina();
-    Peca* pecas = migraDadosPeca();               // Peças disponíveis
-    Fornecedor* fornecedores = migraDadosFornecedor(); // Fornecedores disponíveis
+    Peca* pecas = migraDadosPeca();
+
+
+    Fornecedor* fornecedores = migraDadosFornecedor();
+
 
     while (opc != 7)
     {
-        if (oficina_atual != NULL) // Verifica se a oficina está configurada
+        if (oficina_atual != NULL)
         {
             printf("\n=============== SISTEMA GERENCIAL DE UMA OFICINA ===============\n\n");
             printf("\t\tSeja bem-vindo!! %s \n\n", oficina_atual->nome);
@@ -41,7 +42,7 @@ int main(void)
                 "=> ");
             switch (opc)
             {
-            case 1: // Menu de Cadastros
+            case 1:
                 {
                     int cadastros = lerInt("\n========= MÓDULOS DE CADASTRO ==========\n"
                         "\t DIGITE UMA OPÇÃO:\n"
@@ -56,71 +57,58 @@ int main(void)
                     switch (cadastros)
                     {
                     case 1:
-                        {
-                            Cliente* cliente = migraDadosCliente();
-                            menuCliente(&cliente);
-                        }
+                        Cliente* cliente = migraDadosCliente();
+                        menuCliente(&cliente);
                         break;
 
                     case 2:
-                        {
-                            Veiculo* veiculo = migraDadosVeiculo();
-                            // menuVeiculo(&veiculo);
-                        }
+                        Veiculo* veiculo = migraDadosVeiculo();
+                        // menuVeiculo(&veiculo);
                         break;
 
                     case 3:
-                        {
-                            // Passa peças e fornecedores para o menu de peças
-                            menuPecas(&pecas, fornecedores);
-                        }
+                        menuPecas(&pecas, fornecedores);
                         break;
 
                     case 4:
-                        {
-                            // Passa os fornecedores para o menu de fornecedores
-                            menuFornecedor(&fornecedores);
-                        }
+                        menuFornecedor(&fornecedores);
                         break;
 
                     case 5:
-                        {
-                            Servico* servico = migraDadosServicos();
-                            menuServicos(&servico);
-                        }
+                        Servico* servico = migraDadosServicos();
+                        menuServicos(&servico);
                         break;
 
                     case 6:
-                        {
-                            Funcionario* funcionario = migraDadosFuncionario();
-                            menuFuncionario(&funcionario);
-                        }
+                        Funcionario* funcionario = migraDadosFuncionario();
+                        menuFuncionario(&funcionario);
                         break;
 
                     default:
+                        printf("Opção inválida!\n");
                         break;
                     }
                 }
                 break;
 
-            case 2: // Agendamentos e Controle
-                // Implementar menu de agendamentos
+            case 2:
+                printf("Módulo de Agendamentos e Controle em desenvolvimento.\n");
                 break;
 
-            case 3: // Estoque
-                menuEstoque(pecas, fornecedores); // Passa peças e fornecedores para o menu de estoque
+            case 3:
+                menuEstoque(pecas, &fornecedores);
                 break;
 
-            case 4: // Financeiro
-                // Implementar menu financeiro
+            case 4:
+                printf("Módulo Financeiro ainda não implementado.\n");
                 break;
 
-            case 5: // Relatórios
-                // Implementar menu de relatórios
+            case 5:
+                printf("Módulo de Relatórios ainda não implementado.\n");
                 break;
 
-            case 6: // Importação/Exportação
-                // Implementar menu de importação/exportação
+            case 6:
+                printf("Módulo de Importação/Exportação ainda não implementado.\n");
                 break;
 
             case 7:
@@ -133,7 +121,6 @@ int main(void)
         }
         else
         {
-            // Caso a oficina não esteja configurada, solicita cadastro
             Oficina* oficina_nova = migraDadosOficina();
             menuOficina(&oficina_nova);
         }

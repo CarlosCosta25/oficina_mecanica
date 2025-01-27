@@ -7,3 +7,16 @@
 <email></email>
 <ativo>0</ativo>
 </registro>
+<registro>
+<codigo>1</codigo>
+<nome>julia
+</nome>
+<cpf_cnpj>123456
+</cpf_cnpj>
+<endereco>rua 8
+</endereco>
+<telefone>372458
+</telefone>
+<email>ya@gmai</email>
+<ativo>1</ativo>
+</registro>

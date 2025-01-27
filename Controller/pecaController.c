@@ -103,34 +103,4 @@ int buscaNovoIDPeca(Peca * pecas) {
     return maior; // Retorna o próximo código disponível
 }
 
-// Função para buscar ou cadastrar uma peça
-int buscarOuCadastrarPeca(Peca **pecas, char *nome, int codFornecedor) {
-    // Verifica se a peça já está cadastrada
-    for (int i = 0; i < getTamanhoPecas(); i++) {
-        if (strcmp((*pecas)[i].descricao, nome) == 0) {
-            printf("Peça já cadastrada: %s (Código: %d)\n", (*pecas)[i].descricao, (*pecas)[i].codigo);
-            return (*pecas)[i].codigo;
-        }
-    }
-
-    // Caso não exista, cadastra uma nova peça
-    Peca novaPeca;
-    novaPeca.codigo = buscaNovoIDPeca(*pecas); // Gera um novo código para a peça
-    strcpy(novaPeca.descricao, nome);
-    novaPeca.fornecedor = codFornecedor; // Associa a peça ao fornecedor
-    novaPeca.preco_custo = 0.0; // Preço de custo inicial
-    novaPeca.preco_venda = 0.0; // Preço de venda inicial
-    novaPeca.estoque = 0; // Estoque inicial
-    novaPeca.estoque_min = 10; // Estoque mínimo padrão
-    novaPeca.ativo = 1; // Marca a peça como ativa
-
-    // Adiciona a nova peça ao sistema
-    if (createPeca(pecas, &novaPeca) == 1) {
-        printf("Peça cadastrada com sucesso! Nome: %s, Código: %d\n", novaPeca.descricao, novaPeca.codigo);
-        return novaPeca.codigo;
-    } else {
-        printf("Erro ao cadastrar a peça.\n");
-        return -1;
-    }
-}
 

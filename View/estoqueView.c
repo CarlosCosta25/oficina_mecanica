@@ -26,8 +26,8 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
                 int continuar = 1;
 
                 printf("\n=== REGISTRANDO UMA NOTA DE ENTRADA ===\n");
-                printf("Digite o nome do fornecedor: ");
-                scanf(" %[^\n]s", nomeFornecedor);
+                //printf("Digite o nome do fornecedor: ");
+                //scanf(" %[^\n]s", nomeFornecedor);
 
                 printf("Digite o CNPJ da empresa: ");
                 scanf("%s", cnpj);
@@ -53,6 +53,7 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
 
                     // Verifica se a peça já está cadastrada
                    // int codPeca = buscarOuCadastrarPeca(pecas, nomePeca, codFornecedor);
+                    int codigoPeca = buscarOuCadastrarPeca(&pecas, fornecedores, nomePeca, codFornecedor);
 
                     printf("Digite a quantidade da peça: ");
                     scanf("%d", &qtdPecas);
@@ -60,8 +61,19 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
                     printf("Digite o preço de custo unitário da peça: ");
                     scanf("%f", &precoCusto);
 
+                    //aqui tenho que fazer o preco total que seria qtd da peça * preço de custo
+
+                    //aqui tenho que fazer um vetor que guarda a quantidade de peças
+
+                    printf("A nota de entrada ainda possui peça?\n"
+                           "");
+
+
 
                 }
+                //logo abaixo fazer o imposto por produto, que seria a imposto/quantidade
+                //calcular frete por produto, que seria frete/quantidade
+
             }
             break;
 

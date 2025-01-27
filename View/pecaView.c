@@ -263,3 +263,23 @@ void mostrarTodasPecas(Peca *pecas) {
             printf("Peça: %s Codigo: %d\n", pecas[i].descricao, pecas[i].codigo);
     }
 }
+int buscarOuCadastrarPeca(Peca **pecas, Fornecedor *fornecedores, char *nome, int codFornecedor) {
+
+    // Obtém o tamanho atual do array de peças
+    int tamanho = getTamanhoPecas();
+
+    // Verifica se a peça já está cadastrada
+    for (int i = 0; i < tamanho; i++) {
+        if (strcmp((*pecas)[i].descricao, nome) == 0 && (*pecas)[i].fornecedor == codFornecedor) {
+            printf("Peça já cadastrada: %s (Código: %d, Fornecedor: %d)\n",
+                   (*pecas)[i].descricao, (*pecas)[i].codigo, codFornecedor);
+            return (*pecas)[i].codigo;
+        }
+    }
+
+    // Caso não encontre, chama novaPeca
+    printf("Peça não encontrada. Cadastrando nova peça.\n");
+    novaPeca(pecas, fornecedores);
+    return (*pecas)[getTamanhoPecas() - 1].codigo;
+}
+

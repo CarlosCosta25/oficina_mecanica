@@ -45,5 +45,5 @@ void mostrarPeca(Peca *pecas);                           // Mostra as informaç�
 void editarPeca(Peca *pecas, Fornecedor *fornecedores);  // Permite editar as informações de uma peça
 void apagarPeca(Peca *pecas);                            // Remove uma peça
 void mostrarTodasPecas(Peca *pecas);                     // Exibe todas as peças cadastradas
-int buscarOuCadastrarPeca(Peca **pecas, char *nome, int codFornecedor); // Busca ou cadastra uma nova peça
+int buscarOuCadastrarPeca(Peca **pecas, Fornecedor *fornecedores, char *nome, int codFornecedor); // Busca ou cadastra uma nova peça
 #endif // PECA_H

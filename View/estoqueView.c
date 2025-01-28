@@ -1,15 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "../bibliotecas/estoque.h"
 #include "../bibliotecas/peca.h"
-#include "../bibliotecas/fornecedor.h"
 
-
-void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
-    char nomePeca[100];
-    int qtdPecas;
-    float precoCusto;
+// Função para exibir o menu de estoque
+void menuEstoque() {
     int opcao;
 
     do {
@@ -22,91 +16,29 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
         scanf("%d", &opcao);
 
         switch (opcao) {
-        case 1: {
-                char nomeFornecedor[100];
-                char cnpj[20];
-                float frete, imposto;
-                int continuar = 1;
-
-                printf("\n=== REGISTRANDO UMA NOTA DE ENTRADA ===\n");
-                //printf("Digite o nome do fornecedor: ");
-                //scanf(" %[^\n]s", nomeFornecedor);
-
-                printf("Digite o CNPJ da empresa: ");
-                scanf("%s", cnpj);
-
-                // Verifica se o fornecedor já está cadastrado
-                int codFornecedor = buscarOuCadastrarFornecedor(&fornecedores, nomeFornecedor, cnpj);
-                printf("Fornecedor associado: Código %d\n", codFornecedor);
-
-                printf("Digite o valor total do frete: ");
-                scanf("%f", &frete);
-
-                printf("Digite o valor total do imposto: ");
-                scanf("%f", &imposto);
-
-                int totalQtdPecas = 0;
-
-                do  {
-
-
-                    printf("\n=== REGISTRANDO PEÇA ===\n");
-                    printf("Digite o nome da peça: ");
-                    scanf(" %[^\n]s", nomePeca);
-
-                    // Verifica se a peça já está cadastrada
-                   // int codPeca = buscarOuCadastrarPeca(pecas, nomePeca, codFornecedor);
-
-                    int codPeca = buscarOuCadastrarPeca(&pecas, fornecedores, nomePeca, codFornecedor);
-
-                    printf("Digite a quantidade da peça: ");
-                    scanf("%d", &qtdPecas);
-
-                    printf("Digite o preço de custo unitário da peça: ");
-                    scanf("%f", &precoCusto);
-
-                    float precoTotal = qtdPecas * precoCusto;
-                    totalQtdPecas += qtdPecas;
-
-                    printf("A nota de entrada ainda possui peça?\n"
-                           "1-Sim\n"
-                           "2-Não\n"
-                           "=> ");
-                    scanf("%d", &continuar);
-
-                }while (continuar<2);
-                //logo abaixo fazer o imposto por produto, que seria a imposto/quantidade
-                float impostoPorPeca = imposto / totalQtdPecas;
-                //calcular frete por produto, que seria frete/quantidade
-                float fretePorPeca = frete / totalQtdPecas;
-                //calculando o lucro, o lucro aqui é por peça creio que estou fazendo algo errado
-
-                float lucro = (precoCusto + fretePorPeca + impostoPorPeca) * //aqui tem consultar oficina para ver a margem de lucro;
-                //acho que tenho que colcoar dentro do loop, alem disso acho que tenho seguir a estrutura mvc
-        }
+        case 1:
+            registrarCompra();
             break;
 
         case 2:
             printf("\n=== LISTA COMPLETA DO ESTOQUE ===\n");
-            mostrarTodasPecas(pecas);
+            listarEstoque();
             break;
 
-        case 3:
+        case 3: {
                 char nomePeca[100];
                 printf("Digite o nome da peça para consultar: ");
                 scanf(" %[^\n]s", nomePeca);
 
-                //int codPeca = buscarPecaPorNome(pecas, nomePeca);
-                /*/if (codPeca != -1) {
-                    int posicao = showPeca(pecas, codPeca);
-                    if (posicao != -1) {
-                        mostrarPeca(&pecas[posicao]);
-                    }
+                Peca *pecas = migraDadosPeca();
+                int codPeca = buscarPecaPorNome(pecas, nomePeca);
+                if (codPeca != -1) {
+                    consultarPeca(codPeca);
                 } else {
                     printf("Peça não encontrada.\n");
                 }
-            }/*/
-            break;
+                break;
+        }
 
         case 0:
             printf("Saindo do menu estoque...\n");
@@ -118,4 +50,11 @@ void menuEstoque(Peca *pecas, Fornecedor *fornecedores) {
     } while (opcao != 0);
 }
 
-
+// Função para listar todas as peças no estoque
+void listarEstoque() {
+    Peca *pecas = migraDadosPeca();
+    for (int i = 0; i < getTamanhoPecas(); i++) {
+        printf("Código: %d | Nome: %s | Quantidade: %d | Preço Venda: %.2f\n",
+               pecas[i].codigo, pecas[i].descricao, pecas[i].estoque, pecas[i].preco_venda);
+    }
+}

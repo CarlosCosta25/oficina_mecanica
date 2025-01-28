@@ -1,25 +1,25 @@
+// estoqueModel.c
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../bibliotecas/estoque.h"
+#include "../bibliotecas/oficina.h"
+#include "../bibliotecas/peca.h"
 #include "../bibliotecas/utils.h"
 
-int qtdEstoque = 0;
+static int qtdEstoque = 0;
 
-// Atualiza o tamanho do estoque
 void setTamanhoEstoque() {
     qtdEstoque++;
 }
 
-// Retorna o tamanho atual do estoque
 int getTamanhoEstoque() {
     return qtdEstoque;
 }
 
-// Migra dados do estoque entre formatos diferentes (TXT, BIN, MEM)
-CompraPeca *migraDadosEstoque() {
-    CompraPeca *estoque = NULL;
-    FILE *buffer;
+CompraPeca* migraDadosEstoque() {
+    CompraPeca* estoque = NULL;
+    FILE* buffer;
 
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/estoque.bin", "rb");
@@ -32,9 +32,7 @@ CompraPeca *migraDadosEstoque() {
             free(estoque);
             remove("../bd/estoque.bin");
         }
-    }
-
-    if (getTipoArquivo() == BIN) {
+    } else if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/estoque.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -47,17 +45,16 @@ CompraPeca *migraDadosEstoque() {
         }
     }
 
-    return estoque;
+    return getEstoque();
 }
 
-// Salva os dados do estoque no formato atual
-void setEstoque(CompraPeca *estoque) {
-    FILE *buffer;
+void setEstoque(CompraPeca* estoque) {
+    FILE* buffer;
 
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/estoque.txt", "w");
         if (buffer != NULL) {
-            //escreverArquivoTxtEstoque(buffer, estoque);
+            escreverArquivoTxtEstoque(buffer, estoque);
             fclose(buffer);
         }
     } else if (getTipoArquivo() == BIN) {
@@ -69,10 +66,9 @@ void setEstoque(CompraPeca *estoque) {
     }
 }
 
-// Retorna os dados do estoque
-CompraPeca *getEstoque() {
-    FILE *buffer;
-    CompraPeca *estoque = NULL;
+CompraPeca* getEstoque() {
+    FILE* buffer;
+    CompraPeca* estoque = NULL;
 
     if (getTipoArquivo() == TXT) {
         buffer = fopen("../bd/estoque.txt", "r");
@@ -91,11 +87,10 @@ CompraPeca *getEstoque() {
     return estoque;
 }
 
-// Lê o estoque de um arquivo TXT
-CompraPeca *lerArquivoTxtEstoque(FILE *buffer) {
-    int numEstoque = 0;
-    CompraPeca *estoque = NULL;
+CompraPeca* lerArquivoTxtEstoque(FILE* buffer) {
+    CompraPeca* estoque = NULL;
     char linha[200];
+    int numEstoque = 0;
     int i = 0;
     int isPrimeiro = 1;
 
@@ -117,7 +112,10 @@ CompraPeca *lerArquivoTxtEstoque(FILE *buffer) {
             case 4: estoque[numEstoque].valorImposto = atof(removeTags(linha)); break;
             case 5: estoque[numEstoque].valorFrete = atof(removeTags(linha)); break;
             case 6: estoque[numEstoque].valorTotalPeca = atof(removeTags(linha)); break;
-            case 7: estoque[numEstoque].codTransacao = atoi(removeTags(linha)); numEstoque++; i = -1; break;
+            case 7: estoque[numEstoque].codTransacao = atoi(removeTags(linha)); 
+                   numEstoque++; 
+                   i = -1; 
+                   break;
         }
         i++;
     }
@@ -126,8 +124,7 @@ CompraPeca *lerArquivoTxtEstoque(FILE *buffer) {
     return estoque;
 }
 
-// Escreve o estoque em um arquivo TXT
-void escreverArquivoTxtEstoque(FILE *buffer, CompraPeca *estoque) {
+void escreverArquivoTxtEstoque(FILE* buffer, CompraPeca* estoque) {
     for (int i = 0; i < getTamanhoEstoque(); i++) {
         fprintf(buffer,
             "<registro>\n"
@@ -152,20 +149,41 @@ void escreverArquivoTxtEstoque(FILE *buffer, CompraPeca *estoque) {
     }
 }
 
-// Lê o estoque de um arquivo BIN
-CompraPeca *lerArquivoBinEstoque(FILE *buffer) {
+CompraPeca* lerArquivoBinEstoque(FILE* buffer) {
     fseek(buffer, 0, SEEK_END);
     int numEstoque = ftell(buffer) / sizeof(CompraPeca);
     fseek(buffer, 0, SEEK_SET);
 
-    CompraPeca *estoque = malloc(numEstoque * sizeof(CompraPeca));
+    CompraPeca* estoque = malloc(numEstoque * sizeof(CompraPeca));
     fread(estoque, sizeof(CompraPeca), numEstoque, buffer);
     qtdEstoque = numEstoque;
 
     return estoque;
 }
 
-// Escreve o estoque em um arquivo BIN
-void escreverArquivoBinEstoque(FILE *buffer, CompraPeca *estoque) {
+void escreverArquivoBinEstoque(FILE* buffer, CompraPeca* estoque) {
     fwrite(estoque, sizeof(CompraPeca), getTamanhoEstoque(), buffer);
+}
+// Atualiza o estoque de uma peça
+void atualizarEstoque(Peca *peca, int quantidade, float precoCusto, float frete, float imposto, Oficina *oficina) {
+    // Atualiza o estoque com a nova quantidade adquirida
+    peca->estoque += quantidade;
+
+    // Atualiza o preço de custo da peça
+    peca->preco_custo = precoCusto;
+
+    // Calcula o preço de venda com base na margem de lucro da oficina
+    float margemLucro = oficina->porcentagem_lucro / 100.0; // Converte porcentagem para decimal
+    peca->preco_venda = (precoCusto + frete + imposto) * (1 + margemLucro);
+
+    printf("Estoque atualizado: %s\n", peca->descricao);
+    printf("Novo estoque: %d | Preço de Venda: R$%.2f\n", peca->estoque, peca->preco_venda);
+}
+int buscarPecaPorNome(Peca *pecas, const char *nome) {
+    for (int i = 0; i < getTamanhoEstoque(); i++) {
+        if (strcmp(pecas[i].descricao, nome) == 0) {
+            return i; // Retorna o índice ou código da peça
+        }
+    }
+    return -1; // Retorna -1 se a peça não for encontrada
 }

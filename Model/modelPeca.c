@@ -257,3 +257,5 @@ void escrever_arquivo_bin_peca(FILE *buffer, Peca *pecas) {
         }
     }
 }
+// Função para buscar uma peça pelo nome
+

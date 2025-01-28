@@ -3,17 +3,16 @@
 
 #include "peca.h"
 
-
 // Estrutura para registrar compras de peças
 typedef struct compraPeca {
     int codigo;               // Código da compra
-    int codPeca;              // Código da peça
-    int qtdPecas;             // Quantidade de peças compradas
-    int codFornecedor;        // Código do fornecedor
-    float valorImposto;       // Valor do imposto por peça
-    float valorFrete;         // Valor do frete por peça
-    float valorTotalPeca;     // Valor total da peça
-    int codTransacao;         // Código da transação associada
+    int codPeca;             // Código da peça
+    int qtdPecas;            // Quantidade de peças compradas
+    int codFornecedor;       // Código do fornecedor
+    float valorImposto;      // Valor do imposto por peça
+    float valorFrete;        // Valor do frete por peça
+    float valorTotalPeca;    // Valor total da peça
+    int codTransacao;        // Código da transação associada
 } CompraPeca;
 
 // Estrutura para transações gerais (compra ou venda)
@@ -26,26 +25,24 @@ typedef struct transacao {
 } Transacao;
 
 // Model Estoque
-void setTamanhoEstoque();                         // Incrementa o contador de estoque
-int getTamanhoEstoque();                          // Retorna o número total de itens no estoque
-CompraPeca *migraDadosEstoque();                  // Migra dados entre formatos de armazenamento
-void setEstoque(CompraPeca *estoque);             // Salva o estoque no formato atual
-CompraPeca *getEstoque();                         // Retorna os dados do estoque
-CompraPeca *lerArquivoTxtEstoque(FILE *buffer);   // Lê os dados do estoque de um arquivo TXT
-//void escreverArquivoTxtEstoque(FILE *buffer, CompraPeca *estoque); // Escreve os dados do estoque em um arquivo TXT
-CompraPeca *lerArquivoBinEstoque(FILE *buffer);   // Lê os dados do estoque de um arquivo BIN
-void escreverArquivoBinEstoque(FILE *buffer, CompraPeca *estoque); // Escreve os dados do estoque em um arquivo BIN
+void setTamanhoEstoque();
+int getTamanhoEstoque();
+CompraPeca *migraDadosEstoque();
+void setEstoque(CompraPeca *estoque);
+CompraPeca *getEstoque();
+CompraPeca *lerArquivoTxtEstoque(FILE *buffer);
+void escreverArquivoTxtEstoque(FILE *buffer, CompraPeca *estoque);
+CompraPeca *lerArquivoBinEstoque(FILE *buffer);
+void escreverArquivoBinEstoque(FILE *buffer, CompraPeca *estoque);
 
 // Controller Estoque
-void registrarCompra();                // Registra uma nova compra de peça
+void registrarCompra();
 int atualizarEstoquePeca(Peca *pecas, int codigoPeca, int qtdComprada, float precoCusto, float frete, float imposto, float lucro);
-// Atualiza o estoque de uma peça
-
-void listarEstoque();                             // Lista todas as peças no estoque
-void consultarPeca(int codPeca);                  // Consulta os detalhes de uma peça específica
+void listarEstoque();
+void consultarPeca(int codPeca);
 
 // View Estoque
-void menuEstoque();                    // Exibe o menu do módulo de estoque
-void exibirEstoque();                             // Exibe o estoque completo
+void menuEstoque();
+void exibirEstoque();
 
 #endif // ESTOQUE_H

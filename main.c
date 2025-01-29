@@ -152,6 +152,13 @@ int main(void) {
                     case 1:
                         filtrarClienteIDNome(cliente);
                         break;
+                    case 4:
+                        filtrarFornecedorIDNomeFantasia(fornercedor);
+                        break;
+                    case 6:
+                        filtrarFuncionarioIDNome(funcionario);
+                    break;
+
                 }
                     break;
             }
@@ -160,5 +167,6 @@ int main(void) {
             menuOficina(&oficina_nova);
         }
     }
+
     return 0;
 }

@@ -31,7 +31,8 @@ int createFuncionario(Funcionario **funcionarios, Funcionario *funcionario); // 
 int showFuncionario(Funcionario *funcionarios, int id); // Exibe as informações de um funcionário pelo ID
 int updateFuncionario(Funcionario *funcionarios, Funcionario *funcionario); // Atualiza os dados de um funcionário
 int deleteFuncionario(Funcionario *funcionarios, int id); // Remove um funcionário pelo ID
-
+int saveFuncionarioCSV(Funcionario * funcionario, int tamanho); // Salva os dados de um funcionário em um arquivo CSV
+Funcionario * filterFuncionarioNome(Funcionario *funcionario, char * nome, int *tamanho);
 // View Funcionario
 
 void menuFuncionario(Funcionario **funcionarios);     // Exibe o menu para manipulação dos funcionários
@@ -41,5 +42,5 @@ void apagarFuncionario(Funcionario *funcionarios);    // Remove um funcionário
 void editarFuncionario(Funcionario *funcionarios);    // Permite editar as informações de um funcionário
 int buscaNovoIDFuncionario(Funcionario *funcionarios); // Busca um novo ID válido para cadastro de um funcionário
 void mostrarTodosFuncionarios(Funcionario *funcionarios); // Exibe todos os funcionários cadastrados
-
+void filtrarFuncionarioIDNome(Funcionario *funcionarios); // Filtra os funcionários por ID ou nome
 #endif // FUNCIONARIO_H

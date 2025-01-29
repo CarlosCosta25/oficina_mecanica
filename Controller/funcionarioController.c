@@ -103,3 +103,43 @@ int buscaNovoIDFuncionario(Funcionario * funcionarios) {
     }
     return maior; // Retorna o novo ID
 }
+
+int saveFuncionarioCSV(Funcionario * funcionario, int tamanho) {
+    char ** string = malloc(sizeof(char) * tamanho);
+    for(int i = 0; i< tamanho; i++) {
+        string[i] = malloc(sizeof(char) * 150);
+        string[i] = transformaString(&funcionario[i].codigo, 'i');
+        string[i] =concatenarStringPontoEVirgula(string[i], funcionario[i].nome);
+        string[i] =concatenarStringPontoEVirgula(string[i], funcionario[i].cpf);
+        string[i] =concatenarStringPontoEVirgula(string[i], funcionario[i].endereco);
+        string[i] =concatenarStringPontoEVirgula(string[i], funcionario[i].telefone);
+        string[i] =concatenarStringPontoEVirgula(string[i], funcionario[i].cargo);
+        string[i] =concatenarStringPontoEVirgula(string[i], transformaString(&funcionario[i].salario, 'f'));
+        string[i] =concatenarStringPontoEVirgula(string[i], transformaString(&funcionario[i].ativo, 'i'));
+
+    }
+    escreverCSV(string, "funcionario", tamanho);
+    return TRUE;
+}
+
+Funcionario * filterFuncionarioNome(Funcionario *funcionario, char * nome, int *tamanho) {
+    Funcionario * funcionarioFiltrados = malloc(sizeof(Funcionario));
+
+    int tamanhoTotal = getTamanhoFuncionarios();
+
+    for(int i = 0; i < tamanhoTotal; i++){
+        if(equalsString(funcionario[i].nome, nome)== TRUE){
+            *(tamanho) = *(tamanho) + 1;
+            funcionarioFiltrados = realloc(funcionarioFiltrados, (*tamanho) * sizeof(Funcionario));
+            if(funcionarioFiltrados == NULL){
+                printf("Erro ao alocar memória para funcionarios filtrados.\n");
+                return NULL;
+            }
+            funcionarioFiltrados[*tamanho-1] = funcionario[i];
+        }
+
+    }
+    if (*tamanho == 0) return NULL;
+
+    return funcionarioFiltrados;
+}

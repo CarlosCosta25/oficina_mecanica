@@ -103,3 +103,41 @@ int buscaNovoIDFornecedor(Fornecedor * fornecedores) {
     }
     return maior; // Retorna o novo ID gerado
 }
+int saveFornecedorCSV(Fornecedor * fornecedor, int tamanho) {
+    char ** string = malloc(sizeof(char) * tamanho);
+    for(int i = 0; i< tamanho; i++){
+        string[i] = malloc(sizeof(char) * 150);
+        string[i] = transformaString(&fornecedor[i].codigo, 'i');
+        string[i] = concatenarStringPontoEVirgula(string[i], fornecedor[i].nome_fantasia);
+        string[i] = concatenarStringPontoEVirgula(string[i],transformaString(fornecedor[i].razao_social,'i'));
+        string[i] = concatenarStringPontoEVirgula(string[i], fornecedor[i].cnpj);
+        string[i] = concatenarStringPontoEVirgula(string[i], fornecedor[i].endereco);
+        string[i] = concatenarStringPontoEVirgula(string[i], fornecedor[i].telefone);
+        string[i] = concatenarStringPontoEVirgula(string[i], fornecedor[i].email);
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&fornecedor[i].ativo, 'i'));
+
+    }
+    escreverCSV(string, "fornecedor", tamanho);
+    return TRUE;
+}
+Fornecedor * filterFornecedorNomeFantasia(Fornecedor *fornecedores, char * nome, int *tamanho){
+    Fornecedor * fornecedoresFiltrados = malloc(sizeof(Fornecedor));
+    int tamanhoTotal = getTamanhoFornecedores();
+
+    for(int i = 0; i < tamanhoTotal; i++){
+        if(equalsString(fornecedores[i].nome_fantasia, nome)== TRUE){
+            *(tamanho) = *(tamanho) + 1;
+            fornecedoresFiltrados = realloc(fornecedoresFiltrados, (*tamanho) * sizeof(Fornecedor));
+            if(fornecedoresFiltrados == NULL){
+                printf("Erro ao alocar memória para clientes filtrados.\n");
+                return NULL;
+            }
+            fornecedoresFiltrados[*tamanho-1] = fornecedores[i];
+        }
+
+    }
+    if (*tamanho == 0) return NULL;
+
+    return fornecedoresFiltrados;
+}
+

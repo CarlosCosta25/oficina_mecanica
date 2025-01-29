@@ -198,3 +198,69 @@ void mostrarTodosFuncionarios(Funcionario *funcionarios) {
             printf("Fornecedor: %s Codigo: %d\n", funcionarios[i].nome, funcionarios[i].codigo);
     }
 }
+
+void filtrarFuncionarioIDNome(Funcionario *funcionarios) {
+    printf("\t==== FILTRO DE FUNCIONARIO ====\n");
+    int opcao = lerInt("Você seja filtrar por Codigo ou por nome?\n"
+        "1 - Codigo\n"
+        "2 - Nome\n"
+        "=>");
+    if (opcao == 1) {
+        int id = lerInt("Qual o Codigo do fornecedor que você deseja filtrar?\n=>");
+        int posicao = showFuncionario(funcionarios, id);
+        if (posicao != FALSE) {
+            printf("Código: %d\n"
+                   "Nome: %s\n"
+                   "CPF: %s\n"
+                   "Endereço: %s\n"
+                   "Telefone: %s\n"
+                   "Cargo: %s\n"
+                   "Salario: %f\n",
+                   funcionarios[posicao].codigo,
+                   funcionarios[posicao].nome,
+                   funcionarios[posicao].cpf,
+                   funcionarios[posicao].endereco,
+                   funcionarios[posicao].telefone,
+                   funcionarios[posicao].cargo,
+                     funcionarios[posicao].salario
+            ); // Exibe se o cliente está ativo
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveFuncionarioCSV(&funcionarios[posicao], 1);
+            }
+        } else {
+            printf("Codigo não encontrado\n");
+        }
+    } else if (opcao == 2) {
+        char *nome = lerString("Qual o nome do funcionario que você deseja filtrar?\n=>");
+        int tamanho = 0;
+        Funcionario *funcionarioFiltrados = filterFuncionarioNome(funcionarios, nome, &tamanho);
+        if (funcionarioFiltrados != NULL) {
+            for (int i = 0; i < tamanho; i++) {
+                printf("Código: %d\n"
+                   "Nome: %s\n"
+                   "CPF: %s\n"
+                   "Endereço: %s\n"
+                   "Telefone: %s\n"
+                   "Cargo: %s\n"
+                   "Salario: %f\n",
+                   funcionarioFiltrados[i].codigo,
+                   funcionarioFiltrados[i].nome,
+                   funcionarioFiltrados[i].cpf,
+                   funcionarioFiltrados[i].endereco,
+                   funcionarioFiltrados[i].telefone,
+                   funcionarioFiltrados[i].cargo,
+                     funcionarioFiltrados[i].salario
+            );// Exibe se o cliente está ativo
+            }
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveFuncionarioCSV(funcionarioFiltrados, tamanho);
+            }
+        } else {
+            printf("Nome não encontrado\n");
+        }
+    }
+    else {
+        printf("Opção inválida\n");
+    }
+}
+

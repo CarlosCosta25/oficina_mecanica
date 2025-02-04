@@ -92,6 +92,13 @@ void setTipoArquivo(int Arquivo){//muda o tipo de arquivo que vai ser trabalhado
 int getTipoArquivo() {// retorna o tipo de arquivo que vai ser trabalhado durante a execução do programa
     return tipoArquivo;
 }
+int equalsString(char* s1, char* s2) {
+    if (strlen(s1) != strlen(s2)) return FALSE;
+    for (int i = 0; i < strlen(s1); i++) {
+        if (s1[i] != s2[i]) return FALSE;
+    }
+    return TRUE;
+}
 
 
 

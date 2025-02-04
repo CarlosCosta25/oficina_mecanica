@@ -43,6 +43,5 @@ void mostrarFornecedor(Fornecedor *fornecedores);    // Função que exibe os da
 void editarFornecedor(Fornecedor *fornecedores);     // Função que permite editar os dados de um fornecedor
 void apagarFornecedor(Fornecedor *fornecedores);     // Função que apaga os dados de um fornecedor
 void mostrarTodosFornecedores(Fornecedor * fornecedores);  // Função que exibe todos os fornecedores cadastrados
-int buscarOuCadastrarFornecedor(Fornecedor **fornecedores, char *nomeFantasia, char *cnpj);// Função que ferivica se foi cadastrado
 
 #endif //FORNECEDOR_H

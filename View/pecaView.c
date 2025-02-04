@@ -263,37 +263,4 @@ void mostrarTodasPecas(Peca *pecas) {
             printf("Peça: %s Codigo: %d\n", pecas[i].descricao, pecas[i].codigo);
     }
 }
-int buscarOuCadastrarPeca(Peca **pecas, Fornecedor *fornecedores, char *nome, int codFornecedor) {
-    if (getTipoArquivo() != MEM) {
-        *pecas = readPecas(); // Garante que a lista é carregada do arquivo
-    }
-
-    // Obtém o tamanho atual do array de peças
-    int tamanho = getTamanhoPecas();
-    //printf("tamanho %d",tamanho);
-    if (tamanho == 0) {
-        printf("Nenhum peça cadastrado\n");
-        printf("Peça não encontrada. Cadastrando nova peça.\n");
-        novaPeca(pecas, fornecedores);
-        return (*pecas)[0].codigo;
-    }
-
-
-    // Verifica se a peça já está cadastrada
-    for (int i = 0; i < tamanho; i++) {
-        printf("Peça já cadastrada: %s (Código: %d, Fornecedor: %d)\n",
-                   nome, (*pecas)[i].codigo, codFornecedor);
-        if (strcmp("bubina", nome) == 0 && (*pecas)[i].fornecedor == codFornecedor) {
-            printf("Peça já cadastrada: %s (Código: %d, Fornecedor: %d)\n",
-                   (*pecas)[i].descricao, (*pecas)[i].codigo, codFornecedor);
-
-            return (*pecas)[i].codigo;
-        }
-    }
-
-    // Caso não encontre, chama novaPeca
-    printf("Peça não encontrada. Cadastrando nova peça.\n");
-    novaPeca(pecas, fornecedores);
-    return (*pecas)[getTamanhoPecas() - 1].codigo;
-}
 

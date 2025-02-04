@@ -12,4 +12,5 @@ char* removeTags(char* dado);
 int equals(char* s1, char* s2);
 void setTipoArquivo(int Arquivo);
 int getTipoArquivo();
+int equalsString(char* s1, char* s2);
 #endif //UTILS_H

@@ -5,8 +5,41 @@
 #include "../bibliotecas/utils.h"
 
 // Obtém a lista de fornecedores a partir do armazenamento
-Fornecedor* readFornecedores() {
-    return getFornecedores();
+Fornecedor *readFornecedores() {
+    FILE *buffer;
+    Fornecedor *fornecedores = NULL;
+
+    if (getTipoArquivo() == TXT) {
+        buffer = fopen("../bd/fornecedores.txt", "r");
+        if (buffer == NULL) {
+            return NULL;
+        }
+        fornecedores = ler_arquivo_txt_fornecedor(buffer);
+        fclose(buffer); // Certifique-se de fechar o arquivo após a leitura
+    }
+
+    if (getTipoArquivo() == BIN) {
+        buffer = fopen("../bd/fornecedores.bin", "rb");
+        if (buffer == NULL) {
+            return NULL;
+        }
+        fornecedores = ler_arquivo_bin_fornecedor(buffer);
+        fclose(buffer); // Certifique-se de fechar o arquivo após a leitura
+    }
+
+    if (getTipoArquivo() == MEM) {
+        return NULL;
+    }
+
+    // Debug print para verificar os dados carregados
+    if (fornecedores != NULL) {
+        int tamanho = getTamanhoFornecedores();
+        for (int i = 0; i < tamanho; i++) {
+            printf("Fornecedor lido: CNPJ: %s\n", fornecedores[i].cnpj);
+        }
+    }
+
+    return fornecedores;
 }
 
 // Cria um novo fornecedor e adiciona à lista
@@ -33,13 +66,15 @@ int createFornecedor(Fornecedor **fornecedores, Fornecedor *fornecedor) {
     strcpy((*fornecedores)[index].telefone, fornecedor->telefone);
     strcpy((*fornecedores)[index].email, fornecedor->email);
     (*fornecedores)[index].ativo = 1; // Fornecedor ativo ao ser criado
-    setTamanhoFornecedores(); // Atualiza o tamanho dos fornecedores
+    setTamanhoFornecedores(tamanhoAtual + 1); // Atualiza o tamanho dos fornecedores
+
+    printf("Fornecedor criado: CNPJ: %s\n", (*fornecedores)[index].cnpj); // Debug print
+
     // Salva fornecedores se o tipo de arquivo não for memória
     if (getTipoArquivo() != MEM) setFornecedores(*fornecedores);
 
     return TRUE;
 }
-
 int showFornecedor(Fornecedor *fornecedores, int codigo) {
     if (fornecedores == NULL) return FALSE;
 

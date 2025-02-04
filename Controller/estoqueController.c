@@ -3,130 +3,129 @@
 #include <string.h>
 #include "../bibliotecas/estoque.h"
 #include "../bibliotecas/peca.h"
+
+// Funções do controlador
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
 #include "../bibliotecas/fornecedor.h"
+#include "../bibliotecas/utils.h"
 
-// Função para registrar uma nota de entrada
-void registrarCompra() {
-    char cnpj[20], nomeFornecedor[100];
-    float frete, imposto;
-    int continuar = 1;
-    int totalQtdPecas = 0;
+// Função para buscar ou cadastrar um fornecedor pelo CNPJ
+int buscarOuCadastrarFornecedor(Fornecedor ***fornecedores, char *cnpj) {
+    // Carrega os fornecedores caso necessário
+    if (getTipoArquivo() != MEM) {
+        **fornecedores = readFornecedores(); // Garante que a lista é carregada do arquivo
+    }
 
-    printf("\n=== REGISTRANDO UMA NOTA DE ENTRADA ===\n");
+    int tamanho = getTamanhoFornecedores();
+    if (tamanho <= 0 || *fornecedores == NULL) {
+        printf("Nenhum fornecedor cadastrado. Cadastrando um novo fornecedor.\n");
+        *fornecedores = (Fornecedor **)malloc(sizeof(Fornecedor *));
+        if (*fornecedores == NULL) {
+            printf("Erro ao alocar memória para fornecedores\n");
+            return -1;
+        }
+        novoFornecedor(*fornecedores);
+        return (*fornecedores)[0]->codigo;
+    }
 
-    // Registrar fornecedor
-    printf("Digite o CNPJ do fornecedor: ");
-    scanf("%s", cnpj);
+    // Busca o fornecedor pelo CNPJ
+    for (int i = 0; i < tamanho; i++) {
+        printf("Fornecedores[%d]: ", i);
+        printf("%d", tamanho);
+        printf("aqui %s", (*fornecedores)[i]->cnpj);
 
-    printf("Digite o nome do fornecedor: ");
-    scanf(" %[^\n]s", nomeFornecedor);
-    Fornecedor *fornecedores = migraDadosFornecedor();
+        if ((*fornecedores)[i] == NULL) continue; // Verifica se o ponteiro não é NULL
 
-    int codFornecedor = buscarOuCadastrarFornecedor(&fornecedores, nomeFornecedor, cnpj);
+        int result = equalsString((*fornecedores)[i]->cnpj, cnpj);
+        if (result == 1) {
+            printf("Fornecedor já cadastrado: %s (Código: %d)\n",
+                   (*fornecedores)[i]->nome_fantasia, (*fornecedores)[i]->codigo);
+            return (*fornecedores)[i]->codigo; // Retorna o código se encontrar o fornecedor
+        }
+    }
 
-    printf("Digite o valor total do frete: ");
-    scanf("%f", &frete);
+    // Caso não encontre, cadastra um novo fornecedor
+    printf("Fornecedor não encontrado. Cadastrando um novo fornecedor...\n");
 
-    printf("Digite o valor total do imposto: ");
-    scanf("%f", &imposto);
+    // Realoca memória para adicionar mais um fornecedor
+    *fornecedores = (Fornecedor **)realloc(*fornecedores, (tamanho + 1) * sizeof(Fornecedor *));
+    if (*fornecedores == NULL) {
+        printf("Erro ao realocar memória para fornecedores\n");
+        return -1;
+    }
 
-    do {
-        char nomePeca[100];
-        int qtdPecas;
-        float precoCusto;
+    novoFornecedor(*fornecedores);
 
-        printf("\n=== REGISTRANDO PEÇA ===\n");
-        printf("Digite o nome da peça: ");
-        scanf(" %[^\n]s", nomePeca);
+    // Retorna o código do último fornecedor cadastrado
+    return (*fornecedores)[getTamanhoFornecedores() - 1]->codigo;
+}
+int atualizarEstoquePeca(Peca *pecas, int codigoPeca, int qtdComprada, float precoCusto, float frete, float imposto, float lucro) {
+    // Implementar atualização do estoque de peças
+    for (int i = 0; i < getTamanhoPecas(); i++) {
+        if (pecas[i].codigo == codigoPeca) {
+            pecas[i].estoque += qtdComprada;
+            pecas[i].preco_custo = precoCusto;
+            //pecas[i].frete = frete;
+           // pecas[i].imposto = imposto;
+           // pecas[i].lucro = lucro;
+            return 1; // Sucesso
+        }
+    }
+    return 0; // Peça não encontrada
+}
 
-        Peca * pecas= migraDadosPeca();
-
-        int codPeca = buscarOuCadastrarPeca(&pecas, fornecedores,nomePeca,codFornecedor );
-
-        printf("Digite a quantidade da peça comprada: ");
-        scanf("%d", &qtdPecas);
-
-        printf("Digite o preço de custo unitário da peça: ");
-        scanf("%f", &precoCusto);
-
-        totalQtdPecas += qtdPecas;
-
-        float fretePorProduto = frete / totalQtdPecas;
-        float impostoPorProduto = imposto / totalQtdPecas;
-        float lucro = 0;
-
-        atualizarEstoquePeca(pecas,codPeca, qtdPecas, precoCusto, fretePorProduto, impostoPorProduto,lucro);
-
-        printf("Deseja registrar outra peça?\n1 - Sim\n2 - Não\n=> ");
-        scanf("%d", &continuar);
-
-    } while (continuar == 1);
-
-    printf("\nNota de entrada registrada com sucesso!\n");
+int buscarPecaPorNome(Peca *pecas, char *nome) {
+    for (int i = 0; i < getTamanhoPecas(); i++) {
+        if (strcmp(pecas[i].descricao, nome) == 0) {
+            return pecas[i].codigo;
+        }
+    }
+    return -1; // Peça não encontrada
 }
 
 void consultarPeca(int codPeca) {
     Peca *pecas = migraDadosPeca();
-    CompraPeca *estoque = migraDadosEstoque();
-
-    // Procura a peça no array de peças
     for (int i = 0; i < getTamanhoPecas(); i++) {
         if (pecas[i].codigo == codPeca) {
-            printf("\n=== DETALHES DA PEÇA ===\n");
             printf("Código: %d\n", pecas[i].codigo);
-            printf("Descrição: %s\n", pecas[i].descricao);
-            printf("Estoque atual: %d\n", pecas[i].estoque);
-            printf("Preço de custo: R$ %.2f\n", pecas[i].preco_custo);
-            printf("Preço de venda: R$ %.2f\n", pecas[i].preco_venda);
-
-            // Busca informações adicionais no estoque
-            for (int j = 0; j < getTamanhoEstoque(); j++) {
-                if (estoque[j].codPeca == codPeca) {
-                    printf("Último fornecedor (código): %d\n", estoque[j].codFornecedor);
-                    printf("Último valor de frete: R$ %.2f\n", estoque[j].valorFrete);
-                    printf("Último valor de imposto: R$ %.2f\n", estoque[j].valorImposto);
-                    break;
-                }
-            }
+            printf("Nome: %s\n", pecas[i].descricao);
+            printf("Quantidade: %d\n", pecas[i].estoque);
+            printf("Preço de Venda: %.2f\n", pecas[i].preco_venda);
             return;
         }
     }
-    printf("Peça não encontrada no sistema.\n");
+    printf("Peça não encontrada.\n");
 }
-int atualizarEstoquePeca(Peca *pecas, int codigoPeca, int qtdComprada, float precoCusto, float frete, float imposto, float lucro) {
-    CompraPeca *estoque = migraDadosEstoque();
-    int novoTamanho = getTamanhoEstoque() + 1;
-
-    // Atualiza o estoque da peça
+int buscarOuCadastrarPeca(Peca **pecas, char *nomePeca, int codFornecedor) {
+    // Procura a peça pelo nome
     for (int i = 0; i < getTamanhoPecas(); i++) {
-        if (pecas[i].codigo == codigoPeca) {
-            // Atualiza informações da peça
-            pecas[i].estoque += qtdComprada;
-            pecas[i].preco_custo = precoCusto;
-            pecas[i].preco_venda = (precoCusto + frete + imposto) * (1 + lucro);
-
-            // Registra a compra no estoque
-            estoque = realloc(estoque, novoTamanho * sizeof(CompraPeca));
-            CompraPeca novaCompra = {
-                .codigo = novoTamanho,
-                .codPeca = codigoPeca,
-                .qtdPecas = qtdComprada,
-                .codFornecedor = pecas[i].fornecedor,
-                .valorImposto = imposto,
-                .valorFrete = frete,
-                .valorTotalPeca = precoCusto * qtdComprada,
-                .codTransacao = novoTamanho  // Simplifidado para exemplo
-            };
-
-            estoque[novoTamanho - 1] = novaCompra;
-            setTamanhoEstoque(novoTamanho);
-            setEstoque(estoque);
-            setPecas(pecas);
-
-            return 1; // Sucesso
+        if (strcmp((*pecas)[i].descricao, nomePeca) == 0) {
+            return (*pecas)[i].codigo;
         }
     }
 
-    return 0; // Peça não encontrada
-}
+    // Caso não encontre, cadastrar nova peça
+    printf("Peça não encontrada. Cadastrando nova peça: %s\n", nomePeca);
 
+    Peca novaPeca;
+    novaPeca.codigo = getTamanhoPecas() + 1;
+    strcpy(novaPeca.descricao, nomePeca);
+    novaPeca.estoque = 0;  // Inicializa o estoque com 0
+    novaPeca.preco_custo = 0.0;
+    novaPeca.preco_venda = 0.0;
+    //novaPeca.frete = 0.0;
+    //novaPeca.imposto = 0.0;
+    //novaPeca.lucro = 0.0;
+
+    setTamanhoPecas(getTamanhoPecas() + 1);
+    *pecas = realloc(*pecas, sizeof(Peca) * getTamanhoPecas());
+    if (*pecas == NULL) {
+        printf("Erro ao realocar memória.\n");
+        exit(1);
+    }
+    (*pecas)[getTamanhoPecas() - 1] = novaPeca;
+    return novaPeca.codigo;
+}

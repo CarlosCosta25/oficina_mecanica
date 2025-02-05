@@ -35,7 +35,7 @@ CompraPeca *lerArquivoTxtEstoque(FILE *buffer);
 void escreverArquivoTxtEstoque(FILE *buffer, CompraPeca *estoque);
 CompraPeca *lerArquivoBinEstoque(FILE *buffer);
 void escreverArquivoBinEstoque(FILE *buffer, CompraPeca *estoque);
-int buscarOuCadastrarFornecedor(Fornecedor ***fornecedores, char *cnpj); // Função que verifica se foi cadastrado
+int buscarOuCadastrarFornecedor(Fornecedor **fornecedores, char *cnpj); // Função que verifica se foi cadastrado
 
 // Controller Estoque
 void registrarCompra();
@@ -45,8 +45,8 @@ void consultarPeca(int codPeca);
 int buscarPecaPorNome(Peca *pecas, char *nome); // Adicionada para buscar peça por nome
 int buscarOuCadastrarPeca(Peca **pecas, char *nomePeca, int codFornecedor);  // Adicionada a declaração
 // View Estoque
-void novaNotaEntrada(Peca *pecas, Fornecedor **fornecedores);
-void menuEstoque(Peca *pecas, Fornecedor **fornecedores);
+void novaNotaEntrada(Peca *pecas, Fornecedor *fornecedores);
+void menuEstoque(Peca *pecas, Fornecedor *fornecedores);
 void exibirEstoque();
 
 #endif // ESTOQUE_H

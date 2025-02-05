@@ -54,7 +54,7 @@ Cliente *migraDadosCliente() {
         free(buffer);
         return NULL;
     }
-    if (getTipoArquivo() == MEM) {
+    //if (getTipoArquivo() == MEM) {
         buffer = fopen("../bd/clientes.txt", "r");
         if (buffer != NULL) {
             fclose(buffer);
@@ -84,7 +84,7 @@ Cliente *migraDadosCliente() {
         free(buffer);
         return NULL;
     }
-}
+
 void setClientes(Cliente *clientes) {
     FILE *buffer;
     if (getTipoArquivo() == TXT) {

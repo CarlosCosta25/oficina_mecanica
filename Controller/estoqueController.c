@@ -13,54 +13,39 @@
 #include "../bibliotecas/utils.h"
 
 // Função para buscar ou cadastrar um fornecedor pelo CNPJ
-int buscarOuCadastrarFornecedor(Fornecedor ***fornecedores, char *cnpj) {
+int buscarOuCadastrarFornecedor(Fornecedor **fornecedores, char *cnpj) {
     // Carrega os fornecedores caso necessário
     if (getTipoArquivo() != MEM) {
-        **fornecedores = readFornecedores(); // Garante que a lista é carregada do arquivo
+        *fornecedores = readFornecedores(); // Garante que a lista é carregada do arquivo
     }
 
     int tamanho = getTamanhoFornecedores();
-    if (tamanho <= 0 || *fornecedores == NULL) {
+    if (tamanho <= 0) {
         printf("Nenhum fornecedor cadastrado. Cadastrando um novo fornecedor.\n");
-        *fornecedores = (Fornecedor **)malloc(sizeof(Fornecedor *));
-        if (*fornecedores == NULL) {
-            printf("Erro ao alocar memória para fornecedores\n");
-            return -1;
-        }
-        novoFornecedor(*fornecedores);
-        return (*fornecedores)[0]->codigo;
+        novoFornecedor(fornecedores); // Cadastra o primeiro fornecedor
+        return (*fornecedores)[0].codigo;
     }
 
     // Busca o fornecedor pelo CNPJ
     for (int i = 0; i < tamanho; i++) {
         printf("Fornecedores[%d]: ", i);
         printf("%d", tamanho);
-        printf("aqui %s", (*fornecedores)[i]->cnpj);
-
-        if ((*fornecedores)[i] == NULL) continue; // Verifica se o ponteiro não é NULL
-
-        int result = equalsString((*fornecedores)[i]->cnpj, cnpj);
+        printf("aquii %s",fornecedores[i]->cnpj);
+        int result = equalsString(fornecedores[i]->cnpj, cnpj);
         if (result == 1) {
             printf("Fornecedor já cadastrado: %s (Código: %d)\n",
-                   (*fornecedores)[i]->nome_fantasia, (*fornecedores)[i]->codigo);
-            return (*fornecedores)[i]->codigo; // Retorna o código se encontrar o fornecedor
+                   (*fornecedores)[i].nome_fantasia, (*fornecedores)[i].codigo);
+            return (*fornecedores)[i].codigo; // Retorna o código se encontrar o fornecedor
         }
     }
 
     // Caso não encontre, cadastra um novo fornecedor
+
     printf("Fornecedor não encontrado. Cadastrando um novo fornecedor...\n");
-
-    // Realoca memória para adicionar mais um fornecedor
-    *fornecedores = (Fornecedor **)realloc(*fornecedores, (tamanho + 1) * sizeof(Fornecedor *));
-    if (*fornecedores == NULL) {
-        printf("Erro ao realocar memória para fornecedores\n");
-        return -1;
-    }
-
-    novoFornecedor(*fornecedores);
+    novoFornecedor(fornecedores);
 
     // Retorna o código do último fornecedor cadastrado
-    return (*fornecedores)[getTamanhoFornecedores() - 1]->codigo;
+    return (*fornecedores)[getTamanhoFornecedores() - 1].codigo;
 }
 int atualizarEstoquePeca(Peca *pecas, int codigoPeca, int qtdComprada, float precoCusto, float frete, float imposto, float lucro) {
     // Implementar atualização do estoque de peças

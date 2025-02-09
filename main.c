@@ -37,6 +37,7 @@ int main(void) {
     OrdemServico * ordem_servicos = migraDadosOrdemServico();
     Agendamento *agendamentos = migraDadosAgendamento();
     Estoque * estoques = migraDadosEstoque();
+    Comissao * comissoes = migraDadosComissao();
 
 
 
@@ -55,7 +56,7 @@ int main(void) {
         ordem_servicos = readOrdemServico();
         agendamentos = readAgendamentos();
         estoques = readEstoque();
-
+        comissoes = readComisoes();
     }
     //cadastrarAgendamento(&agendamentos,cliente,veiculo,funcionario,servico,ordem);
     while (opc != 7) {
@@ -133,9 +134,10 @@ int main(void) {
                         menuAgendamento(&agendamentos,cliente,veiculo,funcionario, servico,ordem_servicos);
                     break;
                     case 2:
-                        menuOrdemServico(&ordem_servicos,agendamentos,servico,pecas,&transacoes,&contas_pagar,&contas_receber,&valor_em_caixa);
+                        menuOrdemServico(&ordem_servicos,agendamentos,servico,&pecas,&transacoes,&contas_pagar,&contas_receber,&valor_em_caixa,&comissoes);
                     break;
                     case 3:
+                        menuComissoes(&comissoes,&valor_em_caixa);
                         break;
                     case 0:
                         break;

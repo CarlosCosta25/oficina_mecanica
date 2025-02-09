@@ -92,7 +92,7 @@ void setAgendamentos(Agendamento *agendamentos) {
     } else if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/agendamentos.bin", "wb");
         if (buffer != NULL) {
-            //            escrever_arquivo_bin_agendamento(buffer, agendamentos);
+            escrever_arquivo_bin_agendamento(buffer, agendamentos);
             fclose(buffer);
         }
     }
@@ -115,7 +115,7 @@ Agendamento *getAgendamentos() {
         if (buffer == NULL) {
             return NULL;
         }
-        //        agendamentos = ler_arquivo_bin_agendamento(buffer);
+        agendamentos = ler_arquivo_bin_agendamento(buffer);
         fclose(buffer); // Certifique-se de fechar o arquivo após a leitura
     }
 
@@ -159,8 +159,8 @@ Agendamento *ler_arquivo_txt_agendamento(FILE *buffer) {
                     i++;
                     break;
                 case 2:
-                    char * dado = removeTags(Linha);
-                    agendamentos[numAgendamento].codigosServicos =separaVetor(
+                    char *dado = removeTags(Linha);
+                    agendamentos[numAgendamento].codigosServicos = separaVetor(
                         dado, agendamentos[numAgendamento].quantidadeServicos);
                     i++;
                     break;
@@ -235,25 +235,68 @@ void escrever_arquivo_txt_agendamento(FILE *buffer, Agendamento *agendamentos) {
 
 // Função para ler o arquivo binário de agendamentos
 Agendamento *ler_arquivo_bin_agendamento(FILE *buffer) {
-    qtdAgendamentos = 0;
-    fseek(buffer, 0, SEEK_END); // Move o ponteiro até o fim do arquivo
-    qtdAgendamentos = (int) ftell(buffer) / sizeof(Agendamento); // Pega a quantidade de agendamentos
-    fseek(buffer, 0, SEEK_SET); // Volta o ponteiro para o início do arquivo
-    Agendamento *agendamentos = malloc(sizeof(Agendamento) * qtdAgendamentos); // Aloca a quantidade exata de agendamentos
-
-    if (agendamentos == NULL) { // Verifica se a alocação foi bem-sucedida
-        printf("Erro ao alocar memória para os agendamentos.\n");
+    int qtdAgendamentos = getTamanhoAgendamentos();
+    if (buffer == NULL) {
+        printf("Erro ao abrir o arquivo!\n");
         return NULL;
     }
 
-    fread(agendamentos, sizeof(Agendamento), qtdAgendamentos, buffer); // Lê todos os agendamentos do arquivo e insere no vetor
+    fread(qtdAgendamentos, sizeof(int), 1, buffer); // Lê a quantidade de agendamentos
+
+    Agendamento *agendamentos = malloc(sizeof(Agendamento) * (qtdAgendamentos));
+    if (agendamentos == NULL) {
+        printf("Erro ao alocar memória para agendamentos.\n");
+        return NULL;
+    }
+
+    for (int i = 0; i < qtdAgendamentos; i++) {
+        fread(&agendamentos[i].codigo, sizeof(int), 1, buffer);
+        fread(&agendamentos[i].quantidadeServicos, sizeof(int), 1, buffer);
+        fread(&agendamentos[i].codigoFuncionario, sizeof(int), 1, buffer);
+        fread(&agendamentos[i].codigoCliente, sizeof(int), 1, buffer);
+        fread(&agendamentos[i].codigoVeiculo, sizeof(int), 1, buffer);
+        fread(&agendamentos[i].dataHora, sizeof(time_t), 1, buffer);
+        fread(&agendamentos[i].valorPrevisto, sizeof(float), 1, buffer);
+        fread(&agendamentos[i].ativo, sizeof(int), 1, buffer);
+
+        // Aloca memória para os serviços e lê os dados
+        if (agendamentos[i].quantidadeServicos > 0) {
+            agendamentos[i].codigosServicos = malloc(sizeof(int) * agendamentos[i].quantidadeServicos);
+            if (agendamentos[i].codigosServicos == NULL) {
+                printf("Erro ao alocar memória para os códigos de serviços.\n");
+                free(agendamentos); // Libera a memória alocada antes de retornar
+                return NULL;
+            }
+            fread(agendamentos[i].codigosServicos, sizeof(int), agendamentos[i].quantidadeServicos, buffer);
+        } else {
+            agendamentos[i].codigosServicos = NULL;
+        }
+    }
+
     return agendamentos;
 }
 
+
 // Função para escrever o arquivo binário de agendamentos
 void escrever_arquivo_bin_agendamento(FILE *buffer, Agendamento *agendamentos) {
-    for (int i = 0; i < getTamanhoAgendamentos(); i++) {
-        if (fwrite(&agendamentos[i], sizeof(Cliente), 1, buffer)) {
+    int qtdAgendamentos = getTamanhoAgendamentos();
+    fwrite(&qtdAgendamentos, sizeof(int), 1, buffer); // Grava a quantidade de agendamentos
+
+    for (int i = 0; i < qtdAgendamentos; i++) {
+        // Grava os campos primitivos da struct (exceto os ponteiros)
+        fwrite(&agendamentos[i].codigo, sizeof(int), 1, buffer);
+        fwrite(&agendamentos[i].quantidadeServicos, sizeof(int), 1, buffer);
+        fwrite(&agendamentos[i].codigoFuncionario, sizeof(int), 1, buffer);
+        fwrite(&agendamentos[i].codigoCliente, sizeof(int), 1, buffer);
+        fwrite(&agendamentos[i].codigoVeiculo, sizeof(int), 1, buffer);
+        fwrite(&agendamentos[i].dataHora, sizeof(time_t), 1, buffer);
+        fwrite(&agendamentos[i].valorPrevisto, sizeof(float), 1, buffer);
+        fwrite(&agendamentos[i].ativo, sizeof(int), 1, buffer);
+
+        // Grava os códigos dos serviços, se houver
+        if (agendamentos[i].quantidadeServicos > 0) {
+            fwrite(agendamentos[i].codigosServicos, sizeof(int), agendamentos[i].quantidadeServicos, buffer);
         }
     }
 }
+

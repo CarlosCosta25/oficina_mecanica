@@ -27,9 +27,9 @@ OrdemServico *readOrdemServico() {
     return getOrdemServico(); // Obtém a lista de ordem de servico do arquivo ou memória
 }
 
-int finalOrdemServiço(OrdemServico *ordem_servicos, OrdemServico *ordem_servico, Peca *pecas, Servico *servicos,
+int finalOrdemServiço(OrdemServico *ordem_servicos, OrdemServico *ordem_servico, Peca **pecas, Servico *servicos,
                       Transacao **transacoes, ContasPagar **contas_pagar,
-                      ContasReceber **contas_receber, float *valor_em_caixa) {
+                      ContasReceber **contas_receber, float *valor_em_caixa, int * qtdRemovida,Comissao ** comissoes) {
     int index = showOrdemServico(ordem_servicos, ordem_servico->codigo);
 
     ordem_servicos[index].dataHoraFim = ordem_servico->dataHoraFim;
@@ -38,16 +38,31 @@ int finalOrdemServiço(OrdemServico *ordem_servicos, OrdemServico *ordem_servico
     ordem_servicos[index].codigoServicos = malloc(sizeof(int) * ordem_servico->quantidadeServicos);
     memcpy(ordem_servicos[index].codigoServicos, ordem_servico->codigoServicos,
            sizeof(int) * ordem_servico->quantidadeServicos);
+    int totalComissao = 0;
+    for(int i = 0; i< ordem_servico->quantidadeServicos; i++) {
+       int j = showServico(servicos,ordem_servico->codigoServicos[i]);
+        totalComissao += servicos[j].comicao;
+    }
+    double diferencaEmSegundos = difftime(ordem_servicos[index].dataHoraFim, ordem_servicos[index].dataHoraInicio);
+    diferencaEmSegundos /=3600;// trasforma em horas
+    createComissao(comissoes,ordem_servicos[index].codigo,totalComissao,diferencaEmSegundos,ordem_servicos[index].codigoFuncionario);
 
     ordem_servicos[index].quantidadePecas = ordem_servico->quantidadePecas;
     ordem_servicos[index].codigosPecas = malloc(sizeof(int) * ordem_servico->quantidadePecas);
     memcpy(ordem_servicos[index].codigosPecas, ordem_servico->codigosPecas,
            sizeof(int) * ordem_servico->quantidadePecas);
+    // remove a quantidade gasta de cada peça
+    for(int i = 0; i <  ordem_servico->quantidadePecas; i++) {
+        int j = showPeca(*pecas,ordem_servico->codigosPecas[i]);
+        (*pecas)[j].estoque -= qtdRemovida[i];
+    }
+    //atualiza no arquivo
+    if(getTipoArquivo()!=MEM) setPecas(*pecas);
 
     float valor = calcularValorPrevisto(ordem_servicos[index].codigoServicos, ordem_servicos[index].quantidadeServicos,
                                         servicos);
     valor += calcularValorPrevistoPecas(ordem_servicos[index].codigosPecas, ordem_servicos[index].quantidadePecas,
-                                        pecas);
+                                        *pecas);
     ordem_servicos[index].valorTotal = valor;
 
     int transacao = novaTransacao(
@@ -78,7 +93,7 @@ int buscaNovoIDOrdemServico(OrdemServico *ordem_servico) {
 }
 
 // Cria uma nova ordem de serviço
-int createOrdemServico(OrdemServico **ordensServico, OrdemServico *ordemServico) {
+int createOrdemServico(OrdemServico **ordensServico, OrdemServico *ordemServico,Peca **pecas) {
     int tamanhoAtual = getTamanhoOrdemServico();
     OrdemServico *novaOrdemServico = realloc(*ordensServico, (tamanhoAtual + 1) * sizeof(OrdemServico));
     if (novaOrdemServico == NULL) {

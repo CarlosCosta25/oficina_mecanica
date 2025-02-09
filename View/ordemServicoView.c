@@ -8,7 +8,7 @@
 
 void menuOrdemServico(OrdemServico **ordem_servico, Agendamento *agendamentos, Servico *servicos, Peca **pecas,
                       Transacao **transacoes, ContasPagar **contas_pagar, ContasReceber **contas_receber,
-                      float *valor_em_caixa) {
+                      float *valor_em_caixa, Comissao ** comissoes) {
     if (getTipoArquivo() != 3) {
         *ordem_servico = readOrdemServico();
     }
@@ -34,12 +34,14 @@ void menuOrdemServico(OrdemServico **ordem_servico, Agendamento *agendamentos, S
             // Atualiza as ordem de servico se não estiver em memória
                 opcao = -1;
                 break;
+            case 2:
+                mostrarOrdemServico(*ordem_servico);
+            break;
             case 3:
                 finalizarOrdemServico(*ordem_servico, pecas, servicos, transacoes, contas_pagar, contas_receber,
-                                      valor_em_caixa);
+                                      valor_em_caixa,comissoes);
                 break;
             case 0:
-                printf("Saindo do menu de ordem de serviço.\n");
                 break;
             default:
                 printf("Opção inválida. Tente novamente.\n");
@@ -48,7 +50,7 @@ void menuOrdemServico(OrdemServico **ordem_servico, Agendamento *agendamentos, S
     }
 }
 
-void cadastrarOrdemServico(OrdemServico **ordens_servico, Agendamento *agendamentos, Peca *pecas) {
+void cadastrarOrdemServico(OrdemServico **ordens_servico, Agendamento *agendamentos, Peca **pecas) {
     // Verificar se existem agendamentos
     if (getTamanhoAgendamentos() == 0) {
         printf("\nNão existem agendamentos cadastrados para criar um agendamento para criar uma ordem de serviço.\n");
@@ -84,7 +86,7 @@ void cadastrarOrdemServico(OrdemServico **ordens_servico, Agendamento *agendamen
     strcpy(ordem_servico->descricao, lerString("Digite a descrição dos serviços a serem feitos: "));
 
     printf("===PEÇAS===\n");
-    mostrarTodasPecas(pecas);
+    mostrarTodasPecas(*pecas);
     printf("=============\n");
     ordem_servico->codigosPecas = malloc(sizeof(int));
     int parar = FALSE;
@@ -95,7 +97,7 @@ void cadastrarOrdemServico(OrdemServico **ordens_servico, Agendamento *agendamen
         if (isPimeiro == FALSE) isPimeiro = TRUE;
         else ordem_servico->codigosPecas = realloc(ordem_servico->codigosPecas, sizeof(int) * tamanho + 1);
         int aux = lerInt("Qual peça deseja adicionar? ");
-        if (showPeca(pecas, aux) == FALSE) printf("Peça não encontrado, por favor cadastre outro\n");
+        if (showPeca(*pecas, aux) == FALSE) printf("Peça não encontrado, por favor cadastre outro\n");
         else {
             ordem_servico->codigosPecas[tamanho] = aux;
             tamanho++;
@@ -110,7 +112,7 @@ void cadastrarOrdemServico(OrdemServico **ordens_servico, Agendamento *agendamen
     ordem_servico->codigoTransacao = 0;
     ordem_servico->feito = FALSE;
 
-    if (createOrdemServico(ordens_servico, ordem_servico) == TRUE) {
+    if (createOrdemServico(ordens_servico, ordem_servico,pecas) == TRUE) {
         printf("Ordem de serviço Criado com sucesso!\n");
     } else printf("Erro ao criar a Ordem de serviço\n");
     free(ordem_servico);
@@ -118,7 +120,7 @@ void cadastrarOrdemServico(OrdemServico **ordens_servico, Agendamento *agendamen
 
 void finalizarOrdemServico(OrdemServico *ordem_servicos, Peca **pecas, Servico *servicos,
                            Transacao **transacoes, ContasPagar **contas_pagar,
-                           ContasReceber **contas_receber, float *valor_em_caixa) {
+                           ContasReceber **contas_receber, float *valor_em_caixa,Comissao ** comissoes) {
     OrdemServico *ordem_servico = malloc(sizeof(OrdemServico));
     printf("=====ORDENS DE SERVIÇOS=====\n");
     mostrarTodasOrdensServico(ordem_servicos);
@@ -168,6 +170,7 @@ void finalizarOrdemServico(OrdemServico *ordem_servicos, Peca **pecas, Servico *
     }
 
     mudou = lerInt("As peças mudaram? 1 -Sim 2 - Não:");
+    int  * qtdRemovida = malloc(sizeof(int));
     if (mudou == TRUE) {
         printf("===PEÇAS===\n");
         mostrarTodasPecas(*pecas);
@@ -183,6 +186,10 @@ void finalizarOrdemServico(OrdemServico *ordem_servicos, Peca **pecas, Servico *
             int aux = lerInt("Qual peça deseja adicionar? ");
             if (showPeca(*pecas, aux) == FALSE) printf("Peça não encontrado, por favor cadastre outro\n");
             else {
+                qtdRemovida = realloc(qtdRemovida, sizeof(int) * tamanho + 1);
+                int usou= lerInt("Quantas peças foram usadas: ");
+                qtdRemovida[tamanho] = usou;
+
                 ordem_servico->codigosPecas[tamanho] = aux;
                 tamanho++;
             }
@@ -195,9 +202,20 @@ void finalizarOrdemServico(OrdemServico *ordem_servicos, Peca **pecas, Servico *
         ordem_servico->codigosPecas = malloc(sizeof(int) * ordem_servico->quantidadePecas);
         memcpy(ordem_servico->codigosPecas,ordem_servicos[index].codigosPecas,
                sizeof(int) * ordem_servico->quantidadePecas);
+        qtdRemovida = malloc(sizeof(int) *ordem_servico->quantidadePecas );
+        for(int i = 0; i< ordem_servico->quantidadePecas; i++) {
+            int j = showPeca(*pecas,ordem_servico->codigosPecas[i]);
+            printf("Peça usada: %s, Codigo: %d Quantidade: %d\n",(*pecas)[j].descricao,(*pecas)[j].codigo,(*pecas)[j].estoque);
+            int usou= lerInt("Quantas peças foram usadas: ");
+            if(usou >(*pecas)[j].estoque ) {
+                printf("Você não pode usar mais do que tem em estoque\n");
+                i--;
+            }
+            qtdRemovida[i] = usou;
+        }
     }
-    if (finalOrdemServiço(ordem_servicos, ordem_servico, *pecas, servicos, transacoes, contas_pagar, contas_receber,
-                          valor_em_caixa) == TRUE) {
+    if (finalOrdemServiço(ordem_servicos, ordem_servico, pecas, servicos, transacoes, contas_pagar, contas_receber,
+                          valor_em_caixa,qtdRemovida,comissoes) == TRUE) {
         printf("Ordem de serviço finalizada!\n");
     } else printf("Erro ao finalizada Ordem de serviço !\n");
 }

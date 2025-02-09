@@ -87,7 +87,7 @@ void setOrdemServico(OrdemServico *ordem_servico) {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/ordemServico.bin", "wb"); // Abre o arquivo para escrita binária
         if (buffer != NULL) {
-        // escrever_arquivo_bin_ordemServico(buffer, ordem_servico);
+         escrever_arquivo_bin_ordem_servico(buffer, ordem_servico);
             fclose(buffer);
         }
     }

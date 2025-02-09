@@ -37,4 +37,39 @@ add_executable(trabalho main.c
         bibliotecas/servico.h
         Controller/servicoController.c
         Model/modelServico.c
-        View/servicoView.c)
+        View/servicoView.c
+        bibliotecas/caixa.h
+        bibliotecas/caixa.h
+        Controller/caixaController.c
+        Model/modelCaixa.c
+        Model/modelTransacao.c
+        Model/modelTransacao.c
+        Controller/transacaoController.c
+        View/transacaoView.c
+        Controller/contaPagarController.c
+        Model/modelContaPagar.c
+        View/contaPagarView.c
+        Controller/contaReceberController.c
+        Model/modelContaReceber.c
+        Model/modelContaReceber.c
+        View/contaReceberView.c
+        View/estoqueView.c
+        View/estoqueView.c
+        Controller/estoqueController.c
+        Model/modelEstoque.c
+        Model/modelEstoque.c
+        Controller/importacaoExportacaoController.c
+        Controller/importacaoExportacaoController.c
+        View/importacaoExportacaoView.c
+        bibliotecas/importacaoExportacao.h
+        Controller/agendamentoController.c
+        Model/modelAgendamento.c
+        View/agendamentoView.c
+        Controller/ordemServicoController.c
+        Model/modelOrdemServico.c
+        View/ordemServicoView.c
+        bibliotecas/Modulo2.h
+        Controller/comissaoController.c
+        Model/modelComissao.c
+        View/comissaoView.c
+)

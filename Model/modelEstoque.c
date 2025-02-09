@@ -89,7 +89,7 @@ void setEstoque(Estoque *estoque) {
     if (getTipoArquivo() == BIN) {
         buffer = fopen("../bd/estoque.bin", "wb"); // Abre o arquivo para escrita binária
         if (buffer != NULL) {
-            // escrever_arquivo_bin_estoque(buffer, estoque);
+            escrever_arquivo_bin_estoque(buffer, estoque);
             fclose(buffer);
         }
     }
@@ -115,7 +115,7 @@ Estoque *getEstoque() {
             printf("Erro ao abrir o arquivo binário de estoque.\n");
             return NULL;
         }
-        //       estoque = ler_arquivo_bin_estoque(buffer);
+         estoque = ler_arquivo_bin_estoque(buffer);
     }
 
     if (getTipoArquivo() == MEM) {

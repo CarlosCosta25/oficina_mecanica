@@ -1,20 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "../bibliotecas/caixa.h"
 #include "../bibliotecas/Modulo2.h"
 #include "../bibliotecas/utils.h"
 
-Cliente* readComisoes() {
-    return getClientes();            // Retorna o ponteiro para os clientes
+Comissao *readComisoes() {
+    return getComissoes();
 }
-int createComisao(Comissao **comissoes, Comissao *comisao) {
+
+int createComissao(Comissao **comissoes, int codigo, float valorComissao, double tempoGasto, int codigoFuncionario) {
     int tamanhoAtual = getTamanhoComissoes(); // Obtém o tamanho atual da lista de comissões
 
     // Realoca a memória para incluir a nova comissão
     Comissao *novasComissoes = realloc(*comissoes, (tamanhoAtual + 1) * sizeof(Comissao));
     if (novasComissoes == NULL) {
         printf("Erro ao alocar memória para comissões.\n");
-        return FALSE; // Retorna -1 em caso de falha na alocação
+        return FALSE; // Retorna em caso de falha na alocação
     }
 
     *comissoes = novasComissoes; // Atualiza o ponteiro para o novo bloco de memória
@@ -22,9 +25,11 @@ int createComisao(Comissao **comissoes, Comissao *comisao) {
 
     // Preenche os dados da nova comissão
     (*comissoes)[index].codigo = buscaNovoIDComissao(*comissoes); // Atribui um novo ID à comissão
-    (*comissoes)[index].CodigoOrdem = comisao->CodigoOrdem;
-    (*comissoes)[index].valorComisao = comisao->valorComisao;
-    (*comissoes)[index].tempoGasto = comisao->tempoGasto;
+    (*comissoes)[index].CodigoOrdem = codigo;
+    (*comissoes)[index].valorComisao = valorComissao;
+    (*comissoes)[index].tempoGasto = tempoGasto;
+    (*comissoes)[index].codigoFuncionario = codigoFuncionario;
+    (*comissoes)[index].pago = FALSE;
 
     setTamanhoComissoes(); // Atualiza o tamanho total da lista de comissões
 
@@ -33,8 +38,9 @@ int createComisao(Comissao **comissoes, Comissao *comisao) {
 
     return TRUE;
 }
+
 // Função para exibir uma comissão com base no código
-int showComisao(Comissao *comissoes, int codigo) {
+int showComissao(Comissao *comissoes, int codigo) {
     if (comissoes == NULL) return FALSE; // Retorna FALSE se a lista de comissões for vazia
 
     int posicao = 0;
@@ -66,3 +72,9 @@ int buscaNovoIDComissao(Comissao *comissoes) {
     return maior; // Retorna o novo ID
 }
 
+int pagandoComisao(Comissao **comissoes, int posicao, float *valor_em_caixa) {
+    if (removeDinheiroDoCaixa((*comissoes)[posicao].valorComisao, valor_em_caixa) == FALSE) return FALSE;
+    (*comissoes)[posicao].pago = TRUE;
+    if (getTipoArquivo() != MEM)setComissoes(*comissoes);
+    return TRUE;
+}

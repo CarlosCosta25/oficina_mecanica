@@ -165,7 +165,15 @@ Comissao *ler_arquivo_txt_comissao(FILE *buffer) {
                 i++;
                 break;
                 case 3:
-                    comisoes[numComisoes].tempoGasto = atol(removeTags(Linha));
+                    comisoes[numComisoes].tempoGasto = atof(removeTags(Linha));
+                i++;
+                break;
+                case 4:
+                    comisoes[numComisoes].codigoFuncionario = atoi(removeTags(Linha));
+                i++;
+                break;
+                case 5:
+                    comisoes[numComisoes].pago = atoi(removeTags(Linha));
                 i = 0; // Reinicia para ler a próxima comissão
                 numComisoes++;
                 comisoes = realloc(comisoes, (numComisoes + 1) * sizeof(Comissao));
@@ -185,12 +193,16 @@ void escrever_arquivo_txt_comissao(FILE *buffer, Comissao *comisoes) {
                                  "<codigo>%d</codigo>\n"
                                  "<CodigoOrdem>%d</CodigoOrdem>\n"
                                  "<valorComisao>%.2f</valorComisao>\n"
-                                 "<tempoGasto>%ld</tempoGasto>\n"
+                                 "<tempoGasto>%f</tempoGasto>\n"
+                                 "<codigoFuncionario>%d</codigoFuncionario>\n"
+                                 "<pago>%d</pago>\n"
                                  "</registro>\n",
                                  comisoes[i].codigo,
                                  comisoes[i].CodigoOrdem,
                                  comisoes[i].valorComisao,
-                                 comisoes[i].tempoGasto
+                                 comisoes[i].tempoGasto,
+                                 comisoes[i].codigoFuncionario,
+                                 comisoes[i].pago
         );
         if (escrevendo < 0) {
             return;

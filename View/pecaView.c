@@ -260,7 +260,7 @@ void apagarPeca(Peca *pecas) {
 void mostrarTodasPecas(Peca *pecas) {
     for (int i = 0; i < getTamanhoPecas(); i++) {
         if (pecas[i].ativo != FALSE)
-            printf("Peça: %s Codigo: %d\n", pecas[i].descricao, pecas[i].codigo);
+            printf("Peça: %s, Quantidade:%d Codigo: %d\n", pecas[i].descricao,pecas[i].estoque, pecas[i].codigo);
     }
 }
 

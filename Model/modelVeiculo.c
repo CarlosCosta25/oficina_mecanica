@@ -17,6 +17,10 @@ int getTamanhoVeiculos() {
 void setTamanhoVeiculos() {
     qtdVeiculos++;
 }
+// Função para atualizar manualmente a quantidade de veículos
+void editTamanhoVeiculos(int tamanho) {
+    qtdVeiculos = tamanho;
+}
 
 // Função para migrar dados de veículos entre os formatos de arquivo
 Veiculo *migraDadosVeiculo() {
@@ -148,9 +152,9 @@ Veiculo *ler_arquivo_txt_veiculo(FILE *buffer) {
         if (isPrimeiro == TRUE) {
             veiculos = malloc(sizeof(Veiculo) * (numVeiculos + 1));
             isPrimeiro = FALSE;
-        }
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
-            if (isPrimeiro == FALSE) veiculos = realloc(veiculos, (numVeiculos + 1) * sizeof(Veiculo));
+        }else veiculos = realloc(veiculos, (numVeiculos + 1) * sizeof(Veiculo));
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(filtrarSoATag(Linha), "</registro>") != TRUE){
+            if(equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     veiculos[numVeiculos].codigo = atoi(removeTags(Linha));

@@ -15,7 +15,10 @@ int getTamanhoClientes() {
 void setTamanhoClientes() {
     qtdClientes++;
 }
-
+void editTamanhoClientes(int tamanho) {
+    qtdClientes = tamanho;
+}
+// Função para migrar os dados do cliente entre arquivos de texto, binário e memória
 Cliente *migraDadosCliente() {
     Cliente *clientes = NULL;
     FILE *buffer;
@@ -138,8 +141,8 @@ Cliente *ler_arquivo_txt_cliente(FILE *buffer) {
             clientes = malloc(sizeof(Cliente) * (numClientes + 1));
             isPrimeiro = FALSE;
         }else if (isPrimeiro == FALSE) clientes = realloc(clientes, (numClientes + 1) * sizeof(Cliente));
-        if (equals("<registro>\n", Linha) == FALSE
-            && equals("</registro>\n", Linha) == FALSE) {
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(filtrarSoATag(Linha), "</registro>") != TRUE){
+            if(equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     clientes[numClientes].codigo = atoi(removeTags(Linha));

@@ -107,19 +107,18 @@ int buscaNovoIDCliente(Cliente *clientes) {
 }
 
 int saveClienteCSV(Cliente * clientes, int tamanho) {
-    char ** string = malloc(sizeof(char) * tamanho);
-    for(int i = 0; i< tamanho; i++){
+    char ** string = malloc(sizeof(char) * tamanho+1);
+    string[0] = "codigo;nome;cpf_cnpj;telefone;email;endereco";
+    for(int i = 1; i< tamanho+1; i++){
         string[i] = malloc(sizeof(char) * 150);
-        string[i] = transformaString(&clientes[i].codigo, 'i');
-        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].nome);
-        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].cpf_cnpj);
-        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].telefone);
-        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].email);
-        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i].endereco);
-        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&clientes[i].ativo, 'i'));
-
+        string[i] = transformaString(&clientes[i-1].codigo, 'i');
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i-1].nome);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i-1].cpf_cnpj);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i-1].telefone);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i-1].email);
+        string[i] = concatenarStringPontoEVirgula(string[i], clientes[i-1].endereco);
     }
-    escreverCSV(string, "cliente", tamanho);
+    escreverCSV(string, "cliente", tamanho+1);
     return TRUE;
 }
 Cliente * filterClienteNome(Cliente *clientes, char * nome, int *tamanho){
@@ -128,13 +127,15 @@ Cliente * filterClienteNome(Cliente *clientes, char * nome, int *tamanho){
 
     for(int i = 0; i < tamanhoTotal; i++){
         if(equalsString(clientes[i].nome, nome)== TRUE){
-            *(tamanho) = *(tamanho) + 1;
-            clientesFiltrados = realloc(clientesFiltrados, (*tamanho) * sizeof(Cliente));
-            if(clientesFiltrados == NULL){
-                printf("Erro ao alocar memória para clientes filtrados.\n");
-                return NULL;
+            if(clientes[i].ativo == TRUE) {
+                *(tamanho) = *(tamanho) + 1;
+                clientesFiltrados = realloc(clientesFiltrados, (*tamanho) * sizeof(Cliente));
+                if(clientesFiltrados == NULL){
+                    printf("Erro ao alocar memória para clientes filtrados.\n");
+                    return NULL;
+                }
+                clientesFiltrados[*tamanho-1] = clientes[i];
             }
-            clientesFiltrados[*tamanho-1] = clientes[i];
         }
 
     }

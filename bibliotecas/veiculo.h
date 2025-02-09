@@ -14,6 +14,7 @@ typedef struct {
 // Model Veículos
 int getTamanhoVeiculos();                         // Retorna a quantidade de veículos cadastrados
 void setTamanhoVeiculos();                        // Incrementa a quantidade de veículos cadastrados
+void editTamanhoVeiculos(int tamanho);            // Atualiza a quantidade de veículos cadastrados
 Veiculo* migraDadosVeiculo();                     // Migra os dados dos veículos entre diferentes formatos de arquivo
 void setVeiculos(Veiculo *veiculo);               // Atualiza a lista de veículos cadastrados
 Veiculo* getVeiculos();                           // Retorna todos os veículos cadastrados
@@ -28,8 +29,11 @@ int createVeiculo(Veiculo **veiculos, Veiculo *veiculo);  // Cria um novo veícu
 int showVeiculo(Veiculo *veiculos, int id);       // Exibe as informações de um veículo
 int updateVeiculo(Veiculo *veiculos, Veiculo *veiculo);   // Atualiza os dados de um veículo
 int deleteVeiculo(Veiculo *veiculos, int id);     // Remove um veículo pelo ID
+int saveVeiculoCSV(Veiculo * veiculos, int tamanho);  // Salva os dados dos veículos em um arquivo CSV
+Veiculo * filterVeiculoModelo(Veiculo *veiculos, char * modelo, int *tamanho);  // Filtra os veículos por modelo
 
 // View Veículos
+
 void menuVeiculo(Veiculo **veiculos);             // Exibe o menu para manipulação dos veículos
 void novoVeiculo(Veiculo **veiculos);             // Interage com o usuário para cadastrar um novo veículo
 void mostrarVeiculo(Veiculo *veiculos);           // Mostra as informações de um veículo específico
@@ -37,5 +41,5 @@ void apagarVeiculo(Veiculo *veiculos);            // Remove um veículo
 void editarVeiculo(Veiculo *veiculos);            // Permite editar as informações de um veículo
 int buscaNovoIDVeiculo(Veiculo *veiculos);        // Busca um novo ID válido para cadastro de um novo veículo
 void mostrarTodosVeiculos(Veiculo *veiculos);     // Exibe todos os veículos cadastrados
-
+void filtrarVeiculosIDModelo(Veiculo *veiculos);  // Filtra os veículos por ID ou modelo
 #endif //VEICULO_H

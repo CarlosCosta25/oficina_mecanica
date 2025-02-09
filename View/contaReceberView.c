@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../bibliotecas/utils.h"
-#include "../bibliotecas/moduloTransacao.h"
+#include "../bibliotecas/modulo2.h"
 
 void menuContasReceber(ContasReceber **contas, float *valor_em_caixa) {
     if (getTipoArquivo() != 3) {
@@ -164,4 +164,44 @@ void mostrarTodasContaReceber(ContasReceber *contas) {
         }
     }
 
+}
+ void printContasReceber(ContasReceber * contas_receber, int tam) {
+    printf("==== CONTAS A RECEBER ====\n");
+    for(int i = 0; i < tam; i++) {
+        printf("Código: %d\n"
+               "Código da Transação: %d\n"
+               "Valor: %.2f\n",
+               contas_receber[i].codigo,
+               contas_receber[i].codTransacao,
+               contas_receber[i].valor);
+        printf("Data de Pagamento: ");
+        printData(contas_receber[i].dataPagamento);
+        if(contas_receber[i].recebimento != 0) {
+            printf("Data de Efeituacao do Pagamento: ");
+            printData(contas_receber[i].recebimento);
+        }
+    }
+}
+
+void filtrarContasReceber(ContasReceber * contas_receber) {
+    printf("\t==== FILTRO CONTAS A RECEBER ====\n");
+    int opcao = lerInt("Você seja filtrar por Intervalo de Datas, Codigo do Cliente ou Codigo do Fornecedor?\n"
+        "1 - Intervalo de datas\n"
+        "2 - Codigo do Cliente\n"
+        "3 - Codigo do Fornecedor\n"
+        "=>");
+    if (opcao== 1) {
+        int diaInicio = lerInt("Digite o dia de início: ");
+        int mesInicio = lerInt("Digite o mês de início: ");
+        int anoInicio = lerInt("Digite o ano de início: ");
+        time_t dataInicio = converteData(diaInicio, mesInicio, anoInicio);
+        int diaFim = lerInt("Digite o dia de fim: ");
+        int mesFim = lerInt("Digite o mês de fim: ");
+        int anoFim = lerInt("Digite o ano de fim: ");
+        time_t dataFim = converteData(diaFim, mesFim, anoFim);
+        int TamanhoCR = 0;
+        void *filtroCR = filterContasReceberIntervaloDatas(contas_receber, dataInicio, dataFim, &TamanhoCR);
+
+        printContasPagar(filtroCR, TamanhoCR);
+    }
 }

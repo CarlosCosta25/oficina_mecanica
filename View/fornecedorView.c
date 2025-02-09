@@ -44,7 +44,7 @@ void menuFornecedor(Fornecedor **fornecedores) {
 }
 
 
-void novoFornecedor(Fornecedor **fornecedores) {
+int novoFornecedor(Fornecedor **fornecedores) {
     Fornecedor *fornecedor = malloc(sizeof(Fornecedor));
     strcpy(fornecedor->nome_fantasia, lerString("Digite o nome fantasia do fornecedor: "));
     strcpy(fornecedor->razao_social, lerString("Digite a razão social do fornecedor: "));
@@ -54,14 +54,16 @@ void novoFornecedor(Fornecedor **fornecedores) {
     strcpy(fornecedor->telefone, lerString("Digite o telefone do fornecedor: "));
     strcpy(fornecedor->email, lerString("Digite o email do fornecedor: "));
     fornecedor->ativo = 1; // Define o fornecedor como ativo
-
-    if (createFornecedor(fornecedores, fornecedor) != FALSE) {
+    int result =createFornecedor(fornecedores, fornecedor);
+    if (result != FALSE) {
         printf("Fornecedor cadastrado com sucesso!\n");
     } else {
         printf("Erro no cadastro do fornecedor!\n");
+        return FALSE;
     }
 
     free(fornecedor); // Libera a memória do fornecedor temporário
+    return result;
 }
 
 
@@ -214,7 +216,7 @@ void apagarFornecedor(Fornecedor *fornecedores) {
 void mostrarTodosFornecedores(Fornecedor * fornecedores) {
     for (int i = 0; i < getTamanhoFornecedores(); i++) {
         if(fornecedores[i].ativo != FALSE)
-        printf("Fornecedor: %s Codigo: %d\n",fornecedores[i].nome_fantasia,fornecedores[i].codigo);
+        printf("Fornecedor: %s, CNPJ: %s, Codigo: %d\n",fornecedores[i].nome_fantasia,fornecedores[i].cnpj,fornecedores[i].codigo);
     }
 }
 

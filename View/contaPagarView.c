@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../bibliotecas/utils.h"
-#include "../bibliotecas/moduloTransacao.h"
+#include "../bibliotecas/modulo2.h"
 
 void menuContasPagar(ContasPagar **contas, Transacao *transacoes, float *valor_em_caixa) {
     if (getTipoArquivo() != 3) {
@@ -176,4 +176,43 @@ void pagarConta(ContasPagar *contas, Transacao *transacoes, float *valor_em_caix
             }
         } else printf("A conta já está paga!\n");
     } else printf("Codigo da conta invalido!\n");
+}
+// Função que exibe as informações de todas as contas a pagar
+void printContasPagar(ContasPagar * contas_pagar, int tam) {
+    printf("==== CONTAS A PAGAR ====\n");
+    for(int i = 0; i < tam; i++) {
+        printf("Código: %d\n"
+               "Código da Transação: %d\n",
+               contas_pagar[i].codigo,
+               contas_pagar[i].codTransacao); // Exibe as informações da conta a pagar
+        printf("Data de Pagamento: ");
+        printData(contas_pagar[i].dataPagamento);
+        if(contas_pagar[i].dataEfeituacaoPagamento != 0) {
+            printf("Data de Efetuação do Pagamento: ");
+            printData(contas_pagar[i].dataEfeituacaoPagamento);
+        }
+    }
+}
+
+void filtrarContasPagar(ContasPagar * contas_pagar) {
+    printf("\t==== FILTRO CONTAS A PAGAR ====\n");
+    int opcao = lerInt("Você seja filtrar por Intervalo de Datas, Codigo do Cliente ou Codigo do Fornecedor?\n"
+        "1 - Intervalo de datas\n"
+        "2 - Codigo do Cliente\n"
+        "3 - Codigo do Fornecedor\n"
+        "=>");
+    if (opcao == 1) {
+        int diaInicio = lerInt("Digite o dia de início: ");
+        int mesInicio = lerInt("Digite o mês de início: ");
+        int anoInicio = lerInt("Digite o ano de início: ");
+        time_t dataInicio = converteData(diaInicio, mesInicio, anoInicio);
+        int diaFim = lerInt("Digite o dia de fim: ");
+        int mesFim = lerInt("Digite o mês de fim: ");
+        int anoFim = lerInt("Digite o ano de fim: ");
+        time_t dataFim = converteData(diaFim, mesFim, anoFim);
+        int TamanhoCP = 0;
+        void *filtroCP = filterContasPagarIntervaloDatas(contas_pagar, dataInicio, dataFim, &TamanhoCP);
+
+        printContasPagar(filtroCP, TamanhoCP);
+    }
 }

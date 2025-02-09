@@ -16,6 +16,10 @@ int getTamanhoFuncionarios() {
 void setTamanhoFuncionarios() {
     qtdFuncionarios++;
 }
+// Função para atualizar manualmente a quantidade de funcionários
+void editTamanhoFuncionarios(int tamanho) {
+    qtdFuncionarios = tamanho;
+}
 
 // Função para migrar dados de funcionários entre diferentes formatos de arquivo (TXT, BIN, MEM)
 Funcionario *migraDadosFuncionario() {
@@ -153,9 +157,11 @@ Funcionario *ler_arquivo_txt_funcionario(FILE *buffer) {
         if (isPrimeiro == TRUE) {
             funcionarios = malloc(sizeof(Funcionario) * (numFuncionarios + 1)); // Aloca memória para o primeiro funcionário
             isPrimeiro = FALSE;
+        }else {
+            funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario)); // Realoca memória para cada novo funcionário
         }
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
-            if (isPrimeiro == FALSE) funcionarios = realloc(funcionarios, (numFuncionarios + 1) * sizeof(Funcionario)); // Realoca memória para cada novo funcionário
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(filtrarSoATag(Linha), "</registro>") != TRUE){
+            if(equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     funcionarios[numFuncionarios].codigo = atoi(removeTags(Linha)); // Lê o código do funcionário

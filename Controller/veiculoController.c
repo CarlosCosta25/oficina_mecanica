@@ -4,10 +4,10 @@
 #include "../bibliotecas/veiculo.h"
 #include "../bibliotecas/utils.h"
 // Função para ler todos os veículos cadastrados
-Veiculo* readVeiculos() {
+Veiculo *readVeiculos() {
     Veiculo *veiculos = NULL;
     veiculos = getVeiculos(); // Obtém a lista de veículos de um arquivo ou memória
-    return veiculos;          // Retorna o ponteiro para a lista de veículos
+    return veiculos; // Retorna o ponteiro para a lista de veículos
 }
 
 // Função para criar um novo veículo
@@ -26,12 +26,12 @@ int createVeiculo(Veiculo **veiculos, Veiculo *veiculo) {
 
     // Preenche os dados do novo veículo no array
     (*veiculos)[index].codigo = buscaNovoIDVeiculo(*veiculos); // Gera um novo ID único
-    strcpy((*veiculos)[index].placa, veiculo->placa);          // Copia a placa do veículo
-    strcpy((*veiculos)[index].modelo, veiculo->modelo);        // Copia o modelo do veículo
-    strcpy((*veiculos)[index].marca, veiculo->marca);          // Copia a marca do veículo
+    strcpy((*veiculos)[index].placa, veiculo->placa); // Copia a placa do veículo
+    strcpy((*veiculos)[index].modelo, veiculo->modelo); // Copia o modelo do veículo
+    strcpy((*veiculos)[index].marca, veiculo->marca); // Copia a marca do veículo
     (*veiculos)[index].anofabricacao = veiculo->anofabricacao; // Copia o ano de fabricação
-    strcpy((*veiculos)[index].chassi, veiculo->chassi);        // Copia o chassi do veículo
-    (*veiculos)[index].ativo = 1;                              // Marca o veículo como ativo
+    strcpy((*veiculos)[index].chassi, veiculo->chassi); // Copia o chassi do veículo
+    (*veiculos)[index].ativo = 1; // Marca o veículo como ativo
 
     setTamanhoVeiculos(); // Incrementa o tamanho da lista de veículos
 
@@ -82,7 +82,7 @@ int updateVeiculo(Veiculo *veiculos, Veiculo *veiculo) {
 }
 
 // Função para excluir (ou desativar) um veículo
-int deleteVeiculo(Veiculo* veiculos, int codigo) {
+int deleteVeiculo(Veiculo *veiculos, int codigo) {
     int posicao = showVeiculo(veiculos, codigo); // Localiza o veículo pelo código
 
     if (posicao == FALSE) return FALSE; // Retorna FALSE se o veículo não for encontrado
@@ -110,4 +110,43 @@ int buscaNovoIDVeiculo(Veiculo *veiculos) {
     }
 
     return maior; // Retorna o novo ID gerado
+}
+
+int saveVeiculoCSV(Veiculo *veiculos, int tamanho) {
+    char **string = malloc(sizeof(char) * tamanho+1);
+    string[0] = "codigo;modelo;marca;anofabricacao;chassi;placa";
+    for (int i = 1; i < tamanho+1; i++) {
+        string[i] = malloc(sizeof(char) * 150);
+        string[i] = transformaString(&veiculos[i-1].codigo, 'i');
+        string[i] = concatenarStringPontoEVirgula(string[i], veiculos[i-1].modelo);
+        string[i] = concatenarStringPontoEVirgula(string[i], veiculos[i-1].marca);
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&veiculos[i-1].anofabricacao, 'i'));
+        string[i] = concatenarStringPontoEVirgula(string[i], veiculos[i-1].chassi);
+        string[i] = concatenarStringPontoEVirgula(string[i], veiculos[i-1].placa);
+    }
+    escreverCSV(string, "veiculo", tamanho+1);
+    return TRUE;
+}
+
+Veiculo *filterVeiculoModelo(Veiculo *veiculos, char *modelo, int *tamanho) {
+    Veiculo *veiculosFiltrados = malloc(sizeof(Veiculo));
+
+    int tamanhoTotal = getTamanhoVeiculos();
+
+    for (int i = 0; i < tamanhoTotal; i++) {
+        if (equalsString(veiculos[i].modelo, modelo) == TRUE) {
+            if (veiculos[i].ativo == TRUE) {
+                *(tamanho) = *(tamanho) + 1;
+                veiculosFiltrados = realloc(veiculosFiltrados, (*tamanho) * sizeof(Veiculo));
+                if (veiculosFiltrados == NULL) {
+                    printf("Erro ao alocar memória para funcionarios filtrados.\n");
+                    return NULL;
+                }
+                veiculosFiltrados[*tamanho - 1] = veiculos[i];
+            }
+        }
+    }
+    if (*tamanho == 0) return NULL;
+
+    return veiculosFiltrados;
 }

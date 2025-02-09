@@ -16,6 +16,7 @@ typedef struct {
 
 int getTamanhoFuncionarios();                          // Retorna a quantidade de funcionários cadastrados
 void setTamanhoFuncionarios();                         // Incrementa a quantidade de funcionários cadastrados
+void editTamanhoFuncionarios(int tamanho);             // Atualiza a quantidade de funcionários cadastrados
 Funcionario* migraDadosFuncionario();                 // Migra os dados dos funcionários entre diferentes formatos de arquivo
 void setFuncionarios(Funcionario *funcionario);        // Atualiza a lista de funcionários cadastrados
 Funcionario* getFuncionarios();                       // Retorna todos os funcionários cadastrados

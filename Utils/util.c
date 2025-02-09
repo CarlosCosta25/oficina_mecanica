@@ -102,6 +102,11 @@ void printData(time_t data) {
     info = localtime(&data);
     printf("%d/%d/%d\n", info->tm_mday, info->tm_mon + 1, info->tm_year + 1900);
 }
+void printDataHora(time_t dataHora) {
+    struct tm *info;
+    info = localtime(&dataHora);
+    printf("%d/%d/%d %d:%d\n", info->tm_mday, info->tm_mon + 1, info->tm_year + 1900,info->tm_hour,info->tm_min);
+}
 //converte a data para o formato time_t
 time_t converteData(int dia, int mes, int ano) {
     struct tm data;
@@ -109,6 +114,16 @@ time_t converteData(int dia, int mes, int ano) {
     data.tm_mon = mes - 1;
     data.tm_year = ano - 1900;
     data.tm_hour = 0;
+    data.tm_min = 0;
+    data.tm_sec = 0;
+    return mktime(&data);
+}
+time_t converteDataHora(int dia, int mes, int ano, int hora) {
+    struct tm data;
+    data.tm_mday = dia;
+    data.tm_mon = mes - 1;
+    data.tm_year = ano - 1900;
+    data.tm_hour = hora;
     data.tm_min = 0;
     data.tm_sec = 0;
     return mktime(&data);
@@ -188,6 +203,65 @@ int equalsString(char* s1, char* s2) {
     }
     return TRUE;
 }
+
+int comparelimitesDatas(time_t dataI, time_t dataF, time_t dataComparacao) {
+    return (dataComparacao >= dataI && dataComparacao <= dataF) ? TRUE: FALSE;
+}
+//função responsavel por filtar as tags de um xml
+char *filtrarSoATag(char *dado) {
+    char *stringResult = malloc(1); // Aloca um espaço inicial para o terminador nulo
+    if (stringResult == NULL) {
+        return NULL;
+    }
+    stringResult[0] = '\0'; // Inicializa como string vazia
+
+    int i = 0;
+    while (dado[i] != '\0') {
+        if (dado[i] == '<') {
+            // Encontra o início da tag
+            int j = i;
+            while (dado[j] != '>' && dado[j] != '\0') {
+                j++;
+            }
+            if (dado[j] == '>') {
+                // Confirma que há um fechamento de tag
+                int tamanhoAtual = strlen(stringResult);
+                int tamanhoTag = j - i + 1;
+                stringResult = realloc(stringResult, tamanhoAtual + tamanhoTag + 1);
+                if (stringResult == NULL) {
+                    return NULL;
+                }
+                strncat(stringResult, &dado[i], tamanhoTag);
+                i = j; // Avança para o próximo caractere após '>'
+                return stringResult;
+            }
+        }
+        i++;
+    }
+    return stringResult;
+}
+
+int *separaVetor(char *str, int tam) {
+    int *result = malloc(sizeof(int) * tam);
+    if (result == NULL) {
+        return NULL; // Evita problemas caso malloc falhe
+    }
+
+    int i = 0;
+    int tamanhoStr = strlen(str); // Armazena o tamanho para evitar chamadas repetidas
+
+    for (int j = 0; j < tamanhoStr; j++) {
+        if (i >= tam) break; // Evita estouro de memória
+
+        if (str[j] != ',') {
+            result[i] = str[j] - '0'; // Converte char para int
+            i++; // Incrementa corretamente
+        }
+    }
+
+    return result;
+}
+
 
 
 

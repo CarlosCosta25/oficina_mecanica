@@ -4,13 +4,14 @@
 
 #include "../bibliotecas/caixa.h"
 #include "../bibliotecas/utils.h"
-#include "../bibliotecas/moduloTransacao.h"
+#include "../bibliotecas/modulo2.h"
 
-ContasReceber * readContasReceber() {
+ContasReceber *readContasReceber() {
     return getContasReceber();
 }
+
 // Cria um nova conta a receber e adiciona à lista
-int createContasReceber(ContasReceber **contas,int codTransacao, time_t dataPagamento, float valor) {
+int createContasReceber(ContasReceber **contas, int codTransacao, time_t dataPagamento, float valor) {
     int tamanhoAtual = getTamanhoContasReceber(); // Obtém o tamanho atual da lista de contas a receber
     // Realoca a memória para incluir a nova conta a pagar
     ContasReceber *novaConta = realloc(*contas, (tamanhoAtual + 1) * sizeof(ContasReceber));
@@ -18,7 +19,7 @@ int createContasReceber(ContasReceber **contas,int codTransacao, time_t dataPaga
         printf("Erro ao alocar memória para Contas a receber.\n");
         return FALSE; // Retorna FALSE indicando falha
     }
-    * contas = novaConta;
+    *contas = novaConta;
     int index = tamanhoAtual;
     // Preenche os dados da nova conta a pagar no array
     (*contas)[index].codigo = buscaNovoIDContasReceber(*contas);
@@ -30,7 +31,7 @@ int createContasReceber(ContasReceber **contas,int codTransacao, time_t dataPaga
 
     setTamanhoContasReceber(); // Incrementa o tamanho da lista de contas a receber
     // Salva as transações no arquivo se o tipo de armazenamento não for memória
-    if(getTipoArquivo() != MEM) setContasReceber(*contas);
+    if (getTipoArquivo() != MEM) setContasReceber(*contas);
     return TRUE;
 }
 
@@ -90,7 +91,7 @@ int contaRecebida(ContasReceber *contas, int codigo, float *valor_em_caixa, time
     contas[posicao].pago = TRUE;
 
     // Salva as contas no arquivo se o tipo de armazenamento não for memória
-    if(getTipoArquivo() != MEM) setContasReceber(contas);
+    if (getTipoArquivo() != MEM) setContasReceber(contas);
 
     return TRUE;
 }
@@ -112,20 +113,53 @@ int buscaNovoIDContasReceber(ContasReceber *contas) {
     return maior; // Retorna o novo ID gerado
 }
 
-int temContasReceber(ContasReceber * contas) {
+int temContasReceber(ContasReceber *contas) {
     int tamanho = getTamanhoContasReceber();
     for (int i = 0; i < tamanho; i++) {
-        if(contas[i].pago == FALSE)
+        if (contas[i].pago == FALSE)
             return TRUE;
     }
     return FALSE;
 }
+
 //verifica se tem contas pagas
-int temContasRecebidas(ContasReceber * contas) {
+int temContasRecebidas(ContasReceber *contas) {
     int tamanho = getTamanhoContasReceber();
     for (int i = 0; i < tamanho; i++) {
-        if(contas[i].pago == TRUE)
+        if (contas[i].pago == TRUE)
             return TRUE;
     }
     return FALSE;
+}
+int saveContasReceberCSV(ContasReceber *contas, int tamanho) {
+    char **string = malloc(sizeof(char) * tamanho);
+    for (int i = 0; i < tamanho; i++) {
+        string[i] = transformaString(&contas[i].codigo, 'i');
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&contas[i].codTransacao, 'i'));
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&contas[i].valor, 'f'));
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&contas[i].dataPagamento, 'd'));
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&contas[i].recebimento, 'd'));
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&contas[i].pago, 'i'));
+    }
+    escreverCSV(string, "contas_receber", tamanho);
+    return TRUE;
+}
+ContasReceber *filterContasReceberIntervaloDatas(ContasReceber *contas_receber, time_t dataInicio, time_t dataFim,
+                                                 int *Tamanho) {
+    ContasReceber *filtro = malloc(sizeof(ContasReceber) * getTamanhoContasPagar());
+    if (!filtro) {
+        printf("Erro ao alocar memória para o filtro.\n");
+        return NULL;
+    }
+    int novoTamanho = 0;
+    for (int i = 0; i < getTamanhoContasReceber(); i++) {
+        if (contas_receber[i].pago == FALSE) {
+            if (comparelimitesDatas(dataInicio, dataFim, contas_receber[i].dataPagamento) == TRUE) {
+                filtro[novoTamanho] = contas_receber[i];
+                novoTamanho++;
+            }
+        }
+    }
+    *Tamanho = novoTamanho;
+    return filtro;
 }

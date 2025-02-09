@@ -27,7 +27,7 @@ Cliente *ler_arquivo_txt_cliente(FILE *buffer);
 void escrever_arquivo_txt_cliente(FILE *buffer, Cliente *clientes);
 Cliente *ler_arquivo_bin_cliente(FILE *buffer);
 void *escrever_arquivo_bin_cliente(FILE *buffer, Cliente *clientes);
-
+void editTamanhoClientes(int tamanho);
 //Controller cliente
 Cliente* readClientes();
 

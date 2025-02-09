@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../bibliotecas/utils.h" // Biblioteca utilitária
-#include "../bibliotecas/moduloTransacao.h"
+#include "../bibliotecas/modulo2.h"
 int qtdContasReceber = 0;
 
 // Função para obter a quantidade atual de contas a receber

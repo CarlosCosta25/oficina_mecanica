@@ -2,9 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 #include <string.h>
-#include "../bibliotecas/moduloTransacao.h" // Biblioteca de transações
 #include "../bibliotecas/utils.h" // Biblioteca utilitária
-
+#include "../bibliotecas/modulo2.h"
 // Variável global para armazenar a quantidade de transações
 int qtdTransacoes = 0;
 

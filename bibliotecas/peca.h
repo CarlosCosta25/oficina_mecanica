@@ -20,6 +20,7 @@ typedef struct {
 
 int getTamanhoPecas();                         // Retorna a quantidade de peças cadastradas
 void setTamanhoPecas();                        // Incrementa a quantidade de peças cadastradas
+void editTamanhoPecas(int tamanho);            // Atualiza a quantidade de peças cadastradas
 Peca *migraDadosPeca();                        // Migra os dados das peças entre diferentes formatos de arquivo
 Peca *getPecas();                              // Retorna todas as peças cadastradas
 void setPecas(Peca *pecas);                    // Atualiza a lista de peças cadastradas
@@ -36,8 +37,8 @@ int showPeca(Peca *pecas, int codigo);         // Exibe as informações de uma 
 int updatePeca(Peca *pecas, Peca *peca);       // Atualiza os dados de uma peça
 int deletePeca(Peca* pecas, int codigo);       // Remove uma peça pelo código
 int buscaNovoIDPeca(Peca *pecas);              // Busca um novo ID válido para cadastro de uma nova peça
-
-// View Peças
+Peca *filterPecaDescricao(Peca *pecas, char *descricao, int *tamanho); // Filtra as peças por descrição
+int savePecaCSV(Peca *pecas, int tamanho);    // Salva as peças em um arquivo CSV
 
 void menuPecas(Peca **pecas, Fornecedor *fornecedores);  // Exibe o menu para manipulação das peças
 void novaPeca(Peca **pecas, Fornecedor *fornecedores);   // Interage com o usuário para cadastrar uma nova peça
@@ -45,5 +46,5 @@ void mostrarPeca(Peca *pecas);                           // Mostra as informaç�
 void editarPeca(Peca *pecas, Fornecedor *fornecedores);  // Permite editar as informações de uma peça
 void apagarPeca(Peca *pecas);                            // Remove uma peça
 void mostrarTodasPecas(Peca *pecas);                     // Exibe todas as peças cadastradas
-
+void filtrarPecasIDDescricao(Peca *pecas); // Filtra as peças por ID ou descrição
 #endif // PECA_H

@@ -11,12 +11,16 @@
 #include "bibliotecas/peca.h"
 #include "bibliotecas/funcionario.h"
 #include "bibliotecas/servico.h"
-#include "bibliotecas/moduloTransacao.h"
+#include "bibliotecas/importacaoExportacao.h"
+#include "bibliotecas/modulo2.h"
+
 
 int main(void) {
-    setTipoArquivo(lerInt("Digite com qual tipo de dados vc deseja trabalhar: "));
+    setTipoArquivo(lerInt("DIGITE COM QUAL TIPO DE ARQUIVO DESEJA TRABALHAR:\n 1 - TXT\n 2 - BIN\n 3 - MEM\n=>"));
 
     int opc = 0;
+
+    float valor_em_caixa = 0; // Variável para armazenar o valor em caixa da oficina
 
     Oficina *oficina_atual = migraDadosOficina();
     Cliente *cliente = NULL;
@@ -29,10 +33,14 @@ int main(void) {
     Transacao *transacoes = migraDadosTransacao();
     ContasPagar *contas_pagar = migraDadosContasPagar();
     ContasReceber *contas_receber = migraDadosContasReceber();
-    float valor_em_caixa = 0;
     valor_em_caixa = migraDadosCaixa();
+    OrdemServico * ordem_servicos = migraDadosOrdemServico();
+    Agendamento *agendamentos = migraDadosAgendamento();
+    Estoque * estoques = migraDadosEstoque();
 
-    if(getTipoArquivo() != MEM) {
+
+
+    if (getTipoArquivo() != MEM) {
         oficina_atual = readOficina();
         cliente = readClientes();
         veiculo = readVeiculos();
@@ -43,9 +51,13 @@ int main(void) {
         transacoes = readTransacoes();
         contas_pagar = readContasPagar();
         contas_receber = readContasReceber();
+        valor_em_caixa = readCaixa();
+        ordem_servicos = readOrdemServico();
+        agendamentos = readAgendamentos();
+        estoques = readEstoque();
+
     }
-
-
+    //cadastrarAgendamento(&agendamentos,cliente,veiculo,funcionario,servico,ordem);
     while (opc != 7) {
         if (getTipoArquivo() != MEM) oficina_atual = readOficina();
         //verifica se a oficina existe oficina
@@ -109,8 +121,30 @@ int main(void) {
 
                     break;
                 case 2:
+                    int ac = lerInt("\n=========AGENDAMENTO E CONTROLE ==============\n"
+                       "\t DIGITE UMA OPÇÃO:\n"
+                       "      \t\t\t 1- AGENDAMENTO\n"
+                       "      \t\t\t 2- ORDEM SERVIÇOS\n"
+                       "      \t\t\t 3- COMISÃO DE FUNCIONARIOS\n"
+                       "      \t\t\t 0- VOLTAR\n"
+                       "=>");
+                switch (ac) {
+                    case 1:
+                        menuAgendamento(&agendamentos,cliente,veiculo,funcionario, servico,ordem_servicos);
+                    break;
+                    case 2:
+                        menuOrdemServico(&ordem_servicos,agendamentos,servico,pecas,&transacoes,&contas_pagar,&contas_receber,&valor_em_caixa);
+                    break;
+                    case 3:
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        printf("Opção invalida!\n");
+                }
                     break;
                 case 3:
+                    menuEstoque(&estoques,oficina_atual,&pecas,&fornercedor,&transacoes,&contas_pagar,&contas_receber,&valor_em_caixa);
                     break;
                 case 4:
                     int cadastrosF = lerInt("\n=========MODULOS FINANCEIRO==============\n"
@@ -142,24 +176,73 @@ int main(void) {
                         "      \t\t\t 5- SERVIÇOS\n"
                         "      \t\t\t 6- FUNCIONARIOS\n"
                         "      \t\t\t 7- OFICINA\n"
-                        "      \t\t\t 8- TRANSAÇÃO\n"
-                        "      \t\t\t 9- CONTAS A PAGAR\n"
-                        "      \t\t\t 10- CONTAS A RECEBER\n"
-                        "      \t\t\t 11- CAIXA\n"
-                        "      \t\t\t 0- VOLTAR\n"
+                        "      \t\t\t 8- FINANCEIRO\n"
                         "=>");
-                switch (filtro) {
-                    case 1:
-                        filtrarClienteIDNome(cliente);
-                        break;
-                    case 4:
-                        filtrarFornecedorIDNomeFantasia(fornercedor);
-                        break;
-                    case 6:
-                        filtrarFuncionarioIDNome(funcionario);
+                    switch (filtro) {
+                        case 1:
+                            filtrarClienteIDNome(cliente);
+                            break;
+                        case 2:
+                            filtrarVeiculosIDModelo(veiculo);
+                            break;
+                        case 3:
+                            filtrarPecasIDDescricao(pecas);
+                            break;
+                        case 4:
+                            filtrarFornecedorIDNomeFantasia(fornercedor);
+                            break;
+                        case 5:
+                            filtrarServicosIDDescricao(servico);
+                            break;
+                        case 6:
+                            filtrarFuncionarioIDNome(funcionario);
+                            break;
+                        case 8:
+                            int financeiro = lerInt("Digie uma opção:\n"
+                                "1- TRANSAÇÃO\n"
+                                "2- CONTAS A PAGAR\n"
+                                "3- CONTAS A RECEBER\n"
+                                "0 - SAIR\n"
+                                "=>");
+                            switch (financeiro) {
+                                case 1:
+                                    filtrarFinanceiro(transacoes, contas_pagar, contas_receber);
+                                    break;
+                                case 2:
+                                    filtrarContasPagar(contas_pagar);
+                                    break;
+                                case 3:
+                                    filtrarContasReceber(contas_receber);
+                                    break;
+                            }
+                            break;
+                    }
                     break;
+                case 6:
+                    void **cadastrosIE = malloc(sizeof(void *) * 7);
+                    if (cadastrosIE == NULL) {
+                        perror("Erro ao alocar memória");
+                        exit(1);
+                    }
+                    cadastrosIE[0] = cliente;
+                    cadastrosIE[1] = veiculo;
+                    cadastrosIE[2] = pecas;
+                    cadastrosIE[3] = fornercedor;
+                    cadastrosIE[4] = servico;
+                    cadastrosIE[5] = funcionario;
+                    cadastrosIE[6] = oficina_atual;
 
-                }
+                    menuImportacaoExportacao(cadastrosIE);
+
+                    cliente = cadastrosIE[0];
+                    veiculo = cadastrosIE[1];
+                    pecas = cadastrosIE[2];
+                    fornercedor = cadastrosIE[3];
+                    servico = cadastrosIE[4];
+                    funcionario = cadastrosIE[5];
+                    oficina_atual = cadastrosIE[6];
+
+                free(cadastrosIE);
                     break;
             }
         } else {

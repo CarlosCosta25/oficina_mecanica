@@ -16,6 +16,10 @@ int getTamanhoPecas() {
 void setTamanhoPecas() {
     qtdPecas++; // Incrementa a quantidade de peças
 }
+// Função para atualizar manualmente a quantidade de peças
+void editTamanhoPecas(int tamanho) {
+    qtdPecas = tamanho; // Atualiza a quantidade de peças
+}
 
 // Função para migrar os dados das peças entre os formatos de arquivo
 Peca *migraDadosPeca() {
@@ -152,7 +156,8 @@ Peca *ler_arquivo_txt_peca(FILE *buffer) {
         }
 
         // Verifica se a linha não contém tags de registro
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(filtrarSoATag(Linha), "</registro>") != TRUE){
+            if(equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     pecas[numPecas].codigo = atoi(removeTags(Linha)); // Lê o código da peça

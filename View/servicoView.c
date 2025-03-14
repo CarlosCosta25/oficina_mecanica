@@ -183,3 +183,56 @@ void mostrarTodosServicos(Servico *servicos) {
             printf("Serviço: %s Codigo: %d\n", servicos[i].descricao, servicos[i].codigo);
     }
 }
+
+void filtrarServicosIDDescricao(Servico *servicos) {
+    printf("\t==== FILTRO DE SERVIÇOS ====\n");
+    int opcao = lerInt("Você deseja filtrar por Código ou por Descrição?\n"
+        "1 - Código\n"
+        "2 - Descrição\n"
+        "=>");
+    if (opcao == 1) {
+        int id = lerInt("Qual o Código do serviço que você deseja filtrar?\n=>");
+        int posicao = showServico(servicos, id);
+        if (posicao != FALSE) {
+            printf("Código: %d\n"
+                   "Descrição: %s\n"
+                   "Preço: %.2f\n"
+                   "Comissão: %.2f\n",
+                   servicos[posicao].codigo,
+                   servicos[posicao].descricao,
+                   servicos[posicao].preco,
+                   servicos[posicao].comicao
+            );
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveServicoCSV(&servicos[posicao], 1);
+            }
+        } else {
+            printf("Código não encontrado\n");
+        }
+    } else if (opcao == 2) {
+        char *nome = lerString("Qual a descrição do serviço que você deseja filtrar?\n=>");
+        int tamanho = 0;
+        Servico *servicosFiltrados = filterServicoDescricao(servicos, nome, &tamanho);
+        if (servicosFiltrados != NULL) {
+            for (int i = 0; i < tamanho; i++) {
+                printf("Código: %d\n"
+                       "Descrição: %s\n"
+                       "Preço: %.2f\n"
+                       "Comissão: %.2f\n",
+                       servicosFiltrados[i].codigo,
+                       servicosFiltrados[i].descricao,
+                       servicosFiltrados[i].preco,
+                       servicosFiltrados[i].comicao
+                );
+            }
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveServicoCSV(servicosFiltrados, tamanho);
+            }
+        } else {
+            printf("Descrição não encontrada\n");
+        }
+    } else {
+        printf("Opção inválida\n");
+    }
+}
+

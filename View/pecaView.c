@@ -260,6 +260,75 @@ void apagarPeca(Peca *pecas) {
 void mostrarTodasPecas(Peca *pecas) {
     for (int i = 0; i < getTamanhoPecas(); i++) {
         if (pecas[i].ativo != FALSE)
-            printf("Peça: %s Codigo: %d\n", pecas[i].descricao, pecas[i].codigo);
+            printf("Peça: %s, Quantidade:%d Codigo: %d\n", pecas[i].descricao,pecas[i].estoque, pecas[i].codigo);
     }
 }
+
+void filtrarPecasIDDescricao(Peca *pecas) {
+    printf("\t==== FILTRO DE PEÇAS ====\n");
+    int opcao = lerInt("Você seja filtrar por Codigo ou por Descrição?\n"
+        "1 - Codigo\n"
+        "2 - Descrição\n"
+        "=>");
+    if (opcao == 1) {
+        int id = lerInt("Qual o Codigo do veiculo que você deseja filtrar?\n=>");
+        int posicao = showPeca(pecas, id);
+        if (posicao != FALSE) {
+            printf("Código: %d\n"
+                   "Descrição: %s\n"
+                   "Fabricante: %s\n"
+                   "Fornecedor: %d\n"
+                   "Preço de Custo: %.2f\n"
+                   "Preço de Venda: %.2f\n"
+                   "Estoque: %d\n"
+                   "Estoque Mínimo: %d\n",
+                   pecas[posicao].codigo,
+                   pecas[posicao].descricao,
+                   pecas[posicao].fabricante,
+                   pecas[posicao].fornecedor,
+                   pecas[posicao].preco_custo,
+                   pecas[posicao].preco_venda,
+                     pecas[posicao].estoque,
+                     pecas[posicao].estoque_min
+            ); // Exibe se o cliente está ativo
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                savePecaCSV(&pecas[posicao], 1);
+            }
+        } else {
+            printf("Codigo não encontrado\n");
+        }
+    } else if (opcao == 2) {
+        char *nome = lerString("Qual o descrição do peça que você deseja filtrar?\n=>");
+        int tamanho = 0;
+        Peca *pecasFiltrados = filterPecaDescricao(pecas, nome, &tamanho);
+        if (pecasFiltrados != NULL) {
+            for (int i = 0; i < tamanho; i++) {
+                printf("Código: %d\n"
+                   "Descrição: %s\n"
+                   "Fabricante: %s\n"
+                   "Fornecedor: %d\n"
+                   "Preço de Custo: %.2f\n"
+                   "Preço de Venda: %.2f\n"
+                   "Estoque: %d\n"
+                   "Estoque Mínimo: %d\n",
+                       pecasFiltrados[i].codigo,
+                       pecasFiltrados[i].descricao,
+                       pecasFiltrados[i].fabricante,
+                       pecasFiltrados[i].fornecedor,
+                       pecasFiltrados[i].preco_custo,
+                       pecasFiltrados[i].preco_venda,
+                          pecasFiltrados[i].estoque,
+                            pecasFiltrados[i].estoque_min
+                ); // Exibe se o cliente está ativo
+            }
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                savePecaCSV(pecasFiltrados, tamanho);
+            }
+        } else {
+            printf("Descrição não encontrado\n");
+        }
+    } else {
+        printf("Opção inválida\n");
+    }
+}
+

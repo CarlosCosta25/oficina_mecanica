@@ -14,6 +14,10 @@ int getTamanhoServicos() {
 void setTamanhoServicos() {
     qtdServicos++;
 }
+// Função para atualizar manualmente o tamanho do vetor de serviços
+void editTamanhoServicos(int tamanho) {
+    qtdServicos = tamanho;
+}
 
 /**
  * Função para migrar dados de serviços entre diferentes formatos de armazenamento (TXT, BIN ou MEM).
@@ -144,7 +148,8 @@ Servico *ler_arquivo_txt_servico(FILE *buffer) {
             servicos = realloc(servicos, (numServicos + 1) * sizeof(Servico));
         }
         // ignora as tegs de registro
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(filtrarSoATag(Linha), "</registro>") != TRUE){
+            if(equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break; 
             switch (i) {
                 case 0:
                     servicos[numServicos].codigo = atoi(removeTags(Linha));

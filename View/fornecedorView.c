@@ -44,7 +44,7 @@ void menuFornecedor(Fornecedor **fornecedores) {
 }
 
 
-void novoFornecedor(Fornecedor **fornecedores) {
+int novoFornecedor(Fornecedor **fornecedores) {
     Fornecedor *fornecedor = malloc(sizeof(Fornecedor));
     strcpy(fornecedor->nome_fantasia, lerString("Digite o nome fantasia do fornecedor: "));
     strcpy(fornecedor->razao_social, lerString("Digite a razão social do fornecedor: "));
@@ -54,14 +54,16 @@ void novoFornecedor(Fornecedor **fornecedores) {
     strcpy(fornecedor->telefone, lerString("Digite o telefone do fornecedor: "));
     strcpy(fornecedor->email, lerString("Digite o email do fornecedor: "));
     fornecedor->ativo = 1; // Define o fornecedor como ativo
-
-    if (createFornecedor(fornecedores, fornecedor) != FALSE) {
+    int result =createFornecedor(fornecedores, fornecedor);
+    if (result != FALSE) {
         printf("Fornecedor cadastrado com sucesso!\n");
     } else {
         printf("Erro no cadastro do fornecedor!\n");
+        return FALSE;
     }
 
     free(fornecedor); // Libera a memória do fornecedor temporário
+    return result;
 }
 
 
@@ -214,7 +216,76 @@ void apagarFornecedor(Fornecedor *fornecedores) {
 void mostrarTodosFornecedores(Fornecedor * fornecedores) {
     for (int i = 0; i < getTamanhoFornecedores(); i++) {
         if(fornecedores[i].ativo != FALSE)
-        printf("Fornecedor: %s Codigo: %d\n",fornecedores[i].nome_fantasia,fornecedores[i].codigo);
+        printf("Fornecedor: %s, CNPJ: %s, Codigo: %d\n",fornecedores[i].nome_fantasia,fornecedores[i].cnpj,fornecedores[i].codigo);
+    }
+}
+
+void filtrarFornecedorIDNomeFantasia(Fornecedor *fornecedores) {
+    printf("\t==== FILTRO DE FORNECEDORES ====\n");
+    int opcao = lerInt("Você seja filtrar por Codigo ou por nome?\n"
+        "1 - Codigo\n"
+        "2 - Nome fantasia\n"
+        "=>");
+    if (opcao == 1) {
+        int id = lerInt("Qual o Codigo do fornecedor que você deseja filtrar?\n=>");
+        int posicao = showFornecedor(fornecedores, id);
+        if (posicao != FALSE) {
+            printf("Código: %d\n"
+                   "Nome: %s\n"
+                   "razão Social: %s\n"
+                   "Inscrição Estadual: %d\n"
+                   "CNPJ: %s\n"
+                   "Endereço: %s\n"
+                   "Telefone: %s\n"
+                   "E-mail: %s\n",
+                   fornecedores[posicao].codigo,
+                   fornecedores[posicao].nome_fantasia,
+                   fornecedores[posicao].razao_social,
+                   fornecedores[posicao].incricao_estadual,
+                   fornecedores[posicao].cnpj,
+                   fornecedores[posicao].endereco,
+                     fornecedores[posicao].telefone,
+                        fornecedores[posicao].email
+            ); // Exibe se o cliente está ativo
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveFornecedorCSV(&fornecedores[posicao], 1);
+            }
+        } else {
+            printf("Codigo não encontrado\n");
+        }
+    } else if (opcao == 2) {
+        char *nome = lerString("Qual o nome do fornecedor que você deseja filtrar?\n=>");
+        int tamanho = 0;
+        Fornecedor *clientesFiltrados = filterFornecedorNomeFantasia(fornecedores, nome, &tamanho);
+        if (clientesFiltrados != NULL) {
+            for (int i = 0; i < tamanho; i++) {
+                printf("Código: %d\n"
+                   "Nome: %s\n"
+                   "razão Social: %s\n"
+                   "Inscrição Estadual: %d\n"
+                   "CNPJ: %s\n"
+                   "Endereço: %s\n"
+                   "Telefone: %s\n"
+                   "E-mail: %s\n",
+                   clientesFiltrados[i].codigo,
+                   clientesFiltrados[i].nome_fantasia,
+                   clientesFiltrados[i].razao_social,
+                   clientesFiltrados[i].incricao_estadual,
+                   clientesFiltrados[i].cnpj,
+                   clientesFiltrados[i].endereco,
+                     clientesFiltrados[i].telefone,
+                        clientesFiltrados[i].email
+            ); // Exibe se o cliente está ativo
+            }
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveFornecedorCSV(clientesFiltrados, tamanho);
+            }
+        } else {
+            printf("Nome não encontrado\n");
+        }
+    }
+    else {
+        printf("Opção inválida\n");
     }
 }
 

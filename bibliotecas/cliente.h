@@ -27,7 +27,7 @@ Cliente *ler_arquivo_txt_cliente(FILE *buffer);
 void escrever_arquivo_txt_cliente(FILE *buffer, Cliente *clientes);
 Cliente *ler_arquivo_bin_cliente(FILE *buffer);
 void *escrever_arquivo_bin_cliente(FILE *buffer, Cliente *clientes);
-
+void editTamanhoClientes(int tamanho);
 //Controller cliente
 Cliente* readClientes();
 
@@ -40,6 +40,10 @@ int  updateCliente(Cliente *clientes,Cliente * cliente);
 int deleteCliente(Cliente* clientes, int id);
 
 int buscaNovoIDCliente(Cliente * clientes);
+
+Cliente *filterClienteNome(Cliente *clientes, char *nome, int *tamanho);
+
+int saveClienteCSV(Cliente * clientes, int tamanho);
 
 //View cliente
 
@@ -54,5 +58,7 @@ void apagarCliente(Cliente *clientes);
 void editarCLiente(Cliente * clientes);
 
 void mostrarTodosClientes(Cliente * clientes);
+
+void filtrarClienteIDNome(Cliente *clientes);
 
 #endif //CLIENTE_H

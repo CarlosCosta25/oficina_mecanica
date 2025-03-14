@@ -3,21 +3,23 @@
 #include <string.h>
 #include "../bibliotecas/servico.h"
 #include "../bibliotecas/utils.h"
-Servico * readServicos() {// Função para ler os clientes existentes
-    return getServicos();// Obtém a lista de clientes de um arquivo ou memória e retorna
+
+Servico *readServicos() {
+    // Função para ler os clientes existentes
+    return getServicos(); // Obtém a lista de clientes de um arquivo ou memória e retorna
 }
 
 // Função para criar um novo cliente
 int createServico(Servico **servicos, Servico *servico) {
-    int tamanhoAtual = getTamanhoServicos();// Obtém o tamanho atual da lista de clientes
+    int tamanhoAtual = getTamanhoServicos(); // Obtém o tamanho atual da lista de clientes
     Servico *novoServicos = realloc(*servicos, (tamanhoAtual + 1) * sizeof(Servico));
     if (novoServicos == NULL) {
         printf("Erro ao alocar mais memória para serviços.\n");
         return FALSE; // Retorna -1 indicando falha
     }
 
-    *servicos = novoServicos;// Atualiza o ponteiro para o novo bloco de memória
-    int index = tamanhoAtual;// O índice do novo cliente é igual ao tamanho atual da lista
+    *servicos = novoServicos; // Atualiza o ponteiro para o novo bloco de memória
+    int index = tamanhoAtual; // O índice do novo cliente é igual ao tamanho atual da lista
     (*servicos)[index].codigo = buscaNovoIDServico(*servicos); // Função para buscar novo ID de serviço
     strcpy((*servicos)[index].descricao, servico->descricao);
     (*servicos)[index].preco = servico->preco;
@@ -31,6 +33,7 @@ int createServico(Servico **servicos, Servico *servico) {
 
     return TRUE; // Retorna 1 indicando sucesso
 }
+
 // Função para exibir um cliente com base no código
 int showServico(Servico *servicos, int codigo) {
     if (servicos == NULL) return FALSE;
@@ -76,6 +79,7 @@ int deleteServico(Servico *servicos, int codigo) {
     if (getTipoArquivo() != MEM) setServicos(servicos);
     return TRUE;
 }
+
 // Função para gerar um novo ID exclusivo para o novo serviço
 int buscaNovoIDServico(Servico *servicos) {
     int maior = 1;
@@ -90,3 +94,40 @@ int buscaNovoIDServico(Servico *servicos) {
     return maior;
 }
 
+int saveServicoCSV(Servico *servicos, int tamanho) {
+    char **string = malloc(sizeof(char) * tamanho+1);
+    string[0] = "codigo;descricao;preco;comicao";
+    for (int i = 1; i < tamanho+1; i++) {
+        string[i] = malloc(sizeof(char) * 150);
+        string[i] = transformaString(&servicos[i-1].codigo, 'i');
+        string[i] = concatenarStringPontoEVirgula(string[i], servicos[i-1].descricao);
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&servicos[i-1].preco, 'f'));
+        string[i] = concatenarStringPontoEVirgula(string[i], transformaString(&servicos[i-1].comicao, 'f'));
+    }
+    escreverCSV(string, "servico", tamanho+1);
+    return TRUE;
+}
+
+// Função para filtrar os serviços por descrição
+Servico *filterServicoDescricao(Servico *servicos, char *descricao, int *tamanho) {
+    Servico *servicoFiltrados = malloc(sizeof(Servico));
+
+    int tamanhoTotal = getTamanhoServicos();
+
+    for (int i = 0; i < tamanhoTotal; i++) {
+        if (equalsString(servicos[i].descricao, descricao) == TRUE) {
+            if (servicos[i].ativo == TRUE) {
+                *(tamanho) = *(tamanho) + 1;
+                servicoFiltrados = realloc(servicoFiltrados, (*tamanho) * sizeof(Servico));
+                if (servicoFiltrados == NULL) {
+                    printf("Erro ao alocar memória para serviços filtrados.\n");
+                    return NULL;
+                }
+                servicoFiltrados[*tamanho - 1] = servicos[i];
+            }
+        }
+    }
+    if (*tamanho == 0) return NULL;
+
+    return servicoFiltrados;
+}

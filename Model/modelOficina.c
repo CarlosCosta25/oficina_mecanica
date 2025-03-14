@@ -159,7 +159,8 @@ Oficina *ler_arquivo_txt_oficina(FILE *buffer) {
         }
 
         // Processa cada linha, removendo as tags e atribuindo os valores aos campos da oficina
-        if (equals("<registro>\n", linha) == FALSE && equals("</registro>\n", linha) == FALSE) {
+        if (equalsString(filtrarSoATag(linha), "<registro>") != TRUE && equalsString(filtrarSoATag(linha), "</registro>") != TRUE){
+            if(equalsString(filtrarSoATag(linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     strcpy(oficina->nome, removeTags(linha));  // Atribui o nome da oficina

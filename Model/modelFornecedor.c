@@ -16,6 +16,9 @@ int getTamanhoFornecedores() {
 void setTamanhoFornecedores() {
     qtdFornecedores++;
 }
+void editTamanhoFornecedores(int tamanho) {
+    qtdFornecedores = tamanho;
+}
 
 // Função para migrar os dados dos fornecedores entre formatos de arquivos
 Fornecedor *migraDadosFornecedor() {
@@ -142,7 +145,8 @@ Fornecedor *ler_arquivo_txt_fornecedor(FILE *buffer) {
         } else {
             fornecedores = realloc(fornecedores, (numFornecedores + 1) * sizeof(Fornecedor));
         }
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(filtrarSoATag(Linha), "</registro>") != TRUE){
+            if(equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     fornecedores[numFornecedores].codigo = atoi(removeTags(Linha));

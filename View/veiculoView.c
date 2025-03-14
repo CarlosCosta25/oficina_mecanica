@@ -197,4 +197,63 @@ void mostrarTodosVeiculos(Veiculo *veiculo) {
     }
 }
 
-
+void filtrarVeiculosIDModelo(Veiculo *veiculos) {
+    printf("\t==== FILTRO DE Veiculos ====\n");
+    int opcao = lerInt("Você seja filtrar por Codigo ou por modelo?\n"
+        "1 - Codigo\n"
+        "2 - Modelo\n"
+        "=>");
+    if (opcao == 1) {
+        int id = lerInt("Qual o Codigo do veiculo que você deseja filtrar?\n=>");
+        int posicao = showVeiculo(veiculos, id);
+        if (posicao != FALSE) {
+            printf("Código: %d\n"
+                   "Modelo: %s\n"
+                   "Marca: %s\n"
+                   "Ano de Fabricação: %d\n"
+                   "Chassi: %s\n"
+                   "Placa: %s\n",
+                   veiculos[posicao].codigo,
+                   veiculos[posicao].modelo,
+                   veiculos[posicao].marca,
+                   veiculos[posicao].anofabricacao,
+                   veiculos[posicao].chassi,
+                    veiculos[posicao].placa
+            ); // Exibe se o cliente está ativo
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveVeiculoCSV(&veiculos[posicao], 1);
+            }
+        } else {
+            printf("Codigo não encontrado\n");
+        }
+    } else if (opcao == 2) {
+        char *nome = lerString("Qual o modelo do veiculo que você deseja filtrar?\n=>");
+        int tamanho = 0;
+        Veiculo *veiculosFiltrados = filterVeiculoModelo(veiculos, nome, &tamanho);
+        if (veiculosFiltrados != NULL) {
+            for (int i = 0; i < tamanho; i++) {
+                printf("Código: %d\n"
+                   "Modelo: %s\n"
+                   "Marca: %s\n"
+                   "Ano de Fabricação: %d\n"
+                   "Chassi: %s\n"
+                   "Placa: %s\n",
+                   veiculosFiltrados[i].codigo,
+                   veiculosFiltrados[i].modelo,
+                   veiculosFiltrados[i].marca,
+                   veiculosFiltrados[i].anofabricacao,
+                   veiculosFiltrados[i].chassi,
+                    veiculosFiltrados[i].placa
+            ); // Exibe se o cliente está ativo
+            }
+            if (lerInt("Deseja salvar no CSV? 1 - Sim, 0 - Não\n=>") == 1) {
+                saveVeiculoCSV(veiculosFiltrados, tamanho);
+            }
+        } else {
+            printf("Modelo não encontrado\n");
+        }
+    }
+    else {
+        printf("Opção inválida\n");
+    }
+}

@@ -16,6 +16,9 @@ int getTamanhoOrdemServico() {
 void setTamanhoOrdemServico() {
     qtdOrdemServico++;
 }
+void editTamanhoOrdemServicos(int tamanho) {
+    qtdOrdemServico = tamanho;
+}
 OrdemServico *migraDadosOrdemServico() {
     OrdemServico *ordem_servico = NULL;
     FILE *buffer;

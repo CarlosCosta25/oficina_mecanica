@@ -18,7 +18,9 @@ void setTamanhoContasReceber() {
 void removeTamanhoContasReceber() {
     qtdContasReceber--;
 }
-
+void editTamanhoContasReceber(int tamanho) {
+    qtdContasReceber = tamanho;
+}
 ContasReceber *migraDadosContasReceber() {
     ContasReceber *contas = NULL;
     FILE *buffer;
@@ -148,10 +150,11 @@ ContasReceber *ler_arquivo_txt_contasReceber(FILE *buffer) {
         if (isPrimeiro == TRUE) {
             contas = malloc(sizeof(ContasReceber) * (numContas + 1));
             isPrimeiro = FALSE;
-        }
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
-            if (isPrimeiro == FALSE)
-                contas = realloc(contas, (numContas + 1) * sizeof(ContasReceber));
+        }else contas = realloc(contas, (numContas + 1) * sizeof(ContasReceber));
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(
+                filtrarSoATag(Linha), "</registro>") != TRUE) {
+            if (equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
+
             switch (i) {
                 case 0:
                     contas[numContas].codigo = atoi(removeTags(Linha));

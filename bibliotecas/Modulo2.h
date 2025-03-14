@@ -98,6 +98,8 @@ void setTamanhoOrdemServico();
 
 OrdemServico *getOrdemServico();
 
+void editTamanhoOrdemServicos(int tamanho);
+
 void setOrdemServico(OrdemServico *ordem_servico);
 
 OrdemServico *migraDadosOrdemServico();
@@ -152,6 +154,8 @@ void finalizarOrdemServico(OrdemServico *ordem_servicos, Peca **pecas, Servico *
 int getTamanhoAgendamentos();
 
 void setTamanhoAgendamentos();
+
+void editTamanhoAgendamentos(int tamanho);
 
 Agendamento *getAgendamentos();
 
@@ -254,6 +258,8 @@ int getTamanhoEstoque();
 
 void setTamanhoEstoque();
 
+void editTamanhoEstoques(int tamanho);
+
 Estoque *migraDadosEstoque();
 
 void setEstoque(Estoque *estoque);
@@ -303,6 +309,7 @@ Transacao *getTransacoes(); // Função que retorna a lista de transações
 void setTransacoes(Transacao *transacoes); // Função que atualiza a lista de transações
 int getTamanhoTransacoes(); // Função que retorna o número de transações cadastradas
 void setTamanhoTransacoes(); // Função que incrementa o número de transações cadastradas
+void editTamanhoTransacoes(int tamanho);
 void removeTamanhoTransacoes(); // Função que decrementa 1 unidade a quantidade de transações
 void escrever_arquivo_txt_transacao(FILE *buffer, Transacao *transacoes); // Função para escrever no arquivo txt
 Transacao *ler_arquivo_txt_transacao(FILE *buffer); // Função que lê os dados de uma transação do arquivo txt
@@ -342,6 +349,8 @@ void printTransacoes(Transacao *transacoes, int tam); // Função que exibe as i
 int getTamanhoContasReceber();
 
 void setTamanhoContasReceber();
+
+void editTamanhoContasReceber(int tamanho);
 
 void removeTamanhoContasReceber();
 
@@ -414,6 +423,8 @@ int getTamanhoContasPagar();
 void setTamanhoContasPagar();
 
 void removeTamanhoContasPagar();
+
+void editTamanhoContasPagar(int tamanho);
 
 ContasPagar *migraDadosContasPagar();
 

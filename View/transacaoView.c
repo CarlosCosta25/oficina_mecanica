@@ -15,7 +15,6 @@ void menuTransacoes(Transacao **transacoes) {
         printf("\t==== MENU TRANSAÇÃO ====\n");
         opcao = lerInt("DIGITE A OPÇÃO DESEJADA:\n"
             "\t\t\t1- VER TRANSAÇÃO\n"
-            "\t\t\t2- EXCLUIR TRANSAÇÃO\n"
             "\t\t\t0- SAIR\n"
             "=>");
 

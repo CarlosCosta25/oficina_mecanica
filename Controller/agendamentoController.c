@@ -156,21 +156,30 @@ int getFuncionarioDisponivel(Agendamento *agendamentos, OrdemServico *ordensServ
 
         // Verifica se o funcionário já está agendado no horário especificado
         for (int agen = 0; agen < getTamanhoAgendamentos(); agen++) {
-            if (funcionarios[i].codigo == agendamentos[agen].codigoFuncionario &&
-                datahora == agendamentos[agen].dataHora) {
-                ocupado = TRUE;
-                break; // Se o funcionário estiver ocupado, para a verificação
+            if (funcionarios[i].codigo == agendamentos[agen].codigoFuncionario) {
+                if( datahora == agendamentos[agen].dataHora) {
+                    ocupado = TRUE;
+                    break; // Se o funcionário estiver ocupado, para a verificação
                 }
+            }
         }
 
         if (ocupado == FALSE) {
             // Verifica se o funcionário está ocupado em alguma ordem de serviço no horário
             for (int os = 0; os < getTamanhoOrdemServico(); os++) {
-                if (funcionarios[i].codigo == ordensServico[os].codigoFuncionario &&
-                    (datahora >= ordensServico[os].dataHoraInicio && datahora <= ordensServico[os].dataHoraFim)) {
-                    ocupado = TRUE;
-                    break;
+                if(funcionarios[i].codigo == ordensServico[os].codigoFuncionario) {
+                    if(ordensServico[os].dataHoraFim != 0) {
+                        if (datahora >= ordensServico[os].dataHoraInicio && datahora <= ordensServico[os].dataHoraFim) {
+                            ocupado = TRUE;
+                            break;
+                        }
+                    }else {
+                        if (datahora == ordensServico[os].dataHoraInicio ) {
+                            ocupado = TRUE;
+                            break;
+                        }
                     }
+                }
             }
         }
 

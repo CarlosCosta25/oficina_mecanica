@@ -70,7 +70,7 @@ void mostrarComissao(Comissao *comissoes) {
 
 void mostrarTodasComissoes(Comissao *comissoes) {
     for (int i = 0; i < getTamanhoComissoes(); i++) {
-        printf("Comissão: %d Código: %d Funcionario: %d\n", i + 1, comissoes[i].codigo, comissoes[i].codigoFuncionario);
+        printf("Código: %d Funcionario: %d\n", comissoes[i].codigo, comissoes[i].codigoFuncionario);
     }
 }
 
@@ -80,7 +80,7 @@ void pagarComissao(Comissao **comissoes,float * valor_em_caixa) {
     printf("==================\n");
     int codigo = lerInt("Digite o codigo da comissão que você deseja pagar:");
     int posicao = showComissao(*comissoes, codigo);
-    if (posicao != FALSE) {
+    if (posicao == FALSE) {
         printf("Codigo invalido!\n");
         return;
     }

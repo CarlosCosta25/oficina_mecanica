@@ -143,7 +143,7 @@ int importDados(void **cadastros, int *vet, char *path) {
             }
         }
     }
-    for(int i = 0; i < 7; i++) {
+    /*for(int i = 0; i < 7; i++) {
         if(vet[i] == FALSE) {
            cadastros[i] = NULL;
             switch (i) {
@@ -170,6 +170,6 @@ int importDados(void **cadastros, int *vet, char *path) {
                 break;
             }
         }
-    }
+    }*/
     return TRUE;
 }

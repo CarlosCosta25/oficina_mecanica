@@ -18,6 +18,9 @@ void setTamanhoContasPagar() {
 void removeTamanhoContasPagar() {
     qtdContasPagar--;
 }
+void editTamanhoContasPagar(int tamanho) {
+    qtdContasPagar = tamanho;
+}
 
 ContasPagar *migraDadosContasPagar() {
     ContasPagar *contas = NULL;
@@ -148,10 +151,11 @@ ContasPagar *ler_arquivo_txt_contasPagar(FILE *buffer) {
         if (isPrimeiro == TRUE) {
             contas = malloc(sizeof(ContasPagar) * (numContas + 1));
             isPrimeiro = FALSE;
-        }
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
-            if (isPrimeiro == FALSE)
-                contas = realloc(contas, (numContas + 1) * sizeof(ContasPagar));
+        }else
+            contas = realloc(contas, (numContas + 1) * sizeof(ContasPagar));
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(
+                filtrarSoATag(Linha), "</registro>") != TRUE) {
+            if (equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     contas[numContas].codigo = atoi(removeTags(Linha));

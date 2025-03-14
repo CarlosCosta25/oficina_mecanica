@@ -116,7 +116,9 @@ float ler_arquivo_txt_caixa(FILE *buffer) {
     char Linha[100];
     float valor_em_caixa = 0;
     while (fgets(Linha, sizeof(Linha), buffer) != NULL) {
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(
+                filtrarSoATag(Linha), "</registro>") != TRUE) {
+            if (equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             valor_em_caixa = atof(removeTags(Linha));
         }
     }

@@ -19,6 +19,10 @@ int getTamanhoEstoque() {
 void setTamanhoEstoque() {
     qtdEstoque++;
 }
+
+void editTamanhoEstoques(int tamanho) {
+    qtdEstoque = tamanho;
+}
 Estoque *migraDadosEstoque() {
     Estoque *estoque = NULL;
     FILE *buffer;

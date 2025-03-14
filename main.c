@@ -200,7 +200,7 @@ int main(void) {
                             filtrarFuncionarioIDNome(funcionario);
                             break;
                         case 8:
-                            int financeiro = lerInt("Digie uma opção:\n"
+                            int financeiro = lerInt("Digite uma opção:\n"
                                 "1- TRANSAÇÃO\n"
                                 "2- CONTAS A PAGAR\n"
                                 "3- CONTAS A RECEBER\n"
@@ -222,30 +222,31 @@ int main(void) {
                     break;
                 case 6:
                     void **cadastrosIE = malloc(sizeof(void *) * 7);
-                    if (cadastrosIE == NULL) {
-                        perror("Erro ao alocar memória");
-                        exit(1);
-                    }
-                    cadastrosIE[0] = cliente;
-                    cadastrosIE[1] = veiculo;
-                    cadastrosIE[2] = pecas;
-                    cadastrosIE[3] = fornercedor;
-                    cadastrosIE[4] = servico;
-                    cadastrosIE[5] = funcionario;
-                    cadastrosIE[6] = oficina_atual;
+                if (cadastrosIE == NULL) {
+                    perror("Erro ao alocar memória");
+                    exit(1);
+                }
+                cadastrosIE[0] = cliente;
+                cadastrosIE[1] = veiculo;
+                cadastrosIE[2] = pecas;
+                cadastrosIE[3] = fornercedor;
+                cadastrosIE[4] = servico;
+                cadastrosIE[5] = funcionario;
+                cadastrosIE[6] = oficina_atual;
 
-                    menuImportacaoExportacao(cadastrosIE);
+                menuImportacaoExportacao(cadastrosIE);
 
-                    cliente = cadastrosIE[0];
-                    veiculo = cadastrosIE[1];
-                    pecas = cadastrosIE[2];
-                    fornercedor = cadastrosIE[3];
-                    servico = cadastrosIE[4];
-                    funcionario = cadastrosIE[5];
-                    oficina_atual = cadastrosIE[6];
+                cliente = cadastrosIE[0];
+                veiculo = cadastrosIE[1];
+                pecas = cadastrosIE[2];
+                fornercedor = cadastrosIE[3];
+                servico = cadastrosIE[4];
+                funcionario = cadastrosIE[5];
+                oficina_atual = cadastrosIE[6];
 
                 free(cadastrosIE);
-                    break;
+                break;
+
             }
         } else {
             Oficina *oficina_nova = migraDadosOficina();

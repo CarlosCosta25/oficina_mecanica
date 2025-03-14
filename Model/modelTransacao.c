@@ -21,6 +21,10 @@ void removeTamanhoTransacoes() {
     qtdTransacoes--;
 }
 
+void editTamanhoTransacoes(int tamanho) {
+    qtdTransacoes = tamanho;
+}
+
 // Função para migrar dados de transações entre os formatos de arquivo
 Transacao *migraDadosTransacao() {
     Transacao *transacoes = NULL;
@@ -151,9 +155,10 @@ Transacao *ler_arquivo_txt_transacao(FILE *buffer) {
         if (isPrimeiro == TRUE) {
             transacoes = malloc(sizeof(Transacao) * (numTransacoes + 1));
             isPrimeiro = FALSE;
-        }
-        if (equals("<registro>\n", Linha) == FALSE && equals("</registro>\n", Linha) == FALSE) {
-            if (isPrimeiro == FALSE) transacoes = realloc(transacoes, (numTransacoes + 1) * sizeof(Transacao));
+        } else transacoes = realloc(transacoes, (numTransacoes + 1) * sizeof(Transacao));
+        if (equalsString(filtrarSoATag(Linha), "<registro>") != TRUE && equalsString(
+                filtrarSoATag(Linha), "</registro>") != TRUE) {
+            if (equalsString(filtrarSoATag(Linha), "</tabela>") == TRUE) break;
             switch (i) {
                 case 0:
                     transacoes[numTransacoes].codigo = atoi(removeTags(Linha));

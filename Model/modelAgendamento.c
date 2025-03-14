@@ -17,7 +17,9 @@ int getTamanhoAgendamentos() {
 void setTamanhoAgendamentos() {
     qtdAgendamentos++;
 }
-
+void editTamanhoAgendamentos(int tamanho) {
+    qtdAgendamentos = tamanho;
+}
 
 // Função para migrar dados de agendamentos de TXT para BIN ou MEM
 Agendamento *migraDadosAgendamento() {

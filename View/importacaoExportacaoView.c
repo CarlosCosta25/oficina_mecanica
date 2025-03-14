@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "..\bibliotecas/utils.h"
-#include "..\bibliotecas/cliente.h"
 #include "../bibliotecas/importacaoExportacao.h"
 
 
@@ -42,4 +41,3 @@ void importacaoExportacao(void ** cadastrosIE, int tipo) {
     }
 
 }
-

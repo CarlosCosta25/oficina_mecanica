@@ -41,7 +41,7 @@ int createComissao(Comissao **comissoes, int codigo, float valorComissao, double
 
 // Função para exibir uma comissão com base no código
 int showComissao(Comissao *comissoes, int codigo) {
-    if (comissoes == NULL) return FALSE; // Retorna FALSE se a lista de comissões for vazia
+    if (getTamanhoComissoes() == 0) return FALSE; // Retorna FALSE se a lista de comissões for vazia
 
     int posicao = 0;
     int tamanho = getTamanhoComissoes(); // Obtém o tamanho atual da lista de comissões
